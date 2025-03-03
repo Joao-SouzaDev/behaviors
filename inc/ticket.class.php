@@ -327,10 +327,19 @@ class PluginBehaviorsTicket {
 
                //for simplified interface
                if (!isset($actors['requester']) && isset($ticket->input['_users_id_requester'])) {
-                  $actors['requester'][] = ['itemtype'          => 'User',
-                                            'items_id'          => $ticket->input['_users_id_requester'],
-                                            'use_notification'  => "1",
-                                            'alternative_email' => ""];
+                   if (is_array($ticket->input['_users_id_requester'])) {
+                       foreach ($ticket->input['_users_id_requester'] as $usr) {
+                           $actors['requester'][] = ['itemtype'          => 'User',
+                               'items_id'          => $usr,
+                               'use_notification'  => "1",
+                               'alternative_email' => ""];
+                       }
+                   } else {
+                       $actors['requester'][] = ['itemtype'          => 'User',
+                           'items_id'          => $ticket->input['_users_id_requester'],
+                           'use_notification'  => "1",
+                           'alternative_email' => ""];
+                   }
                }
 
                if (isset($actors['requester'])) {
@@ -365,11 +374,24 @@ class PluginBehaviorsTicket {
          }
          
          //for simplified interface or mailgate
-         if (!isset($actors['requester']) && isset($ticket->input['_users_id_requester'])) {
-            $actors['requester'][] = ['itemtype'          => 'User',
-                                      'items_id'          => $ticket->input['_users_id_requester'],
-                                      'use_notification'  => "1",
-                                      'alternative_email' => ""];
+         if (!isset($actors['requester'])
+             && isset($ticket->input['_users_id_requester'])) {
+             if (is_array($ticket->input['_users_id_requester'])) {
+                 foreach ($ticket->input['_users_id_requester'] as $usr) {
+                     $actors['requester'][] = ['itemtype'          => 'User',
+                         'items_id'          => $usr,
+                         'use_notification'  => "1",
+                         'alternative_email' => ""];
+                 }
+             } else {
+                 //Case of anonymous user
+                 if ($ticket->input['_users_id_requester'] > 0) {
+                     $actors['requester'][] = ['itemtype'          => 'User',
+                         'items_id'          => $ticket->input['_users_id_requester'],
+                         'use_notification'  => "1",
+                     'alternative_email' => ""];
+                 }
+             }
          }
          if (isset($actors['requester'])) {
             $requesters = $actors['requester'];
@@ -417,7 +439,9 @@ class PluginBehaviorsTicket {
                }
             }
          }
-         $ticket->input['_actors'] = $actors;
+          if  (is_array($actors) && count($actors) > 0) {
+              $ticket->input['_actors'] = $actors;
+          }
       }
       
       if ($config->getField('use_assign_user_group') > 0) {
@@ -696,8 +720,8 @@ class PluginBehaviorsTicket {
           && $ticket->canUpdate()
           && isset($ticket->input['status'])
           && in_array($ticket->input['status'], array_merge(Ticket::getSolvedStatusArray(),
-                                                            Ticket::getClosedStatusArray()))) {       
-         $ticket_user      = new Ticket_User();         
+                                                            Ticket::getClosedStatusArray()))) {
+         $ticket_user      = new Ticket_User();
          if (($ticket->countUsers(CommonITILActor::ASSIGN) == 0)
              || (isset($ticket_user->fields['users_id'])
                        && ($ticket_user->fields['users_id'] != Session::getLoginUserID()))
@@ -720,7 +744,6 @@ class PluginBehaviorsTicket {
           && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
 
          if (strstr($_SERVER['PHP_SELF'], "/front/ticket.form.php")
-             && isset($_POST['id'])
              && (!isset($_POST['id']) || ($_POST['id'] == 0))) {
 
             $config = PluginBehaviorsConfig::getInstance();

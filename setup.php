@@ -43,7 +43,7 @@ function plugin_init_behaviors() {
        'Group_Ticket'       => ['PluginBehaviorsGroup_Ticket',      'afterAdd'],
        'Supplier_Ticket'    => ['PluginBehaviorsSupplier_Ticket',   'afterAdd'],
        'Document_Item'      => ['PluginBehaviorsDocument_Item',     'afterAdd'],
-       'ITILFollowup'       => ['PluginBehaviorsITILFollowup',      'alterAdd']];
+          'ITILSolution'       => ['PluginBehaviorsITILSolution',      'afterAdd']];
 
    $PLUGIN_HOOKS['item_update']['behaviors'] =
       ['Ticket'             => ['PluginBehaviorsTicket',            'afterUpdate']];
