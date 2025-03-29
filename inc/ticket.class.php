@@ -268,248 +268,347 @@ class PluginBehaviorsTicket {
    }
 
 
-   static function beforeAdd(Ticket $ticket) {
-      global $DB;
+    static function beforeAdd(Ticket $ticket)
+    {
+        global $DB;
 
-      if (!is_array($ticket->input) || !count($ticket->input)) {
-         // Already cancel by another plugin
-         return false;
-      }
+        if (!is_array($ticket->input) || !count($ticket->input)) {
+            // Already cancel by another plugin
+            return false;
+        }
 
-      $dbu = new DbUtils();
+        $config = PluginBehaviorsConfig::getInstance();
 
-      $config = PluginBehaviorsConfig::getInstance();
-
-      if ($config->getField('tickets_id_format')) {
-         $max = 0;
-         $sql = ['SELECT' => ['MAX' => 'id AS max'],
-                 'FROM'   => 'glpi_tickets'];
-         foreach ($DB->request($sql) as $data) {
-            $max = $data['max'];
-         }
-         $want = date($config->getField('tickets_id_format'));
-         if ($max < $want) {
-            $DB->query("ALTER TABLE `glpi_tickets` AUTO_INCREMENT=$want");
-         }
-      }
-
-      if (isset($_SESSION['glpiactiveprofile']['interface'])
-          && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
-
-         if ($config->getField('is_requester_mandatory')
-             && isset($ticket->input['_actors']) && count($ticket->input['_actors'])) {
-
-            $error = true;
-            $requesters = $ticket->input['_actors']['requester'];
-            if (count($requesters)) {
-               foreach ($requesters as $id => $requester) {
-                  if (($requester['itemtype'] == 'User')
-                      && (!empty($requester['items_id'])
-                          || !empty($requester['alternative_email']))) {
-                     $error = false;
-                  }
-               }
+        if ($config->getField('tickets_id_format')) {
+            $max = 0;
+            $sql = [
+                'SELECT' => ['MAX' => 'id AS max'],
+                'FROM' => 'glpi_tickets'
+            ];
+            foreach ($DB->request($sql) as $data) {
+                $max = $data['max'];
             }
-            if ($error) {
-               Session::addMessageAfterRedirect(__('Requester is mandatory', 'behaviors'), true,
-                                                ERROR);
-               $ticket->input = [];
+            $want = date($config->getField('tickets_id_format'));
+            if ($max < $want) {
+                $DB->query("ALTER TABLE `glpi_tickets` AUTO_INCREMENT=$want");
             }
-         }
-      }
-      if ($config->getField('use_requester_item_group')
-          && isset($ticket->input['items_id'])
-          && (is_array($ticket->input['items_id']))) {
-         foreach ($ticket->input['items_id'] as $type => $items) {
-            if (($item = $dbu->getItemForItemtype($type))
-                && isset($ticket->input['_actors'])) {
-               $actors = $ticket->input['_actors'];
+        }
 
-               //for simplified interface
-               if (!isset($actors['requester']) && isset($ticket->input['_users_id_requester'])) {
-                   if (is_array($ticket->input['_users_id_requester'])) {
-                       foreach ($ticket->input['_users_id_requester'] as $usr) {
-                           $actors['requester'][] = ['itemtype'          => 'User',
-                               'items_id'          => $usr,
-                               'use_notification'  => "1",
-                               'alternative_email' => ""];
-                       }
-                   } else {
-                       $actors['requester'][] = ['itemtype'          => 'User',
-                           'items_id'          => $ticket->input['_users_id_requester'],
-                           'use_notification'  => "1",
-                           'alternative_email' => ""];
-                   }
-               }
+        if (!isset($ticket->input['_groups_id_requester'])) {
+            $actors_item = self::useRequesterItemGroup($ticket->input);
+            $ticket->input['_actors']['requester'] = self::removeDuplicates($actors_item);
+        }
 
-               if (isset($actors['requester'])) {
-                  $requesters = $actors['requester'];
-                  $ko         = 0;
-                  foreach ($requesters as $requester) {
-                     if ($requester['itemtype'] == 'Group') {
-                        $ko++;
-                     }
-                  }
-                  if ($ko == 0 && $item->isField('groups_id')) {
-                     foreach ($items as $itemid) {
-                        if ($item->getFromDB($itemid)) {
-                           $actors['requester'][] = ['itemtype'          => 'Group',
-                                                     'items_id'          => $item->getField('groups_id'),
-                                                     'use_notification'  => "1",
-                                                     'alternative_email' => ""];
+        if (!isset($ticket->input['_groups_id_requester'])) {
+            $requesters = self::useRequesterUserGroup($ticket->input);
+            if (isset($ticket->input['_actors']['requester'])) {
+                $ticket->input['_actors']['requester'] = array_merge($ticket->input['_actors']['requester'], $requesters);
+            } else {
+                $ticket->input['_actors']['requester'] = $requesters;
+            }
+
+        }
+        if (!isset($ticket->input['_groups_id_assign'])) {
+            $assigns =  self::useAssignTechGroup($ticket->input);
+            $ticket->input['_actors']['assign'] = self::removeDuplicates($assigns);
+        }
+
+        if ($config->getField('ticketsolved_updatetech')
+            && (isset($ticket->input['status'])
+                && in_array(
+                    $ticket->input['status'],
+                    array_merge(
+                        Ticket::getSolvedStatusArray(),
+                        Ticket::getClosedStatusArray()
+                    )
+                ))
+            && isset($ticket->input['_users_id_assign'])
+            && (($ticket->input['_users_id_assign'] == 0)
+                || ($ticket->input['_users_id_assign'] != Session::getLoginUserID()))) {
+            $ticket->input['_users_id_assign'] = Session::getLoginUserID();
+        }
+    }
+
+    static function removeDuplicates($array) {
+        $unique = [];
+        $filteredArray = [];
+        if (is_array($array)){
+            foreach ($array as $item) {
+                // Clé unique basée sur itemtype + items_id
+                $key = $item['itemtype'] . '-' . $item['items_id'];
+
+                if (!isset($unique[$key])) {
+                    $unique[$key] = true;
+                    $filteredArray[] = $item;
+                }
+            }
+            return $filteredArray;
+        }
+    }
+
+    static function useRequesterItemGroup($input) {
+
+        $config = PluginBehaviorsConfig::getInstance();
+        if ($config->getField('use_requester_item_group')
+            && isset($input['items_id'])
+            && (is_array($input['items_id']))) {
+            foreach ($input['items_id'] as $type => $items) {
+                if (($item = getItemForItemtype($type))
+                    && isset($input['_actors'])) {
+                    $actors_item = $input['_actors'];
+
+                    //for simplified interface
+                    if (!isset($actors_item['requester']) && isset($input['_users_id_requester'])) {
+                        if (is_array($input['_users_id_requester'])) {
+                            foreach ($input['_users_id_requester'] as $usr) {
+                                $actors_item['requester'][] = ['itemtype'          => 'User',
+                                    'items_id'          => $usr,
+                                    'use_notification'  => "1",
+                                    'alternative_email' => ""];
+                            }
+                        } else {
+                            $actors_item['requester'][] = ['itemtype'          => 'User',
+                                'items_id'          => $input['_users_id_requester'],
+                                'use_notification'  => "1",
+                                'alternative_email' => ""];
                         }
-                     }
-                     $new_actors               = $actors;
-                     $ticket->input['_actors'] = $new_actors;
-                  }
-               }
+                    }
+
+                    if (isset($actors_item['requester'])) {
+                        $requesters = $actors_item['requester'];
+                        $ko         = 0;
+                        foreach ($requesters as $requester) {
+                            if ($requester['itemtype'] == 'Group') {
+                                $ko++;
+                            }
+                        }
+                        if ($ko == 0 && $item->isField('groups_id')) {
+                            foreach ($items as $itemid) {
+                                if ($item->getFromDB($itemid)) {
+                                    $actors_item['requester'][] = ['itemtype'          => 'Group',
+                                        'items_id'          => $item->getField('groups_id'),
+                                        'use_notification'  => "1",
+                                        'alternative_email' => ""];
+                                }
+                            }
+                        }
+
+                        return $actors_item;
+                    }
+                }
             }
-         }
-      }
+        }
+    }
+    static function useRequesterUserGroup($input) {
 
-      if ($config->getField('use_requester_user_group') > 0) {
-          
-         if (isset($ticket->input['_actors'])) {
-              $actors = ($ticket->input['_actors'] ?? []);
-         }
-         
-         //for simplified interface or mailgate
-         if (!isset($actors['requester'])
-             && isset($ticket->input['_users_id_requester'])) {
-             if (is_array($ticket->input['_users_id_requester'])) {
-                 foreach ($ticket->input['_users_id_requester'] as $usr) {
-                     $actors['requester'][] = ['itemtype'          => 'User',
-                         'items_id'          => $usr,
-                         'use_notification'  => "1",
-                         'alternative_email' => ""];
-                 }
-             } else {
-                 //Case of anonymous user
-                 if ($ticket->input['_users_id_requester'] > 0) {
-                     $actors['requester'][] = ['itemtype'          => 'User',
-                         'items_id'          => $ticket->input['_users_id_requester'],
-                         'use_notification'  => "1",
-                     'alternative_email' => ""];
-                 }
-             }
-         }
-         if (isset($actors['requester'])) {
-            $requesters = $actors['requester'];
-            // Select first group of this user
-            $ko   = 0;
-            $grp  = 0;
-            $grps = [];
-            foreach ($requesters as $requester) {
-               if ($config->getField('use_requester_user_group') == 1) {
-                  // First group
-                  if ($requester['itemtype'] == 'User') {
-                     $grp = PluginBehaviorsUser::getRequesterGroup($ticket->input['entities_id'],
-                                                                   $requester['items_id'],
-                                                                   true);
-                  }
-                  if ($grp > 0 && $requester['itemtype'] == 'Group'
-                      && $requester['items_id'] == $grp) {
-                     $ko++;
-                  }
-                  if ($grp > 0 && $ko == 0) {
-                     $actors['requester'][] = ['itemtype'          => 'Group',
-                                               'items_id'          => $grp,
-                                               'use_notification'  => "1",
-                                               'alternative_email' => ""];
-                  }
-               } else {
-                  // All groups
-                  if ($requester['itemtype'] == 'User') {
-                     $grps = PluginBehaviorsUser::getRequesterGroup($ticket->input['entities_id'],
-                                                                    $requester['items_id'],
-                                                                    false);
-                  }
-                  if ($requester['itemtype'] == 'Group'
-                      && in_array($requester['items_id'], $grps)) {
-                     unset($grps[$requester['items_id']]);
-                  }
-                  if (count($grps) > 0) {
-                     foreach ($grps as $grp) {
-                        $actors['requester'][] = ['itemtype'          => 'Group',
-                                                  'items_id'          => $grp,
-                                                  'use_notification'  => "1",
-                                                  'alternative_email' => ""];
-                     }
-                  }
-               }
+        $config = PluginBehaviorsConfig::getInstance();
+        if ($config->getField('use_requester_user_group') > 0) {
+
+            $actors_requester = [];
+            if (isset($input['_actors']['requester'])) {
+                $actors_requester = $input['_actors']['requester'];
             }
-         }
-          if  (is_array($actors) && count($actors) > 0) {
-              $ticket->input['_actors'] = $actors;
-          }
-      }
-      
-      if ($config->getField('use_assign_user_group') > 0) {
-          
-          if (isset($ticket->input['_actors'])) {
-              $actors = ($ticket->input['_actors'] ?? []);
-          }
-          
-          if (isset($actors['assign'])) {
-              $assigns = $actors['assign'];
-              // Select first group of this user
-              $ko   = 0;
-              $grp  = 0;
-              $grps = [];
-              foreach ($assigns as $assign) {
-                  if ($config->getField('use_assign_user_group') == 1) {
-                      // First group
-                      if ($assign['itemtype'] == 'User') {
-                          $grp = PluginBehaviorsUser::getTechnicianGroup($ticket->input['entities_id'],
-                                                                         $assign['items_id'],
-                                                                         true);
-                      }
-                      if ($grp > 0 && $assign['itemtype'] == 'Group'
-                          && $assign['items_id'] == $grp) {
-                              $ko++;
-                          }
-                          if ($grp > 0 && $ko == 0) {
-                              $actors['assign'][] = ['itemtype'          => 'Group',
-                                                     'items_id'          => $grp,
-                                                     'use_notification'  => "1",
-                                                     'alternative_email' => ""];
-                          }
-                  } else {
-                      // All groups
-                      if ($assign['itemtype'] == 'User') {
-                          $grps = PluginBehaviorsUser::getTechnicianGroup($ticket->input['entities_id'],
-                                                                          $assign['items_id'],
-                                                                          false);
-                      }
-                      if ($assign['itemtype'] == 'Group'
-                          && in_array($assign['items_id'], $grps)) {
-                              unset($grps[$assign['items_id']]);
-                          }
-                          if (count($grps) > 0) {
-                              foreach ($grps as $grp) {
-                                  $actors['assign'][] = ['itemtype'          => 'Group',
-                                                         'items_id'          => $grp,
-                                                         'use_notification'  => "1",
-                                                         'alternative_email' => ""];
-                              }
-                          }
-                  }
-              }
-          }
-          $ticket->input['_actors'] = $actors;
-      }
-      if ($config->getField('ticketsolved_updatetech')
-          && (isset($ticket->input['status'])
-              && in_array($ticket->input['status'], array_merge(Ticket::getSolvedStatusArray(),
-                                                                Ticket::getClosedStatusArray())))
-          && isset($ticket->input['_users_id_assign'])
-                   && (($ticket->input['_users_id_assign'] == 0)
-                       || ($ticket->input['_users_id_assign'] != Session::getLoginUserID()))) {
 
-         $ticket->input['_users_id_assign'] = Session::getLoginUserID();
-      }
-   }
+            //for simplified interface or mailgate
+            if (count($actors_requester) == 0
+                && isset($input['_users_id_requester'])) {
+                if (is_array($input['_users_id_requester'])) {
+                    foreach ($input['_users_id_requester'] as $usr) {
+                        if ($usr > 0) {
+                            $actors_requester[] = [
+                                'itemtype' => 'User',
+                                'items_id' => $usr,
+                                'use_notification' => "1",
+                                'alternative_email' => ""
+                            ];
+                        }
+                    }
+                } else {
+                    //Case of anonymous user
+                    if ($input['_users_id_requester'] > 0) {
+                        $actors_requester[] = ['itemtype'          => 'User',
+                            'items_id'          => $input['_users_id_requester'],
+                            'use_notification'  => "1",
+                            'alternative_email' => ""];
+                    }
+                }
+            }
+            if (isset($input['_groups_id_requester'])) {
 
+                if (is_array($input['_groups_id_requester'])) {
+                    foreach ($input['_groups_id_requester'] as $grp) {
+                        if ($grp > 0) {
+                            $actors_requester[] = ['itemtype'          => 'Group',
+                                'items_id'          => $grp,
+                                'use_notification'  => "1",
+                                'alternative_email' => ""];
+                        }
+                    }
+                } else {
+                    //Case of anonymous user
+                    if ($input['_groups_id_requester'] > 0) {
+                        $actors_requester[] = ['itemtype'          => 'Group',
+                            'items_id'          => $input['_groups_id_requester'],
+                            'use_notification'  => "1",
+                            'alternative_email' => ""];
+                    }
+                }
+            }
+
+            if (count($actors_requester) > 0) {
+                $requesters = $actors_requester;
+                // Select first group of this user
+                $ko   = 0;
+                $grp  = 0;
+                $grps = [];
+                foreach ($requesters as $requester) {
+                    if ($config->getField('use_requester_user_group') == 1) {
+                        // First group
+                        if ($requester['itemtype'] == 'User') {
+                            $grp = PluginBehaviorsUser::getRequesterGroup($input['entities_id'],
+                                $requester['items_id'],
+                                true);
+                        }
+                        if ($grp > 0 && $requester['itemtype'] == 'Group'
+                            && $requester['items_id'] == $grp) {
+                            $ko++;
+                        }
+                        if ($grp > 0 && $ko == 0) {
+                            $actors_requester[] = ['itemtype'          => 'Group',
+                                'items_id'          => $grp,
+                                'use_notification'  => "1",
+                                'alternative_email' => ""];
+                        }
+                    } else {
+                        // All groups
+                        if ($requester['itemtype'] == 'User') {
+                            $grps = PluginBehaviorsUser::getRequesterGroup($input['entities_id'],
+                                $requester['items_id'],
+                                false);
+                        }
+                        if ($requester['itemtype'] == 'Group'
+                            && in_array($requester['items_id'], $grps)) {
+                            unset($grps[$requester['items_id']]);
+                        }
+                        if (count($grps) > 0) {
+                            foreach ($grps as $grp) {
+                                $actors_requester[] = ['itemtype'          => 'Group',
+                                    'items_id'          => $grp,
+                                    'use_notification'  => "1",
+                                    'alternative_email' => ""];
+                            }
+                        }
+                    }
+                }
+                return $actors_requester;
+            }
+        }
+    }
+    static function useAssignTechGroup($input) {
+
+        $config = PluginBehaviorsConfig::getInstance();
+
+        if ($config->getField('use_assign_user_group') > 0) {
+
+            $actors_assign = [];
+            if (isset($input['_actors']['assign'])) {
+                $actors_assign = $input['_actors']['assign'];
+            }
+
+            //for simplified interface or mailgate
+            if (count($actors_assign) == 0
+                && isset($input['_users_id_assign'])) {
+                if (is_array($input['_users_id_assign'])) {
+                    foreach ($input['_users_id_assign'] as $usr) {
+                        if ($usr > 0) {
+                            $actors_assign[] = ['itemtype'          => 'User',
+                                'items_id'          => $usr,
+                                'use_notification'  => "1",
+                                'alternative_email' => ""];
+                        }
+                    }
+                } else {
+                    //Case of anonymous user
+                    if ($input['_users_id_assign'] > 0) {
+                        $actors_assign[] = ['itemtype'          => 'User',
+                            'items_id'          => $input['_users_id_assign'],
+                            'use_notification'  => "1",
+                            'alternative_email' => ""];
+                    }
+                }
+            }
+            if (isset($input['_groups_id_assign'])) {
+                if (is_array($input['_groups_id_assign'])) {
+                    foreach ($input['_groups_id_assign'] as $grp) {
+                        if ($grp > 0) {
+                            $actors_assign[] = [
+                                'itemtype' => 'Group',
+                                'items_id' => $grp,
+                                'use_notification' => "1",
+                                'alternative_email' => ""
+                            ];
+                        }
+                    }
+                } else {
+                    //Case of anonymous user
+                    if ($input['_groups_id_assign'] > 0) {
+                        $actors_assign[] = ['itemtype'          => 'Group',
+                            'items_id'          => $input['_groups_id_assign'],
+                            'use_notification'  => "1",
+                            'alternative_email' => ""];
+                    }
+                }
+            }
+
+            if (count($actors_assign) > 0) {
+                $assigns = $actors_assign;
+                // Select first group of this user
+                $ko   = 0;
+                $grp  = 0;
+                $grps = [];
+                foreach ($assigns as $assign) {
+                    if ($config->getField('use_assign_user_group') == 1) {
+                        // First group
+                        if ($assign['itemtype'] == 'User') {
+                            $grp = PluginBehaviorsUser::getTechnicianGroup($input['entities_id'],
+                                $assign['items_id'],
+                                true);
+                        }
+                        if ($grp > 0 && $assign['itemtype'] == 'Group'
+                            && $assign['items_id'] == $grp) {
+                            $ko++;
+                        }
+                        if ($grp > 0 && $ko == 0) {
+                            $actors_assign[] = ['itemtype'          => 'Group',
+                                'items_id'          => $grp,
+                                'use_notification'  => "1",
+                                'alternative_email' => ""];
+                        }
+                    } else {
+                        // All groups
+                        if ($assign['itemtype'] == 'User') {
+                            $grps = PluginBehaviorsUser::getTechnicianGroup($input['entities_id'],
+                                $assign['items_id'],
+                                false);
+                        }
+                        if ($assign['itemtype'] == 'Group'
+                            && in_array($assign['items_id'], $grps)) {
+                            unset($grps[$assign['items_id']]);
+                        }
+                        if (count($grps) > 0) {
+                            foreach ($grps as $grp) {
+                                $actors_assign[] = ['itemtype'          => 'Group',
+                                    'items_id'          => $grp,
+                                    'use_notification'  => "1",
+                                    'alternative_email' => ""];
+                            }
+                        }
+                    }
+                }
+                return $actors_assign;
+            }
+        }
+    }
 
    static function afterPrepareAdd(Ticket $ticket) {
 
