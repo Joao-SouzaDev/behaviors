@@ -106,7 +106,7 @@ function plugin_version_behaviors() {
            'version'        => '2.7.4',
            'license'        => 'AGPLv3+',
            'author'         => 'Infotel, Remi Collet, Nelly Mahu-Lasson',
-           'homepage'       => 'https://github.com/yllen/behaviors',
+           'homepage'       => 'https://github.com/InfotelGLPI/behaviors',
            'minGlpiVersion' => '10.0.5',
            'requirements'   => ['glpi' => ['min' => '10.0.5',
                                            'max' => '10.1.0']]];
