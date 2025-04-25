@@ -91,10 +91,12 @@ function plugin_init_behaviors() {
 
    $PLUGIN_HOOKS['csrf_compliant']['behaviors'] = true;
 
+    //TO Disable in v11
    foreach ($CFG_GLPI["asset_types"] as $type) {
       $PLUGIN_HOOKS['item_can']['behaviors'][$type] = [$type => ['PluginBehaviorsConfig', 'item_can']];
    }
 
+   //TO Disable in v11
    $PLUGIN_HOOKS['add_default_where']['behaviors'] = ['PluginBehaviorsConfig', 'add_default_where'];
 
 }
