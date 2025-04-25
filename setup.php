@@ -103,7 +103,7 @@ function plugin_init_behaviors() {
 function plugin_version_behaviors() {
 
    return ['name'           => __('Behaviours', 'behaviors'),
-           'version'        => '2.7.4',
+           'version'        => '2.7.5',
            'license'        => 'AGPLv3+',
            'author'         => 'Infotel, Remi Collet, Nelly Mahu-Lasson',
            'homepage'       => 'https://github.com/InfotelGLPI/behaviors',
