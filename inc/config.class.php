@@ -293,8 +293,8 @@ class PluginBehaviorsConfig extends CommonDBTM {
       echo "</th></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__("Requester is mandatory", "behaviors")."</td><td>";
-      Dropdown::showYesNo("is_requester_mandatory", $config->fields['is_requester_mandatory']);
+      echo "<td></td><td></td>";
+
       echo "<td>".__('Additional notifications', 'behaviors')."</td><td>";
       Dropdown::showYesNo('add_notif', $config->fields['add_notif']);
       echo "</td></tr>";

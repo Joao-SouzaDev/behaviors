@@ -294,23 +294,25 @@ class PluginBehaviorsTicket {
             }
         }
 
-        if (!isset($ticket->input['_groups_id_requester'])) {
-            $actors_item = self::useRequesterItemGroup($ticket->input);
-            $ticket->input['_actors']['requester'] = self::removeDuplicates($actors_item);
-        }
-
-        if (!isset($ticket->input['_groups_id_requester'])) {
-            $requesters = self::useRequesterUserGroup($ticket->input);
-            if (isset($ticket->input['_actors']['requester'])) {
-                $ticket->input['_actors']['requester'] = array_merge($ticket->input['_actors']['requester'], $requesters);
-            } else {
-                $ticket->input['_actors']['requester'] = $requesters;
+        if ($config->getField('use_requester_user_group') > 0) {
+            if (!isset($ticket->input['_groups_id_requester'])) {
+                $requesters = self::useRequesterUserGroup($ticket->input);
+                if (isset($ticket->input['_actors']['requester'])) {
+                    $ticket->input['_actors']['requester'] = array_merge(
+                        $ticket->input['_actors']['requester'],
+                        $requesters
+                    );
+                } else {
+                    $ticket->input['_actors']['requester'] = $requesters;
+                }
             }
-
         }
-        if (!isset($ticket->input['_groups_id_assign'])) {
-            $assigns =  self::useAssignTechGroup($ticket->input);
-            $ticket->input['_actors']['assign'] = self::removeDuplicates($assigns);
+
+        if ($config->getField('use_assign_user_group') > 0) {
+            if (!isset($ticket->input['_groups_id_assign'])) {
+                $assigns = self::useAssignTechGroup($ticket->input);
+                $ticket->input['_actors']['assign'] = self::removeDuplicates($assigns);
+            }
         }
 
         if ($config->getField('ticketsolved_updatetech')
@@ -849,6 +851,7 @@ class PluginBehaviorsTicket {
 
             if ($config->getField('use_requester_user_group') > 0
                 && isset($_POST['_actors'])) {
+
                $actors = json_decode($_POST['_actors'], true);
                if (isset($actors['requester'])) {
                   $requesters = $actors['requester'];
