@@ -50,6 +50,12 @@ class PluginBehaviorsProfile extends  PluginBehaviorsCommon {
          $input['helpdesk_item_type'] = [];
       }
 
+       if (!isset($input['managed_domainrecordtypes'])
+           || !is_array($input['managed_domainrecordtypes'])) {
+
+           $input["managed_domainrecordtypes"] = [];
+       }
+       
       return $input;
    }
 
