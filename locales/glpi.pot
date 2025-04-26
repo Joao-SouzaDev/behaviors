@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Behaviors plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-26 09:05+0000\n"
+"POT-Creation-Date: 2025-04-26 09:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,13 +78,21 @@ msgstr ""
 msgid "You cannot solve/close a problem with task do to"
 msgstr ""
 
-#: inc/common.class.php:410
+#: inc/common.class.php:415
+msgid "You must add a description. it's mandatory"
+msgstr ""
+
+#: inc/common.class.php:421
+msgid "You must add a solution type. it's mandatory"
+msgstr ""
+
+#: inc/common.class.php:426
 msgid "You cannot resolve the ticket"
 msgstr ""
 
-#: inc/common.class.php:432 inc/config.class.php:391
-#: inc/tickettask.class.php:63 inc/tickettask.class.php:101
-msgid "Task category is mandatory in a task"
+#: inc/common.class.php:449 inc/tickettask.class.php:63
+#: inc/tickettask.class.php:101
+msgid "You must define a category. it's mandatory"
 msgstr ""
 
 #: inc/config.class.php:126
@@ -159,6 +167,10 @@ msgstr ""
 
 #: inc/config.class.php:374
 msgid "In the item's entity"
+msgstr ""
+
+#: inc/config.class.php:391
+msgid "Task category is mandatory in a task"
 msgstr ""
 
 #: inc/config.class.php:398 inc/itilsolution.class.php:186
