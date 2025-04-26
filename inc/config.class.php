@@ -430,6 +430,8 @@ class PluginBehaviorsConfig extends CommonDBTM
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Technician assignment when adding follow up', 'behaviors');
+        $content = __('The technician must belong to the group assigned to the ticket', 'behaviors');
+        Html::showToolTip($content);
         echo "</td>";
         echo "<td>";
         Dropdown::showYesNo("addfup_updatetech", $config->fields['addfup_updatetech']);
@@ -469,6 +471,16 @@ class PluginBehaviorsConfig extends CommonDBTM
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Set the solution writer as the technician of the ticket', 'behaviors');
+        echo "</td><td>";
+        Dropdown::showYesNo("ticketsolved_updatetech", $config->fields['ticketsolved_updatetech']);
+        echo "</td>";
+
+        echo "<th colspan='2' class='center'>" . __('Comments');
+        echo "</th>";
+        echo "</tr>\n";
+
+        echo "<tr class='tab_bg_1'>";
         echo "<td>" . __(
                 'Group of technicians assigned is mandatory before ticket is solved/closed',
                 'behaviors'
@@ -478,18 +490,6 @@ class PluginBehaviorsConfig extends CommonDBTM
         Dropdown::showYesNo(
             "is_tickettechgroup_mandatory",
             $config->fields['is_tickettechgroup_mandatory']
-        );
-        echo "</td>";
-
-        echo "<th colspan='2' class='center'>" . __('Comments');
-        echo "</th>";
-        echo "</tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Category is mandatory before ticket is solved/closed', 'behaviors') . "</td><td>";
-        Dropdown::showYesNo(
-            "is_ticketcategory_mandatory",
-            $config->fields['is_ticketcategory_mandatory']
         );
         echo "</td>";
 
@@ -504,6 +504,15 @@ class PluginBehaviorsConfig extends CommonDBTM
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Category is mandatory before ticket is solved/closed', 'behaviors') . "</td><td>";
+        Dropdown::showYesNo(
+            "is_ticketcategory_mandatory",
+            $config->fields['is_ticketcategory_mandatory']
+        );
+        echo "</td>";
+        echo "</tr>";
+
+        echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Location is mandatory before ticket is solved/closed', 'behaviors');
         echo "</td><td>";
         Dropdown::showYesNo(
@@ -512,6 +521,7 @@ class PluginBehaviorsConfig extends CommonDBTM
         );
         echo "</td>";
         echo "</tr>";
+
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __(
@@ -525,7 +535,7 @@ class PluginBehaviorsConfig extends CommonDBTM
             $config->fields['is_ticketsolution_mandatory']
         );
         echo "</td>";
-        echo "</tr>";
+        echo "<td colspan='2'></td></tr>";
 
 
         echo "<tr class='tab_bg_1'>";
@@ -536,8 +546,8 @@ class PluginBehaviorsConfig extends CommonDBTM
             $config->fields['is_ticketsolutiontype_mandatory']
         );
         echo "</td>";
-        echo "<td colspan='2'></td></tr>";
 
+        echo "<td colspan='2'></td></tr>";
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Block the solving/closing of a the ticket if task do to', 'behaviors');
@@ -552,13 +562,6 @@ class PluginBehaviorsConfig extends CommonDBTM
             "is_ticketrealtime_mandatory",
             $config->fields['is_ticketrealtime_mandatory']
         );
-        echo "</td>";
-        echo "<td colspan='2'></td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Add the logged technician when solve ticket', 'behaviors');
-        echo "</td><td>";
-        Dropdown::showYesNo("ticketsolved_updatetech", $config->fields['ticketsolved_updatetech']);
         echo "</td>";
         echo "<td colspan='2'></td></tr>";
 
