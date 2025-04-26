@@ -397,18 +397,35 @@ class PluginBehaviorsCommon extends CommonGLPI
             $item = $params['item'];
             if ($item->getType() == 'ITILSolution') {
                 $warnings = self::checkWarnings($params);
-                if (is_array($warnings) && count($warnings)) {
+                $config = PluginBehaviorsConfig::getInstance();
+                if ((is_array($warnings) && count($warnings))
+                    || $config->getField('is_ticketsolution_mandatory')
+                    || $config->getField('is_ticketsolutiontype_mandatory')) {
                     echo "<div class='alert alert-warning'>";
 
-                    echo "<div class='d-flex'>";
+                    echo "<div style='display:flex;align-items: center;'>";
 
-                    echo "<div class='me-2'>";
-                    echo "<i class='fa fa-exclamation-triangle fa-2x'></i>";
+                    echo "<div style='margin-right: 20px;'>";
+                    echo "<i class='fas fa-exclamation-triangle fa-2x' style='color:orange;vertical-align: top;'></i>";
                     echo "</div>";
 
                     echo "<div>";
-                    echo "<h4 class='alert-title'>" . __('You cannot resolve the ticket', 'behaviors') . "</h4>";
-                    echo "<div class='text-muted'>" . implode('</div><div>', $warnings) . "</div>";
+                    if ($config->getField('is_ticketsolution_mandatory') && count($warnings) == 0) {
+                        echo "<h4 class='alert-title'>" . __(
+                                "You must add a description. it's mandatory",
+                                'behaviors'
+                            ) . "</h4>";
+                    }
+                    if ($config->getField('is_ticketsolutiontype_mandatory') && count($warnings) == 0) {
+                        echo "<h4 class='alert-title'>" . __(
+                                "You must add a solution type. it's mandatory",
+                                'behaviors'
+                            ) . "</h4>";
+                    }
+                    if (is_array($warnings) && count($warnings)) {
+                        echo "<h4 class='alert-title'>" . __('You cannot resolve the ticket', 'behaviors') . " :</h4>";
+                        echo "<div class='text-muted'>" . implode('</div><div>', $warnings) . "</div>";
+                    }
                     echo "</div>";
 
                     echo "</div>";
@@ -424,12 +441,12 @@ class PluginBehaviorsCommon extends CommonGLPI
                     echo "<div class='d-flex'>";
 
                     echo "<div class='me-2'>";
-                    echo "<i class='fa fa-exclamation-triangle fa-2x'></i>";
+                    echo "<i class='fas fa-exclamation-triangle fa-2x' style='color:orange'></i>";
                     echo "</div>";
 
                     echo "<div>";
                     echo "<h4 class='alert-title'>" . __(
-                            "Task category is mandatory in a task",
+                            "You must define a category. it's mandatory",
                             'behaviors'
                         ) . "</h4>";
                     echo "</div>";

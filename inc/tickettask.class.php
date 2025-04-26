@@ -60,7 +60,7 @@ class PluginBehaviorsTicketTask
                 $taskticket->input = false;
                 Session::addMessageAfterRedirect(
                     __(
-                        "Task category is mandatory in a task",
+                        "You must define a category. it's mandatory",
                         'behaviors'
                     ),
                     true,
@@ -98,7 +98,7 @@ class PluginBehaviorsTicketTask
                 $taskticket->input = false;
                 Session::addMessageAfterRedirect(
                     __(
-                        "Task category is mandatory in a task",
+                        "You must define a category. it's mandatory",
                         'behaviors'
                     ),
                     true,
