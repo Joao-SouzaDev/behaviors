@@ -472,8 +472,41 @@ class PluginBehaviorsCommon extends CommonGLPI
         if (isset($params['item'])) {
             $item = $params['item'];
             if ($item->getType() == 'ITILSolution') {
+//                $options = $params['options'];
+//                $config = PluginBehaviorsConfig::getInstance();
+//                if ($config->getField('is_ticketrealtime_mandatory')) {
+//                    $ticket = $options['item'];
+//                    echo "<div class='row mx-n3 mx-xxl-auto'>";
+//                    echo "<div class='col-12 mb-3'>";
+//                    echo __('Duration');
+//                    echo "&nbsp;<span style='color:red'>*</span>&nbsp;";
+//
+//                    $rand = mt_rand();
+//                    echo "<span id='duration_solution_" . $rand . $ticket->fields['id'] . "'>";
+//                    $toadd = [];
+//                    for ($i = 9; $i <= 100; $i++) {
+//                        $toadd[] = $i * HOUR_TIMESTAMP;
+//                    }
+//                    echo Html::scriptBlock(
+//                        "function showsolutionbutton(){
+//                                 $('.itilsolution').children().find(':submit').show();
+//                              }"
+//                    );
+//
+//                    Dropdown::showTimeStamp("duration_solution", [
+//                        'min' => 0,
+//                        'max' => 8 * HOUR_TIMESTAMP,
+//                        'inhours' => true,
+//                        'toadd' => $toadd,
+//                        'on_change' => 'showsolutionbutton();'
+//                    ]);
+//
+//                    echo "</span>";
+//                    echo "</div>";
+//                    echo "</div>";
+//                }
                 $warnings = self::checkWarnings($params);
-                if (is_array($warnings) && count($warnings)) {
+                if (is_array($warnings) && count($warnings) > 0) {
                     echo Html::scriptBlock(
                         "$(document).ready(function(){
                         $('.itilsolution').children().find(':submit').hide();

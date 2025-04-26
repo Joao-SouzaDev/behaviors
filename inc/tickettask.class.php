@@ -56,7 +56,8 @@ class PluginBehaviorsTicketTask
 
         // Wand to solve/close the ticket
         if ($config->getField('is_tickettaskcategory_mandatory')) {
-            if ($taskticket->input['taskcategories_id'] == 0) {
+            if (!isset($taskticket->input['taskcategories_id'])
+                || $taskticket->input['taskcategories_id'] == 0) {
                 $taskticket->input = false;
                 Session::addMessageAfterRedirect(
                     __(
