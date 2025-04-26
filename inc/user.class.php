@@ -31,45 +31,78 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsUser {
+class PluginBehaviorsUser
+{
 
 
-   static private function getUserGroup ($entity, $userid, $filter='', $first=true) {
-      global $DB;
+    /**
+     * @param $entity
+     * @param $userid
+     * @param $filter
+     * @param $first
+     * @return array|int|mixed
+     */
+    static private function getUserGroup($entity, $userid, $filter = '', $first = true)
+    {
+        global $DB;
 
-      $config = PluginBehaviorsConfig::getInstance();
-      $dbu    = new DbUtils();
+        $config = PluginBehaviorsConfig::getInstance();
+        $dbu = new DbUtils();
 
-      $where = '';
-      if ($filter) {
-         $where = $filter;
-      }
-      $query = ['FIELDS'     => ['glpi_groups' => ['id']],
-                'FROM'       => 'glpi_groups_users',
-                'INNER JOIN' => ['glpi_groups' => ['FKEY' => ['glpi_groups' => 'id',
-                                                              'glpi_groups_users' => 'groups_id']]],
-                'WHERE'      => ['users_id' => $userid,
-                                 $dbu->getEntitiesRestrictCriteria('glpi_groups','', $entity, true),
-                                 $where]];
+        $where = '';
+        if ($filter) {
+            $where = $filter;
+        }
+        $query = [
+            'FIELDS' => ['glpi_groups' => ['id']],
+            'FROM' => 'glpi_groups_users',
+            'INNER JOIN' => [
+                'glpi_groups' => [
+                    'FKEY' => [
+                        'glpi_groups' => 'id',
+                        'glpi_groups_users' => 'groups_id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'users_id' => $userid,
+                $dbu->getEntitiesRestrictCriteria('glpi_groups', '', $entity, true),
+                $where
+            ]
+        ];
 
-      $rep = [];
-      foreach ($DB->request($query) as $data) {
-         if ($first) {
-            return $data['id'];
-         }
-         $rep[] = $data['id'];
-      }
-      return ($first ? 0 : $rep);
-   }
+        $rep = [];
+        foreach ($DB->request($query) as $data) {
+            if ($first) {
+                return $data['id'];
+            }
+            $rep[] = $data['id'];
+        }
+        return ($first ? 0 : $rep);
+    }
 
 
-   static function getRequesterGroup ($entity, $userid, $first=true) {
-      return self::getUserGroup($entity, $userid, '`is_requester`', $first);
-   }
+    /**
+     * @param $entity
+     * @param $userid
+     * @param $first
+     * @return array|int|mixed
+     */
+    static function getRequesterGroup($entity, $userid, $first = true)
+    {
+        return self::getUserGroup($entity, $userid, '`is_requester`', $first);
+    }
 
 
-   static function getTechnicianGroup ($entity, $userid, $first=true) {
-      return self::getUserGroup($entity, $userid, '`is_assign`', $first);
-   }
+    /**
+     * @param $entity
+     * @param $userid
+     * @param $first
+     * @return array|int|mixed
+     */
+    static function getTechnicianGroup($entity, $userid, $first = true)
+    {
+        return self::getUserGroup($entity, $userid, '`is_assign`', $first);
+    }
 
 }

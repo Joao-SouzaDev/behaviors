@@ -465,7 +465,7 @@ class PluginBehaviorsConfig extends CommonDBTM
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<th colspan='2' class='center'>" . __('Adding the ticket solution');
+        echo "<th colspan='2' class='center'>" . __('Adding the ticket solution', 'behaviors');
         echo "</th>";
         echo "<th colspan='2' class='center'>" . __('Comments');
         echo "</th>";
