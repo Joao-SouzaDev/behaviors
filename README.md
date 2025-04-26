@@ -1,6 +1,13 @@
+
+## FRENCH
 ********************
-***** FRANCAIS *****
-********************
+
+Cette extension permet d'ajouter des comportements optionnels à GLPI.
+<br />- champs obligatoires
+<br />- affectation groupe du demandeur / groupe du technicien
+<br />- format des numéros de tickets
+<br />- nouveaux évènements dans les notifications
+<br />- cloner les profils / notifications
 
 Ce projet est sur Transifex - Aidez nous à le traduire dans votre langue
 
@@ -13,9 +20,15 @@ Pour corriger ce problème, vous devez passer le script migrationFor2022.php.
 Ce problème est corrigé dans le coeur de GLPI à compter de la version 9.5.7
 
 
+## ENGLISH
 ********************
-***** ENGLISH *****
-********************
+
+This plugin allows you to add optional behaviors to GLPI.
+<br />- mandatory fields
+<br />- add requester's group / technician's group
+<br />- ticket's number format
+<br />- new events in notifications
+br />- clone profiles / notifications
 
 This project in on Transifex - Help up to translate it in your language
 
