@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Behaviors plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-25 17:37+0000\n"
+"POT-Creation-Date: 2025-04-26 07:47+0000\n"
 "PO-Revision-Date: 2025-04-26 07:42+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2025\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/250760/fr_FR/)\n"
@@ -215,6 +215,10 @@ msgid "Block the solving/closing of a change if task do to"
 msgstr ""
 "Empêcher la résolution/fermeture d'un changement avec des tâches au statut A"
 " faire"
+
+#: inc/config.class.php:468
+msgid "Adding the ticket solution"
+msgstr "A l'ajout de la solution"
 
 #: inc/config.class.php:529 inc/itilsolution.class.php:80
 #: inc/itilsolution.class.php:289 inc/ticket.class.php:889
