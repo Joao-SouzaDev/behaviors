@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Behaviors plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-26 09:05+0000\n"
+"POT-Creation-Date: 2025-04-26 09:26+0000\n"
 "PO-Revision-Date: 2025-04-26 07:42+0000\n"
 "Last-Translator: Xavier CAILLAUD <thetsmr@gmail.com>, 2025\n"
 "Language-Team: French (France) (https://app.transifex.com/infotelGLPI/teams/250760/fr_FR/)\n"
@@ -86,14 +86,22 @@ msgid "You cannot solve/close a problem with task do to"
 msgstr ""
 "Impossible de résoudre/fermer un problème avec des tâches au statut A faire"
 
-#: inc/common.class.php:410
+#: inc/common.class.php:415
+msgid "You must add a description. it's mandatory"
+msgstr "Vous devez ajouter un description. C'est obligatoire"
+
+#: inc/common.class.php:421
+msgid "You must add a solution type. it's mandatory"
+msgstr "Vous devez ajouter un type de solution. C'est obligatoire"
+
+#: inc/common.class.php:426
 msgid "You cannot resolve the ticket"
 msgstr "Vous ne pouvez pas résoudre ce ticket"
 
-#: inc/common.class.php:432 inc/config.class.php:391
-#: inc/tickettask.class.php:63 inc/tickettask.class.php:101
-msgid "Task category is mandatory in a task"
-msgstr "Catégorie obligatoire dans une tâche"
+#: inc/common.class.php:449 inc/tickettask.class.php:63
+#: inc/tickettask.class.php:101
+msgid "You must define a category. it's mandatory"
+msgstr "Vous devez définir une catégorie. C'est obligatoire"
 
 #: inc/config.class.php:126
 msgid "Error in creating glpi_plugin_behaviors_configs"
@@ -170,6 +178,10 @@ msgstr "dans l'entité active"
 #: inc/config.class.php:374
 msgid "In the item's entity"
 msgstr "dans l'entité de l'objet"
+
+#: inc/config.class.php:391
+msgid "Task category is mandatory in a task"
+msgstr "Catégorie obligatoire dans une tâche"
 
 #: inc/config.class.php:398 inc/itilsolution.class.php:186
 #: inc/problem.class.php:79
