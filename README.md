@@ -1,6 +1,5 @@
 
 ## FRENCH
-********************
 
 Cette extension permet d'ajouter des comportements optionnels à GLPI.
 <br />- champs obligatoires
@@ -21,7 +20,6 @@ Ce problème est corrigé dans le coeur de GLPI à compter de la version 9.5.7
 
 
 ## ENGLISH
-********************
 
 This plugin allows you to add optional behaviors to GLPI.
 <br />- mandatory fields
