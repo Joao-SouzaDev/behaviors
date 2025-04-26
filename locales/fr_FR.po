@@ -200,7 +200,7 @@ msgstr "Utilisateur ou groupe unique"
 
 #: inc/config.class.php:432
 msgid "Technician assignment when adding follow up"
-msgstr "Ajout du technicien connecté à l'ajout d'un suivi"
+msgstr "Affectation du technicien à l'ajout d'un suivi"
 
 #: inc/config.class.php:438
 msgid "Change's number format"
