@@ -37,7 +37,6 @@ class PluginBehaviorsConfig extends CommonDBTM
     static private $_instance = null;
     static $rightname = 'config';
 
-
     static function canCreate()
     {
         return Session::haveRight('config', UPDATE);
@@ -109,7 +108,6 @@ class PluginBehaviorsConfig extends CommonDBTM
                      `is_problemsolutiontype_mandatory` tinyint NOT NULL default '0',
                      `remove_from_ocs` tinyint NOT NULL default '0',
                      `add_notif` tinyint NOT NULL default '0',
-                     `use_lock` tinyint NOT NULL default '0',
                      `single_tech_mode` int $default_key_sign NOT NULL default '0',
                      `myasset` tinyint NOT NULL default '0',
                      `groupasset` tinyint NOT NULL default '0',
@@ -263,6 +261,7 @@ class PluginBehaviorsConfig extends CommonDBTM
 
             //version 2.7.6
             $mig->dropField($table, 'is_requester_mandatory');
+            $mig->dropField($table, 'use_lock');
         }
     }
 
@@ -414,13 +413,6 @@ class PluginBehaviorsConfig extends CommonDBTM
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Protect from simultaneous update', 'behaviors') . "</td><td>";
-        Dropdown::showYesNo("use_lock", $config->fields['use_lock']);
-        echo "</td>";
-        echo "<th colspan=2' class='center'>" . __('New change');
-        echo "</th></tr>";
-
-        echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Single technician and group', 'behaviors') . "</td><td>";
         $tab = [
             0 => __('No'),
@@ -432,6 +424,15 @@ class PluginBehaviorsConfig extends CommonDBTM
             $tab,
             ['value' => $config->fields['single_tech_mode']]
         );
+        echo "</td>";
+        echo "<th colspan=2' class='center'>" . __('New change');
+        echo "</th></tr>";
+
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Technician assignment when adding follow up', 'behaviors');
+        echo "</td>";
+        echo "<td>";
+        Dropdown::showYesNo("addfup_updatetech", $config->fields['addfup_updatetech']);
         echo "</td>";
 
         echo "<td>" . __("Change's number format", "behaviors") . "</td><td width='20%'>";
@@ -447,29 +448,10 @@ class PluginBehaviorsConfig extends CommonDBTM
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td></td>";
-        echo "<td></td>";
-        echo "<th colspan=2' class='center'>" . __('Update of a change');
-        echo "</th></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Technician assignment when adding follow up', 'behaviors');
-        echo "</td>";
-        echo "<td>";
-        Dropdown::showYesNo("addfup_updatetech", $config->fields['addfup_updatetech']);
-        echo "</td>";
-
-        echo "<td>" . __('Block the solving/closing of a change if task do to', 'behaviors');
-        echo "</td><td>";
-        Dropdown::showYesNo("is_changetasktodo", $config->fields['is_changetasktodo']);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
         echo "<th colspan='2' class='center'>" . __('Adding the ticket solution', 'behaviors');
         echo "</th>";
-        echo "<th colspan='2' class='center'>" . __('Comments');
-        echo "</th>";
-        echo "</tr>\n";
+        echo "<th colspan=2' class='center'>" . __('Update of a change');
+        echo "</th></tr>";
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Technician assigned is mandatory before ticket is solved/closed', 'behaviors');
@@ -481,14 +463,9 @@ class PluginBehaviorsConfig extends CommonDBTM
         );
         echo "</td>";
 
-        echo "<td rowspan='7' colspan='2' class='center'>";
-        Html::textarea([
-            'name' => 'comment',
-            'value' => $config->fields['comment'],
-            'cols' => '60',
-            'rows' => '12',
-            'enable_ricktext' => false
-        ]);
+        echo "<td>" . __('Block the solving/closing of a change if task do to', 'behaviors');
+        echo "</td><td>";
+        Dropdown::showYesNo("is_changetasktodo", $config->fields['is_changetasktodo']);
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
@@ -503,7 +480,10 @@ class PluginBehaviorsConfig extends CommonDBTM
             $config->fields['is_tickettechgroup_mandatory']
         );
         echo "</td>";
-        echo "</tr>";
+
+        echo "<th colspan='2' class='center'>" . __('Comments');
+        echo "</th>";
+        echo "</tr>\n";
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Category is mandatory before ticket is solved/closed', 'behaviors') . "</td><td>";
@@ -512,7 +492,16 @@ class PluginBehaviorsConfig extends CommonDBTM
             $config->fields['is_ticketcategory_mandatory']
         );
         echo "</td>";
-        echo "</tr>";
+
+        echo "<td rowspan='7' colspan='2' class='center'>";
+        Html::textarea([
+            'name' => 'comment',
+            'value' => $config->fields['comment'],
+            'cols' => '60',
+            'rows' => '12',
+            'enable_ricktext' => false
+        ]);
+        echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Location is mandatory before ticket is solved/closed', 'behaviors');
@@ -537,6 +526,7 @@ class PluginBehaviorsConfig extends CommonDBTM
         );
         echo "</td>";
         echo "</tr>";
+
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Type of solution is mandatory before ticket is solved/closed', 'behaviors');
@@ -642,6 +632,24 @@ class PluginBehaviorsConfig extends CommonDBTM
     }
 
 
+    public function post_updateItem($history = 1)
+    {
+        $updates = $this->updates;
+        if (($key = array_search('date_mod', $updates)) !== false) {
+            unset($updates[$key]);
+        }
+
+        foreach ($updates as $update) {
+            if (isset($this->fields[$update])) {
+                $oldvalue = $this->oldvalues[$update];
+                $newvalue = $this->fields[$update];
+
+                $configGLPI = new Config();
+                Log::constructHistory($configGLPI, ['value' => $update.' '.$oldvalue], ['value' => $update.' '.$newvalue]);
+            }
+        }
+    }
+
     /**
      * Restrict visibility rights
      *
@@ -651,7 +659,7 @@ class PluginBehaviorsConfig extends CommonDBTM
      */
     static function add_default_where($item)
     {
-        global $DB, $CFG_GLPI;;
+        global $CFG_GLPI;;
 
         $condition = "";
         list($itemtype, $condition) = $item;

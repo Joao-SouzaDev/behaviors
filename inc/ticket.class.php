@@ -833,20 +833,6 @@ class PluginBehaviorsTicket
             }
         }
 
-        if (isset($ticket->input['_read_date_mod'])
-            && $config->getField('use_lock')
-            && ($ticket->input['_read_date_mod'] != $ticket->fields['date_mod'])) {
-            $msg = sprintf(
-                __('%1$s (%2$s)'),
-                __("Can't save, item have been updated", "behaviors"),
-                $dbu->getUserName($ticket->fields['users_id_lastupdater']) . ', ' .
-                Html::convDateTime($ticket->fields['date_mod'])
-            );
-
-            Session::addMessageAfterRedirect($msg, true, ERROR);
-            return $ticket->input = false;
-        }
-
         if (isset($ticket->input['status'])
             && in_array(
                 $ticket->input['status'],
