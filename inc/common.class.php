@@ -410,13 +410,13 @@ class PluginBehaviorsCommon extends CommonGLPI
                     echo "</div>";
 
                     echo "<div>";
-                    if ($config->getField('is_ticketsolution_mandatory') && count($warnings) == 0) {
+                    if ($config->getField('is_ticketsolution_mandatory') && is_array($warnings) && count($warnings) == 0) {
                         echo "<h4 class='alert-title'>" . __(
                                 "You must add a description. it's mandatory",
                                 'behaviors'
                             ) . "</h4>";
                     }
-                    if ($config->getField('is_ticketsolutiontype_mandatory') && count($warnings) == 0) {
+                    if ($config->getField('is_ticketsolutiontype_mandatory') && is_array($warnings) && count($warnings) == 0) {
                         echo "<h4 class='alert-title'>" . __(
                                 "You must add a solution type. it's mandatory",
                                 'behaviors'
@@ -432,7 +432,7 @@ class PluginBehaviorsCommon extends CommonGLPI
 
                     echo "</div>";
                 }
-                return $params;
+
             } elseif ($item->getType() == 'TicketTask') {
                 $config = PluginBehaviorsConfig::getInstance();
                 if ($config->getField('is_tickettaskcategory_mandatory')) {
@@ -457,6 +457,7 @@ class PluginBehaviorsCommon extends CommonGLPI
                 }
             }
         }
+        return $params;
     }
 
 
