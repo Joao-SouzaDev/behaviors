@@ -42,18 +42,21 @@ class PluginBehaviorsITILFollowup
     {
         $ticket = new Ticket();
         $config = PluginBehaviorsConfig::getInstance();
+
         if ($ticket->getFromDB($fup->input['items_id'])
             && $fup->input['itemtype'] == 'Ticket') {
             if ($config->getField('addfup_updatetech')
                 && Session::haveRight('ticket', UPDATE)) {
+
                 $ticket_user = new Ticket_User();
                 $ticket_user->getFromDBByCrit([
                     'tickets_id' => $ticket->getID(),
                     'type' => CommonITILActor::ASSIGN
                 ]);
 
-                if (isset($ticket_user->fields['users_id'])
-                    && ($ticket_user->fields['users_id'] <> Session::getLoginUserID())) {
+                if (!isset($ticket_user->fields['users_id'])
+                    || (isset($ticket_user->fields['users_id'])
+                    && $ticket_user->fields['users_id'] <> Session::getLoginUserID())) {
                     $group_ticket = new Group_Ticket();
                     $group_ticket->getFromDBByCrit([
                         'tickets_id' => $ticket->getID(),
@@ -66,7 +69,7 @@ class PluginBehaviorsITILFollowup
                         $users[$user['id']] = $user['id'];
                     }
 
-                    if (!in_array(Session::getLoginUserID(), $users)) {
+                    if (in_array(Session::getLoginUserID(), $users)) {
                         $ticket_user = new Ticket_User();
                         $ticket_user->add([
                             'tickets_id' => $ticket->getID(),
