@@ -366,6 +366,7 @@ class PluginBehaviorsITILSolution
         $config = PluginBehaviorsConfig::getInstance();
         if ($ticket->getFromDB($soluce->input['items_id'])
             && $soluce->input['itemtype'] == 'Ticket') {
+
             if ($config->getField('ticketsolved_updatetech')) {
                 $ticket_user = new Ticket_User();
                 $ticket_user->getFromDBByCrit([
@@ -373,8 +374,9 @@ class PluginBehaviorsITILSolution
                     'type' => CommonITILActor::ASSIGN
                 ]);
 
-                if (isset($ticket_user->fields['users_id'])
-                    && ($ticket_user->fields['users_id'] != Session::getLoginUserID())) {
+                if (!isset($ticket_user->fields['users_id'])
+                    || (isset($ticket_user->fields['users_id'])
+                        && $ticket_user->fields['users_id'] <> Session::getLoginUserID())) {
                     $ticket_user->add([
                         'tickets_id' => $ticket->getID(),
                         'users_id' => Session::getLoginUserID(),
