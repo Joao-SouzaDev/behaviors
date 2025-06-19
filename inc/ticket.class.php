@@ -399,7 +399,8 @@ class PluginBehaviorsTicket
         }
 
         if ($config->getField('use_requester_user_group') > 0) {
-            if (!isset($ticket->input['_groups_id_requester'])) {
+            if (!isset($ticket->input['_groups_id_requester'])
+                || $ticket->input['_groups_id_requester'] == 0) {
                 $requesters = self::useRequesterUserGroup($ticket->input);
                 if (isset($ticket->input['_actors']['requester'])) {
                     $ticket->input['_actors']['requester'] = array_merge(
@@ -413,7 +414,8 @@ class PluginBehaviorsTicket
         }
 
         if ($config->getField('use_assign_user_group') > 0) {
-            if (!isset($ticket->input['_groups_id_assign'])) {
+            if (!isset($ticket->input['_groups_id_assign'])
+                || $ticket->input['_groups_id_assign'] == 0) {
                 $assigns = self::useAssignTechGroup($ticket->input);
                 $ticket->input['_actors']['assign'] = self::removeDuplicates($assigns);
             }
