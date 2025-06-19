@@ -408,7 +408,9 @@ class PluginBehaviorsTicket
                         $requesters
                     );
                 } else {
-                    $ticket->input['_actors']['requester'] = $requesters;
+                    if ($requesters !== NULL) {
+                        $ticket->input['_actors']['requester'] = $requesters;
+                    }
                 }
             }
         }
@@ -417,7 +419,9 @@ class PluginBehaviorsTicket
             if (!isset($ticket->input['_groups_id_assign'])
                 || $ticket->input['_groups_id_assign'] == 0) {
                 $assigns = self::useAssignTechGroup($ticket->input);
-                $ticket->input['_actors']['assign'] = self::removeDuplicates($assigns);
+                if ($assigns !== NULL) {
+                    $ticket->input['_actors']['assign'] = self::removeDuplicates($assigns);
+                }
             }
         }
 
@@ -534,6 +538,32 @@ class PluginBehaviorsTicket
             $actors_requester = [];
             if (isset($input['_actors']['requester'])) {
                 $actors_requester = $input['_actors']['requester'];
+            }
+
+            if (isset($ticket->input['_mailgate']) && $ticket->input['_mailgate'] > 0) {
+                if (isset($ticket->input['_users_id_requester_notif']['alternative_email'][0])) {
+                    $email = $ticket->input['_users_id_requester_notif']['alternative_email'][0];
+                    $condition = [
+                        'glpi_users.is_active'  => 1,
+                        'glpi_users.is_deleted' => 0, [
+                            'OR' => [
+                                ['glpi_users.begin_date' => null],
+                                ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]]
+                            ],
+                        ], [
+                            'OR'  => [
+                                ['glpi_users.end_date'   => null],
+                                ['glpi_users.end_date'   => ['>', new QueryExpression('NOW()')]]
+                            ]
+                        ]
+                    ];
+                    $user = new User();
+                    if ($user->getFromDBbyEmail($email, $condition)) {
+                        $input['_users_id_requester'] = $user->getID;
+                    } else {
+                        return $input;
+                    }
+                }
             }
 
             //for simplified interface or mailgate

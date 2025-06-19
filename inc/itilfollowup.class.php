@@ -42,12 +42,10 @@ class PluginBehaviorsITILFollowup
     {
         $ticket = new Ticket();
         $config = PluginBehaviorsConfig::getInstance();
-
         if ($ticket->getFromDB($fup->input['items_id'])
             && $fup->input['itemtype'] == 'Ticket') {
             if ($config->getField('addfup_updatetech')
                 && Session::haveRight('ticket', UPDATE)) {
-
                 $ticket_user = new Ticket_User();
                 $ticket_user->getFromDBByCrit([
                     'tickets_id' => $ticket->getID(),
