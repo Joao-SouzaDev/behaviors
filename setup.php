@@ -31,7 +31,7 @@
  * --------------------------------------------------------------------------
  */
 
-define('PLUGIN_BEHAVIORS_VERSION', '2.7.5');
+define('PLUGIN_BEHAVIORS_VERSION', '2.7.6');
 // Init the hooks of the plugins -Needed
 function plugin_init_behaviors()
 {
@@ -121,7 +121,7 @@ function plugin_version_behaviors()
         'requirements' => [
             'glpi' => [
                 'min' => '10.0.5',
-                'max' => '10.1.0'
+                'max' => '11.0.0'
             ]
         ]
     ];
