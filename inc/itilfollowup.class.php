@@ -55,20 +55,50 @@ class PluginBehaviorsITILFollowup
                 if (!isset($ticket_user->fields['users_id'])
                     || (isset($ticket_user->fields['users_id'])
                     && $ticket_user->fields['users_id'] <> Session::getLoginUserID())) {
+
                     $group_ticket = new Group_Ticket();
                     $group_ticket->getFromDBByCrit([
                         'tickets_id' => $ticket->getID(),
                         'type' => CommonITILActor::ASSIGN
                     ]);
+                    if (count($group_ticket->fields) > 0) {
+                        if (isset($group_ticket->fields['groups_id'])) {
+                            $usergroup = Group_User::getGroupUsers($group_ticket->fields['groups_id']);
+                            $users = [];
+                            foreach ($usergroup as $user) {
+                                $users[$user['id']] = $user['id'];
+                            }
 
-                    $usergroup = Group_User::getGroupUsers($group_ticket->fields['groups_id']);
-                    $users = [];
-                    foreach ($usergroup as $user) {
-                        $users[$user['id']] = $user['id'];
-                    }
+                            if (in_array(Session::getLoginUserID(), $users)) {
 
-                    if (in_array(Session::getLoginUserID(), $users)) {
-                        $ticket_user = new Ticket_User();
+                                if (isset($ticket_user->fields['users_id'])) {
+                                    Toolbox::logInfo($ticket_user->fields['users_id']);
+                                    $ticket_user_delete = new Ticket_User();
+                                    $ticket_user_delete->deleteByCriteria([
+                                        'tickets_id' => $ticket->getID(),
+                                        'users_id' => $ticket_user->fields['users_id'],
+                                        'type' => CommonITILActor::ASSIGN
+                                    ]);
+                                }
+
+                                $ticket_user = new Ticket_User();
+                                $ticket_user->add([
+                                    'tickets_id' => $ticket->getID(),
+                                    'users_id' => Session::getLoginUserID(),
+                                    'type' => CommonITILActor::ASSIGN
+                                ]);
+                            }
+                        }
+                    } else {
+                        if (isset($ticket_user->fields['users_id'])) {
+                            $ticket_user_delete = new Ticket_User();
+                            $ticket_user_delete->deleteByCriteria([
+                                'tickets_id' => $ticket->getID(),
+                                'users_id' => $ticket_user->fields['users_id'],
+                                'type' => CommonITILActor::ASSIGN
+                            ]);
+                        }
+
                         $ticket_user->add([
                             'tickets_id' => $ticket->getID(),
                             'users_id' => Session::getLoginUserID(),
