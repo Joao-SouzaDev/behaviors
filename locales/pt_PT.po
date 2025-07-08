@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI - Behaviors plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-26 08:16+0000\n"
+"POT-Creation-Date: 2025-07-08 16:14+0000\n"
 "PO-Revision-Date: 2025-04-26 07:42+0000\n"
 "Last-Translator: André Petinga <andre.petinga@ipleiria.pt>, 2025\n"
 "Language-Team: Portuguese (Portugal) (https://app.transifex.com/infotelGLPI/teams/250760/pt_PT/)\n"
@@ -48,23 +48,23 @@ msgid "Clone of"
 msgstr "Clone de"
 
 #: inc/common.class.php:305 inc/config.class.php:560
-#: inc/itilsolution.class.php:93 inc/ticket.class.php:940
+#: inc/itilsolution.class.php:93 inc/ticket.class.php:932
 msgid "Duration is mandatory before ticket is solved/closed"
 msgstr "Duração é obrigatória antes de concluir/fechar o ticket"
 
 #: inc/common.class.php:310 inc/config.class.php:507
-#: inc/itilsolution.class.php:165 inc/ticket.class.php:953
+#: inc/itilsolution.class.php:165 inc/ticket.class.php:945
 msgid "Category is mandatory before ticket is solved/closed"
 msgstr "A categoria é obrigatória antes de concluir/fechar o ticket"
 
 #: inc/common.class.php:318 inc/config.class.php:459
-#: inc/itilsolution.class.php:179 inc/ticket.class.php:968
+#: inc/itilsolution.class.php:179 inc/ticket.class.php:960
 msgid "Technician assigned is mandatory before ticket is solved/closed"
 msgstr ""
 "É obrigatório ter um Técnico atribuído antes de concluir/fechar o ticket"
 
 #: inc/common.class.php:327 inc/config.class.php:485
-#: inc/itilsolution.class.php:192 inc/ticket.class.php:982
+#: inc/itilsolution.class.php:192 inc/ticket.class.php:974
 msgid ""
 "Group of technicians assigned is mandatory before ticket is solved/closed"
 msgstr ""
@@ -72,12 +72,12 @@ msgstr ""
 "ticket"
 
 #: inc/common.class.php:335 inc/config.class.php:516
-#: inc/itilsolution.class.php:205 inc/ticket.class.php:995
+#: inc/itilsolution.class.php:205 inc/ticket.class.php:987
 msgid "Location is mandatory before ticket is solved/closed"
 msgstr "A localização é obrigatória antes de concluir/fechar o ticket"
 
 #: inc/common.class.php:347 inc/itilsolution.class.php:224
-#: inc/ticket.class.php:1013
+#: inc/ticket.class.php:1005
 msgid "You cannot solve/close a ticket with task do to"
 msgstr "Não pode concluir/fechar o ticket com tarefas por concluir"
 
@@ -161,7 +161,7 @@ msgstr[2] "Notificações"
 msgid "Additional notifications"
 msgstr "Notificações adicionais"
 
-#: inc/config.class.php:362 inc/ticket.class.php:1036
+#: inc/config.class.php:362 inc/ticket.class.php:1028
 msgid "Category is mandatory when you assign a ticket"
 msgstr "A categoria é obrigatória quando se assigna o ticket"
 
@@ -233,12 +233,12 @@ msgid "Set the solution writer as the technician of the ticket"
 msgstr "Atribuir a autoria da solução ao técnico do ticket"
 
 #: inc/config.class.php:528 inc/itilsolution.class.php:80
-#: inc/itilsolution.class.php:348 inc/ticket.class.php:915
+#: inc/itilsolution.class.php:348 inc/ticket.class.php:907
 msgid "Description of solution is mandatory before ticket is solved/closed"
 msgstr "Descrição da solução é obrigatória antes de concluir/fechar o ticket"
 
 #: inc/config.class.php:542 inc/itilsolution.class.php:67
-#: inc/itilsolution.class.php:333 inc/ticket.class.php:903
+#: inc/itilsolution.class.php:333 inc/ticket.class.php:895
 msgid "Type of solution is mandatory before ticket is solved/closed"
 msgstr "Tipo da solução é obrigatório antes de concluir/fechar o ticket"
 
@@ -294,10 +294,6 @@ msgstr "Supervisor do último grupo atribuído"
 #: inc/ticket.class.php:134
 msgid "Last group assigned without supersivor"
 msgstr "Último grupo atribuído sem supervisor"
-
-#: inc/ticket.class.php:867
-msgid "You cannot change open date of the ticket"
-msgstr "Não pode alterar a data de abertura do ticket"
 
 #: inc/tickettask.class.php:123
 msgid "You cannot change status of a task in a solved ticket"
