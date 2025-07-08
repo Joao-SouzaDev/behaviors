@@ -72,7 +72,6 @@ class PluginBehaviorsITILFollowup
                             if (in_array(Session::getLoginUserID(), $users)) {
 
                                 if (isset($ticket_user->fields['users_id'])) {
-                                    Toolbox::logInfo($ticket_user->fields['users_id']);
                                     $ticket_user_delete = new Ticket_User();
                                     $ticket_user_delete->deleteByCriteria([
                                         'tickets_id' => $ticket->getID(),
