@@ -858,18 +858,10 @@ class PluginBehaviorsTicket
             || !Session::haveRight('ticket', UPDATE)) {
             return false; // No check
         }
-
+        
         if (isset($ticket->input['date'])) {
             if ($config->getField('is_ticketdate_locked')) {
                 unset($ticket->input['date']);
-                Session::addMessageAfterRedirect(
-                    __(
-                        "You cannot change open date of the ticket",
-                        'behaviors'
-                    ),
-                    true,
-                    ERROR
-                );
             }
         }
 
