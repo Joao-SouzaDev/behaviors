@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,13 +34,11 @@
 
 class PluginBehaviorsComputer extends PluginBehaviorsCommon
 {
-
-
     /**
      * @param Computer $comp
      * @return void
      */
-    static function beforePurge(Computer $comp)
+    public static function beforePurge(Computer $comp)
     {
         $config = PluginBehaviorsConfig::getInstance();
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,14 +34,10 @@
 
 class PluginBehaviorsTicketSatisfaction
 {
-
-
     /**
      * @param TicketSatisfaction $ticketsatisfaction
      * @return void
      */
-    static function afterUpdate(TicketSatisfaction $ticketsatisfaction)
-    {
-    }
+    public static function afterUpdate(TicketSatisfaction $ticketsatisfaction) {}
 
 }

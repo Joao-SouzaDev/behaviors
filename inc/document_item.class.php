@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,13 +34,11 @@
 
 class PluginBehaviorsDocument_Item
 {
-
-
     /**
      * @param NotificationTargetTicket $target
      * @return void
      */
-    static function addEvents(NotificationTargetTicket $target)
+    public static function addEvents(NotificationTargetTicket $target)
     {
         $config = PluginBehaviorsConfig::getInstance();
 
@@ -48,17 +47,17 @@ class PluginBehaviorsDocument_Item
 
             $target->events['plugin_behaviors_document_itemnew']
                 = sprintf(
-                __('%1$s - %2$s'),
-                __('Behaviours', 'behaviors'),
-                __('Add document to ticket', 'behaviors')
-            );
+                    __('%1$s - %2$s'),
+                    __('Behaviours', 'behaviors'),
+                    __('Add document to ticket', 'behaviors')
+                );
 
             $target->events['plugin_behaviors_document_itemdel']
                 = sprintf(
-                __('%1$s - %2$s'),
-                __('Behaviours', 'behaviors'),
-                __('Delete document to ticket', 'behaviors')
-            );
+                    __('%1$s - %2$s'),
+                    __('Behaviours', 'behaviors'),
+                    __('Delete document to ticket', 'behaviors')
+                );
         }
     }
 
@@ -67,7 +66,7 @@ class PluginBehaviorsDocument_Item
      * @param Document_Item $document_item
      * @return void
      */
-    static function afterAdd(Document_Item $document_item)
+    public static function afterAdd(Document_Item $document_item)
     {
         $config = PluginBehaviorsConfig::getInstance();
         if ($config->getField('add_notif')
@@ -87,19 +86,17 @@ class PluginBehaviorsDocument_Item
      * @param Document_Item $document_item
      * @return void
      */
-    static function afterPurge(Document_Item $document_item)
+    public static function afterPurge(Document_Item $document_item)
     {
         $config = PluginBehaviorsConfig::getInstance();
         if ($config->getField('add_notif')
             && (isset($document_item->input['itemtype']))
             && ($document_item->fields['itemtype'] == 'Ticket')
             && isset($_POST['item'])) { // prevent not use in case of purge ticket
-
             $ticket = new Ticket();
             $ticket->getFromDB($document_item->fields['items_id']);
 
             NotificationEvent::raiseEvent('plugin_behaviors_document_itemdel', $ticket);
         }
     }
-
 }

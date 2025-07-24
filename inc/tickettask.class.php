@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,12 +34,11 @@
 
 class PluginBehaviorsTicketTask
 {
-
     /**
      * @param TicketTask $taskticket
      * @return false|void
      */
-    static function beforeAdd(TicketTask $taskticket)
+    public static function beforeAdd(TicketTask $taskticket)
     {
         if (!is_array($taskticket->input) || !count($taskticket->input)) {
             // Already cancel by another plugin
@@ -77,7 +77,7 @@ class PluginBehaviorsTicketTask
      * @param TicketTask $taskticket
      * @return false|void
      */
-    static function beforeUpdate(TicketTask $taskticket)
+    public static function beforeUpdate(TicketTask $taskticket)
     {
         if (!is_array($taskticket->input) || !count($taskticket->input)) {
             // Already cancel by another plugin

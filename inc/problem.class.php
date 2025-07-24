@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,12 +34,11 @@
 
 class PluginBehaviorsProblem
 {
-
     /**
      * @param Problem $problem
      * @return false|void
      */
-    static function beforeUpdate(Problem $problem)
+    public static function beforeUpdate(Problem $problem)
     {
         global $DB;
 
@@ -67,7 +67,7 @@ class PluginBehaviorsProblem
                 'glpi_itilsolutions',
                 [
                     'itemtype' => 'Problem',
-                    'items_id' => $problem->input['id']
+                    'items_id' => $problem->input['id'],
                 ]
             );
 

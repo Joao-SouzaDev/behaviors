@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,12 +34,11 @@
 
 class PluginBehaviorsSupplier_Ticket
 {
-
     /**
      * @param Supplier_Ticket $item
      * @return false|void
      */
-    static function afterAdd(Supplier_Ticket $item)
+    public static function afterAdd(Supplier_Ticket $item)
     {
         // Check is the connected user is a tech
         if (!is_numeric(Session::getLoginUserID(false))

@@ -31,30 +31,32 @@
  * --------------------------------------------------------------------------
  */
 
-function plugin_behaviors_install() {
+function plugin_behaviors_install()
+{
 
-   $migration = new Migration(270);
+    $migration = new Migration(270);
 
    // No autoload when plugin is not activated
-   require_once('inc/config.class.php');
-   PluginBehaviorsConfig::install($migration);
+    require_once('inc/config.class.php');
+    PluginBehaviorsConfig::install($migration);
 
-   $migration->executeMigration();
+    $migration->executeMigration();
 
-   return true;
+    return true;
 }
 
 
-function plugin_behaviors_uninstall() {
+function plugin_behaviors_uninstall()
+{
 
    // No autoload when plugin is not activated
-   require 'inc/config.class.php';
+    require 'inc/config.class.php';
 
-   $migration = new Migration(270);
+    $migration = new Migration(270);
 
-   PluginBehaviorsConfig::uninstall($migration);
+    PluginBehaviorsConfig::uninstall($migration);
 
-   $migration->executeMigration();
+    $migration->executeMigration();
 
-   return true;
+    return true;
 }

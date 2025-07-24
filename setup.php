@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -46,7 +47,7 @@ function plugin_init_behaviors()
             'Group_Ticket' => ['PluginBehaviorsGroup_Ticket', 'afterAdd'],
             'Supplier_Ticket' => ['PluginBehaviorsSupplier_Ticket', 'afterAdd'],
             'Document_Item' => ['PluginBehaviorsDocument_Item', 'afterAdd'],
-            'ITILSolution' => ['PluginBehaviorsITILSolution', 'afterAdd']
+            'ITILSolution' => ['PluginBehaviorsITILSolution', 'afterAdd'],
         ];
 
     $PLUGIN_HOOKS['item_update']['behaviors'] =
@@ -58,7 +59,7 @@ function plugin_init_behaviors()
             'ITILSolution' => ['PluginBehaviorsITILSolution', 'beforeAdd'],
             'TicketTask' => ['PluginBehaviorsTickettask', 'beforeAdd'],
             'Change' => ['PluginBehaviorsChange', 'beforeAdd'],
-            'ITILFollowup' => ['PluginBehaviorsITILFollowup', 'beforeAdd']
+            'ITILFollowup' => ['PluginBehaviorsITILFollowup', 'beforeAdd'],
         ];
 
     $PLUGIN_HOOKS['post_prepareadd']['behaviors'] =
@@ -72,7 +73,7 @@ function plugin_init_behaviors()
             'ITILSolution' => ['PluginBehaviorsITILSolution', 'beforeUpdate'],
             'TicketTask' => ['PluginBehaviorsTickettask', 'beforeUpdate'],
             'ChangeTask' => ['PluginBehaviorsChangetask', 'beforeUpdate'],
-            'ProblemTask' => ['PluginBehaviorsProblemtask', 'beforeUpdate']
+            'ProblemTask' => ['PluginBehaviorsProblemtask', 'beforeUpdate'],
         ];
 
     $PLUGIN_HOOKS['pre_item_purge']['behaviors'] =
@@ -121,9 +122,8 @@ function plugin_version_behaviors()
         'requirements' => [
             'glpi' => [
                 'min' => '10.0.5',
-                'max' => '11.0.0'
-            ]
-        ]
+                'max' => '11.0.0',
+            ],
+        ],
     ];
 }
-

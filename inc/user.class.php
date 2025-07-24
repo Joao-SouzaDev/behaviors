@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,8 +34,6 @@
 
 class PluginBehaviorsUser
 {
-
-
     /**
      * @param $entity
      * @param $userid
@@ -42,7 +41,7 @@ class PluginBehaviorsUser
      * @param $first
      * @return array|int|mixed
      */
-    static private function getUserGroup($entity, $userid, $filter = '', $first = true)
+    private static function getUserGroup($entity, $userid, $filter = '', $first = true)
     {
         global $DB;
 
@@ -60,15 +59,15 @@ class PluginBehaviorsUser
                 'glpi_groups' => [
                     'FKEY' => [
                         'glpi_groups' => 'id',
-                        'glpi_groups_users' => 'groups_id'
-                    ]
-                ]
+                        'glpi_groups_users' => 'groups_id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'users_id' => $userid,
                 $dbu->getEntitiesRestrictCriteria('glpi_groups', '', $entity, true),
-                $where
-            ]
+                $where,
+            ],
         ];
 
         $rep = [];
@@ -88,7 +87,7 @@ class PluginBehaviorsUser
      * @param $first
      * @return array|int|mixed
      */
-    static function getRequesterGroup($entity, $userid, $first = true)
+    public static function getRequesterGroup($entity, $userid, $first = true)
     {
         return self::getUserGroup($entity, $userid, '`is_requester`', $first);
     }
@@ -100,9 +99,8 @@ class PluginBehaviorsUser
      * @param $first
      * @return array|int|mixed
      */
-    static function getTechnicianGroup($entity, $userid, $first = true)
+    public static function getTechnicianGroup($entity, $userid, $first = true)
     {
         return self::getUserGroup($entity, $userid, '`is_assign`', $first);
     }
-
 }

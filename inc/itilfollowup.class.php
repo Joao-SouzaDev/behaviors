@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,12 +34,11 @@
 
 class PluginBehaviorsITILFollowup
 {
-
     /**
      * @param ITILFollowup $fup
      * @return void
      */
-    static function beforeAdd(ITILFollowup $fup)
+    public static function beforeAdd(ITILFollowup $fup)
     {
         $ticket = new Ticket();
         $config = PluginBehaviorsConfig::getInstance();
@@ -49,7 +49,7 @@ class PluginBehaviorsITILFollowup
                 $ticket_user = new Ticket_User();
                 $ticket_user->getFromDBByCrit([
                     'tickets_id' => $ticket->getID(),
-                    'type' => CommonITILActor::ASSIGN
+                    'type' => CommonITILActor::ASSIGN,
                 ]);
 
                 if (!isset($ticket_user->fields['users_id'])
@@ -59,7 +59,7 @@ class PluginBehaviorsITILFollowup
                     $group_ticket = new Group_Ticket();
                     $group_ticket->getFromDBByCrit([
                         'tickets_id' => $ticket->getID(),
-                        'type' => CommonITILActor::ASSIGN
+                        'type' => CommonITILActor::ASSIGN,
                     ]);
                     if (count($group_ticket->fields) > 0) {
                         if (isset($group_ticket->fields['groups_id'])) {
@@ -76,7 +76,7 @@ class PluginBehaviorsITILFollowup
                                     $ticket_user_delete->deleteByCriteria([
                                         'tickets_id' => $ticket->getID(),
                                         'users_id' => $ticket_user->fields['users_id'],
-                                        'type' => CommonITILActor::ASSIGN
+                                        'type' => CommonITILActor::ASSIGN,
                                     ]);
                                 }
 
@@ -84,7 +84,7 @@ class PluginBehaviorsITILFollowup
                                 $ticket_user->add([
                                     'tickets_id' => $ticket->getID(),
                                     'users_id' => Session::getLoginUserID(),
-                                    'type' => CommonITILActor::ASSIGN
+                                    'type' => CommonITILActor::ASSIGN,
                                 ]);
                             }
                         }
@@ -94,14 +94,14 @@ class PluginBehaviorsITILFollowup
                             $ticket_user_delete->deleteByCriteria([
                                 'tickets_id' => $ticket->getID(),
                                 'users_id' => $ticket_user->fields['users_id'],
-                                'type' => CommonITILActor::ASSIGN
+                                'type' => CommonITILActor::ASSIGN,
                             ]);
                         }
 
                         $ticket_user->add([
                             'tickets_id' => $ticket->getID(),
                             'users_id' => Session::getLoginUserID(),
-                            'type' => CommonITILActor::ASSIGN
+                            'type' => CommonITILActor::ASSIGN,
                         ]);
                     }
                 }

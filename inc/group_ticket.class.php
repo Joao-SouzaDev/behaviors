@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,12 +34,11 @@
 
 class PluginBehaviorsGroup_Ticket
 {
-
     /**
      * @param Group_Ticket $item
      * @return false|void
      */
-    static function afterAdd(Group_Ticket $item)
+    public static function afterAdd(Group_Ticket $item)
     {
         global $DB;
 
@@ -53,7 +53,7 @@ class PluginBehaviorsGroup_Ticket
             && ($item->input['type'] == CommonITILActor::ASSIGN)) {
             $crit = [
                 'tickets_id' => $item->input['tickets_id'],
-                'type' => CommonITILActor::ASSIGN
+                'type' => CommonITILActor::ASSIGN,
             ];
 
             foreach ($DB->request('glpi_groups_tickets', $crit) as $data) {

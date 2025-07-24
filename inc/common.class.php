@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,8 +34,7 @@
 
 class PluginBehaviorsCommon extends CommonGLPI
 {
-
-    static $clone_types = [
+    public static $clone_types = [
         'NotificationTemplate' => 'PluginBehaviorsNotificationTemplate',
         'Profile' => 'PluginBehaviorsProfile',
         'RuleImportComputer' => 'PluginBehaviorsRule',
@@ -44,11 +44,11 @@ class PluginBehaviorsCommon extends CommonGLPI
         'RuleSoftwareCategory' => 'PluginBehaviorsRule',
         'RuleTicket' => 'PluginBehaviorsRule',
         'Transfer' => 'PluginBehaviorsCommon',
-        'Ticket' => 'PluginBehaviorsTicket'
+        'Ticket' => 'PluginBehaviorsTicket',
     ];
 
 
-    static function getCloneTypes()
+    public static function getCloneTypes()
     {
         return self::$clone_types;
     }
@@ -62,7 +62,7 @@ class PluginBehaviorsCommon extends CommonGLPI
      *
      * @return Boolean
      **/
-    static function addCloneType($clonetype, $managertype = '')
+    public static function addCloneType($clonetype, $managertype = '')
     {
         if (!isset(self::$clone_types[$clonetype])) {
             self::$clone_types[$clonetype] = ($managertype ? $managertype : $clonetype);
@@ -76,7 +76,7 @@ class PluginBehaviorsCommon extends CommonGLPI
     /**
      * @return void
      */
-    static function postInit()
+    public static function postInit()
     {
         Plugin::registerClass(
             'PluginBehaviorsCommon',
@@ -92,7 +92,7 @@ class PluginBehaviorsCommon extends CommonGLPI
      * @param $withtemplate
      * @return array|string
      */
-    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $config = PluginBehaviorsConfig::getInstance();
 
@@ -115,7 +115,7 @@ class PluginBehaviorsCommon extends CommonGLPI
      * @param CommonGLPI $item
      * @return void
      */
-    static function showCloneForm(CommonGLPI $item)
+    public static function showCloneForm(CommonGLPI $item)
     {
         echo "<form name='form' method='post' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' >";
         echo "<div class='spaced' id='tabsbody'>";
@@ -148,7 +148,7 @@ class PluginBehaviorsCommon extends CommonGLPI
         echo "<tr class='tab_bg_1'><td class='center'>" . sprintf(__('%1$s: %2$s'), __('Name'), $name);
         echo Html::input('name', [
             'value' => $name,
-            'size' => 60
+            'size' => 60,
         ]);
         echo Html::hidden('itemtype', ['value' => $item->getType()]);
         echo Html::hidden('id', ['value' => $item->getID()]);
@@ -157,7 +157,7 @@ class PluginBehaviorsCommon extends CommonGLPI
         echo "<tr class='tab_bg_1'><td class='center'>";
         echo Html::submit(__('Clone', 'behaviors'), [
             'name' => '_clone',
-            'class' => 'btn btn-primary'
+            'class' => 'btn btn-primary',
         ]);
         echo "</th></tr>";
 
@@ -172,7 +172,7 @@ class PluginBehaviorsCommon extends CommonGLPI
      * @param $withtemplate
      * @return true
      */
-    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if (array_key_exists($item->getType(), self::$clone_types)
             && $item->canUpdate()) {
@@ -186,7 +186,7 @@ class PluginBehaviorsCommon extends CommonGLPI
      * @param array $param
      * @return false|void
      */
-    static function cloneItem(array $param)
+    public static function cloneItem(array $param)
     {
         $dbu = new DbUtils();
         // Sanity check
@@ -225,9 +225,11 @@ class PluginBehaviorsCommon extends CommonGLPI
 
         // Specific to itemtype - before clone
         if (method_exists(self::$clone_types[$param['itemtype']], 'preClone')) {
-            $input = call_user_func([self::$clone_types[$param['itemtype']], 'preClone'],
+            $input = call_user_func(
+                [self::$clone_types[$param['itemtype']], 'preClone'],
                 $item,
-                $input);
+                $input
+            );
         }
 
         // Clone
@@ -269,7 +271,7 @@ class PluginBehaviorsCommon extends CommonGLPI
      *
      * @return string
      **/
-    static function checkWarnings($params)
+    public static function checkWarnings($params)
     {
         global $DB;
 
@@ -287,9 +289,9 @@ class PluginBehaviorsCommon extends CommonGLPI
         }
 
         // Want to solve/close the ticket
-        $dur = (isset($obj->fields['actiontime']) ? $obj->fields['actiontime'] : 0);
-        $cat = (isset($obj->fields['itilcategories_id']) ? $obj->fields['itilcategories_id'] : 0);
-        $loc = (isset($obj->fields['locations_id']) ? $obj->fields['locations_id'] : 0);
+        $dur = ($obj->fields['actiontime'] ?? 0);
+        $cat = ($obj->fields['itilcategories_id'] ?? 0);
+        $loc = ($obj->fields['locations_id'] ?? 0);
 
         if ($obj->getType() == 'Ticket') {
             $mandatory_solution = false;
@@ -391,7 +393,7 @@ class PluginBehaviorsCommon extends CommonGLPI
      *
      * @param $params
      **/
-    static function messageWarning($params)
+    public static function messageWarning($params)
     {
         if (isset($params['item'])) {
             $item = $params['item'];
@@ -412,15 +414,15 @@ class PluginBehaviorsCommon extends CommonGLPI
                     echo "<div>";
                     if ($config->getField('is_ticketsolution_mandatory') && is_array($warnings) && count($warnings) == 0) {
                         echo "<h4 class='alert-title'>" . __(
-                                "You must add a description. it's mandatory",
-                                'behaviors'
-                            ) . "</h4>";
+                            "You must add a description. it's mandatory",
+                            'behaviors'
+                        ) . "</h4>";
                     }
                     if ($config->getField('is_ticketsolutiontype_mandatory') && is_array($warnings) && count($warnings) == 0) {
                         echo "<h4 class='alert-title'>" . __(
-                                "You must add a solution type. it's mandatory",
-                                'behaviors'
-                            ) . "</h4>";
+                            "You must add a solution type. it's mandatory",
+                            'behaviors'
+                        ) . "</h4>";
                     }
                     if (is_array($warnings) && count($warnings)) {
                         echo "<h4 class='alert-title'>" . __('You cannot resolve the ticket', 'behaviors') . " :</h4>";
@@ -446,9 +448,9 @@ class PluginBehaviorsCommon extends CommonGLPI
 
                     echo "<div>";
                     echo "<h4 class='alert-title'>" . __(
-                            "You must define a category. it's mandatory",
-                            'behaviors'
-                        ) . "</h4>";
+                        "You must define a category. it's mandatory",
+                        'behaviors'
+                    ) . "</h4>";
                     echo "</div>";
 
                     echo "</div>";
@@ -468,44 +470,44 @@ class PluginBehaviorsCommon extends CommonGLPI
      *
      * @return array
      **/
-    static function deleteAddSolutionButton($params)
+    public static function deleteAddSolutionButton($params)
     {
         if (isset($params['item'])) {
             $item = $params['item'];
             if ($item->getType() == 'ITILSolution') {
-//                $options = $params['options'];
-//                $config = PluginBehaviorsConfig::getInstance();
-//                if ($config->getField('is_ticketrealtime_mandatory')) {
-//                    $ticket = $options['item'];
-//                    echo "<div class='row mx-n3 mx-xxl-auto'>";
-//                    echo "<div class='col-12 mb-3'>";
-//                    echo __('Duration');
-//                    echo "&nbsp;<span style='color:red'>*</span>&nbsp;";
-//
-//                    $rand = mt_rand();
-//                    echo "<span id='duration_solution_" . $rand . $ticket->fields['id'] . "'>";
-//                    $toadd = [];
-//                    for ($i = 9; $i <= 100; $i++) {
-//                        $toadd[] = $i * HOUR_TIMESTAMP;
-//                    }
-//                    echo Html::scriptBlock(
-//                        "function showsolutionbutton(){
-//                                 $('.itilsolution').children().find(':submit').show();
-//                              }"
-//                    );
-//
-//                    Dropdown::showTimeStamp("duration_solution", [
-//                        'min' => 0,
-//                        'max' => 8 * HOUR_TIMESTAMP,
-//                        'inhours' => true,
-//                        'toadd' => $toadd,
-//                        'on_change' => 'showsolutionbutton();'
-//                    ]);
-//
-//                    echo "</span>";
-//                    echo "</div>";
-//                    echo "</div>";
-//                }
+                //                $options = $params['options'];
+                //                $config = PluginBehaviorsConfig::getInstance();
+                //                if ($config->getField('is_ticketrealtime_mandatory')) {
+                //                    $ticket = $options['item'];
+                //                    echo "<div class='row mx-n3 mx-xxl-auto'>";
+                //                    echo "<div class='col-12 mb-3'>";
+                //                    echo __('Duration');
+                //                    echo "&nbsp;<span style='color:red'>*</span>&nbsp;";
+                //
+                //                    $rand = mt_rand();
+                //                    echo "<span id='duration_solution_" . $rand . $ticket->fields['id'] . "'>";
+                //                    $toadd = [];
+                //                    for ($i = 9; $i <= 100; $i++) {
+                //                        $toadd[] = $i * HOUR_TIMESTAMP;
+                //                    }
+                //                    echo Html::scriptBlock(
+                //                        "function showsolutionbutton(){
+                //                                 $('.itilsolution').children().find(':submit').show();
+                //                              }"
+                //                    );
+                //
+                //                    Dropdown::showTimeStamp("duration_solution", [
+                //                        'min' => 0,
+                //                        'max' => 8 * HOUR_TIMESTAMP,
+                //                        'inhours' => true,
+                //                        'toadd' => $toadd,
+                //                        'on_change' => 'showsolutionbutton();'
+                //                    ]);
+                //
+                //                    echo "</span>";
+                //                    echo "</div>";
+                //                    echo "</div>";
+                //                }
                 $warnings = self::checkWarnings($params);
                 if (is_array($warnings) && count($warnings) > 0) {
                     echo Html::scriptBlock(

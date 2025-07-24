@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,13 +34,12 @@
 
 class PluginBehaviorsRule extends PluginBehaviorsCommon
 {
-
     /**
      * @param Rule $srce
      * @param array $input
      * @return array
      */
-    static function preClone(Rule $srce, array $input)
+    public static function preClone(Rule $srce, array $input)
     {
         $input['ranking'] = $srce->getNextRanking();
         return $input;
@@ -51,7 +51,7 @@ class PluginBehaviorsRule extends PluginBehaviorsCommon
      * @param $oldid
      * @return void
      */
-    static function postClone(Rule $clone, $oldid)
+    public static function postClone(Rule $clone, $oldid)
     {
         global $DB;
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,13 +34,11 @@
 
 class PluginBehaviorsProblemTask
 {
-
-
     /**
      * @param ProblemTask $task
      * @return false|void
      */
-    static function beforeUpdate(ProblemTask $task)
+    public static function beforeUpdate(ProblemTask $task)
     {
         if (!is_array($task->input) || !count($task->input)) {
             // Already cancel by another plugin

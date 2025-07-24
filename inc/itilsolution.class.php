@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,12 +34,11 @@
 
 class PluginBehaviorsITILSolution
 {
-
     /**
      * @param ITILSolution $soluce
      * @return false|void
      */
-    static function beforeAdd(ITILSolution $soluce)
+    public static function beforeAdd(ITILSolution $soluce)
     {
         global $DB;
 
@@ -98,65 +98,65 @@ class PluginBehaviorsITILSolution
                 );
                 return;
             }
-//            if ($config->getField('is_ticketrealtime_mandatory')
-//                && $soluce->input['itemtype'] == 'Ticket') {
-//
-//                if (isset($soluce->input['duration_solution'])
-//                    && $soluce->input['duration_solution'] > 0) {
-//                    $ticket = new Ticket();
-//                    $tickets_id = $soluce->input['items_id'];
-//                    if ($ticket->getFromDB($tickets_id)) {
-//                        if ($ticket->getField('actiontime') == 0) {
-//                            $ticket->update([
-//                                'id' => $tickets_id,
-//                                'actiontime' => $soluce->input['duration_solution']
-//                            ]);
-//                        }
-//                    }
-//
-//                    $user = new User();
-//                    $user->getFromDB(Session::getLoginUserID());
-//
-//                    $tickettask = new TicketTask();
-//                    $tickettask->add([
-//                        'tickets_id' => $tickets_id,
-//                        'date_creation' => date('Y-m-d H:i:s'),
-//                        'date' => date(
-//                            'Y-m-d H:i:s',
-//                            strtotime('- 10 seconds', strtotime(date('Y-m-d H:i:s')))
-//                        ),
-//                        'users_id' => Session::getLoginUserID(),
-//                        'users_id_tech' => Session::getLoginUserID(),
-//                        'content' => $soluce->input['content'],
-//                        'state' => Planning::DONE,
-//                        'is_private' => $user->getField('task_private'),
-//                        'actiontime' => $soluce->input['duration_solution']
-//                    ]);
-//                } else {
-//                    $configglpi = Config::getConfigurationValues('core', ['system_user']);
-//                    if (isset($soluce->input['users_id'])
-//                        && $configglpi['system_user'] == $soluce->input['users_id']) {
-//                        return true;
-//                    }
-//                    $ticket = new Ticket();
-//                    $tickets_id = $soluce->input['items_id'];
-//                    $ticket->getFromDB($tickets_id);
-//                    $dur = (isset($ticket->fields['actiontime']) ? $ticket->fields['actiontime'] : 0);
-//                    if ($dur == 0) {
-//                        $_SESSION['saveInput'][$soluce->getType()] = $soluce->input;
-//                        $soluce->input = false;
-//                        Session::addMessageAfterRedirect(
-//                            __(
-//                                "Duration is mandatory before ticket is solved/closed",
-//                                'behaviors'
-//                            ),
-//                            true,
-//                            ERROR
-//                        );
-//                        return;
-//                    }
-//                }
-//            }
+            //            if ($config->getField('is_ticketrealtime_mandatory')
+            //                && $soluce->input['itemtype'] == 'Ticket') {
+            //
+            //                if (isset($soluce->input['duration_solution'])
+            //                    && $soluce->input['duration_solution'] > 0) {
+            //                    $ticket = new Ticket();
+            //                    $tickets_id = $soluce->input['items_id'];
+            //                    if ($ticket->getFromDB($tickets_id)) {
+            //                        if ($ticket->getField('actiontime') == 0) {
+            //                            $ticket->update([
+            //                                'id' => $tickets_id,
+            //                                'actiontime' => $soluce->input['duration_solution']
+            //                            ]);
+            //                        }
+            //                    }
+            //
+            //                    $user = new User();
+            //                    $user->getFromDB(Session::getLoginUserID());
+            //
+            //                    $tickettask = new TicketTask();
+            //                    $tickettask->add([
+            //                        'tickets_id' => $tickets_id,
+            //                        'date_creation' => date('Y-m-d H:i:s'),
+            //                        'date' => date(
+            //                            'Y-m-d H:i:s',
+            //                            strtotime('- 10 seconds', strtotime(date('Y-m-d H:i:s')))
+            //                        ),
+            //                        'users_id' => Session::getLoginUserID(),
+            //                        'users_id_tech' => Session::getLoginUserID(),
+            //                        'content' => $soluce->input['content'],
+            //                        'state' => Planning::DONE,
+            //                        'is_private' => $user->getField('task_private'),
+            //                        'actiontime' => $soluce->input['duration_solution']
+            //                    ]);
+            //                } else {
+            //                    $configglpi = Config::getConfigurationValues('core', ['system_user']);
+            //                    if (isset($soluce->input['users_id'])
+            //                        && $configglpi['system_user'] == $soluce->input['users_id']) {
+            //                        return true;
+            //                    }
+            //                    $ticket = new Ticket();
+            //                    $tickets_id = $soluce->input['items_id'];
+            //                    $ticket->getFromDB($tickets_id);
+            //                    $dur = (isset($ticket->fields['actiontime']) ? $ticket->fields['actiontime'] : 0);
+            //                    if ($dur == 0) {
+            //                        $_SESSION['saveInput'][$soluce->getType()] = $soluce->input;
+            //                        $soluce->input = false;
+            //                        Session::addMessageAfterRedirect(
+            //                            __(
+            //                                "Duration is mandatory before ticket is solved/closed",
+            //                                'behaviors'
+            //                            ),
+            //                            true,
+            //                            ERROR
+            //                        );
+            //                        return;
+            //                    }
+            //                }
+            //            }
             if ($config->getField('is_ticketcategory_mandatory')
                 && ($ticket->fields['itilcategories_id'] == 0)) {
                 $soluce->input = false;
@@ -306,7 +306,7 @@ class PluginBehaviorsITILSolution
      * @param ITILSolution $soluce
      * @return false|void
      */
-    static function beforeUpdate(ITILSolution $soluce)
+    public static function beforeUpdate(ITILSolution $soluce)
     {
         if (!is_array($soluce->input) || !count($soluce->input)) {
             // Already cancel by another plugin
@@ -360,7 +360,7 @@ class PluginBehaviorsITILSolution
      * @param ITILSolution $soluce
      * @return void
      */
-    static function afterAdd(ITILSolution $soluce)
+    public static function afterAdd(ITILSolution $soluce)
     {
         $ticket = new Ticket();
         $config = PluginBehaviorsConfig::getInstance();
@@ -371,7 +371,7 @@ class PluginBehaviorsITILSolution
                 $ticket_user = new Ticket_User();
                 $ticket_user->getFromDBByCrit([
                     'tickets_id' => $ticket->getID(),
-                    'type' => CommonITILActor::ASSIGN
+                    'type' => CommonITILActor::ASSIGN,
                 ]);
 
                 if (!isset($ticket_user->fields['users_id'])
@@ -380,7 +380,7 @@ class PluginBehaviorsITILSolution
                     $ticket_user->add([
                         'tickets_id' => $ticket->getID(),
                         'users_id' => Session::getLoginUserID(),
-                        'type' => CommonITILActor::ASSIGN
+                        'type' => CommonITILActor::ASSIGN,
                     ]);
                 }
             }

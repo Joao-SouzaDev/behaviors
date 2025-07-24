@@ -34,7 +34,7 @@
 class PluginBehaviorsConfig extends CommonDBTM
 {
 
-    static private $_instance = null;
+    private static $_instance = null;
     static $rightname = 'config';
 
     static function canCreate()
@@ -85,7 +85,6 @@ class PluginBehaviorsConfig extends CommonDBTM
         $default_collation = DBConnection::getDefaultCollation();
         $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
         if (!$DB->tableExists($table)) { //not installed
-
             $query = "CREATE TABLE `" . $table . "`(
                      `id` int $default_key_sign NOT NULL,
                      `use_requester_item_group` tinyint NOT NULL default '0',
@@ -344,11 +343,11 @@ class PluginBehaviorsConfig extends CommonDBTM
             ['value' => $config->fields['use_assign_user_group']]
         );
         echo "</td><th colspan='2' class='center'>" . _n(
-                'Notification',
-                'Notifications',
-                2,
-                'behaviors'
-            );
+            'Notification',
+            'Notifications',
+            2,
+            'behaviors'
+        );
         echo "</th></tr>\n";
 
         echo "<tr class='tab_bg_1'>";
@@ -482,9 +481,9 @@ class PluginBehaviorsConfig extends CommonDBTM
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __(
-                'Group of technicians assigned is mandatory before ticket is solved/closed',
-                'behaviors'
-            );
+            'Group of technicians assigned is mandatory before ticket is solved/closed',
+            'behaviors'
+        );
         echo "</td>";
         echo "<td>";
         Dropdown::showYesNo(
@@ -525,9 +524,9 @@ class PluginBehaviorsConfig extends CommonDBTM
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __(
-                'Description of solution is mandatory before ticket is solved/closed',
-                'behaviors'
-            );
+            'Description of solution is mandatory before ticket is solved/closed',
+            'behaviors'
+        );
         echo "</td>";
         echo "<td>";
         Dropdown::showYesNo(
@@ -568,10 +567,10 @@ class PluginBehaviorsConfig extends CommonDBTM
         echo "<tr class='tab_bg_1'>";
         echo "<th colspan='2'></th>";
         echo "<th colspan='2'>" . sprintf(
-                __('%1$s %2$s'),
-                __('Last update'),
-                Html::convDateTime($config->fields["date_mod"])
-            );
+            __('%1$s %2$s'),
+            __('Last update'),
+            Html::convDateTime($config->fields["date_mod"])
+        );
         echo "</td></tr>";
 
         $config->showFormButtons(['formfooter' => true, 'candel' => false]);
@@ -662,7 +661,8 @@ class PluginBehaviorsConfig extends CommonDBTM
      */
     static function add_default_where($item)
     {
-        global $CFG_GLPI;;
+        global $CFG_GLPI;
+        ;
 
         $condition = "";
         list($itemtype, $condition) = $item;

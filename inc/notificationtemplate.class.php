@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,14 +34,12 @@
 
 class PluginBehaviorsNotificationTemplate extends PluginBehaviorsCommon
 {
-
-
     /**
      * @param NotificationTemplate $clone
      * @param $oldid
      * @return void
      */
-    static function postClone(NotificationTemplate $clone, $oldid)
+    public static function postClone(NotificationTemplate $clone, $oldid)
     {
         global $DB;
 

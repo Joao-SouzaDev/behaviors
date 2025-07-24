@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,12 +34,11 @@
 
 class PluginBehaviorsChange
 {
-
     /**
      * @param Change $change
      * @return false|void
      */
-    static function beforeAdd(Change $change)
+    public static function beforeAdd(Change $change)
     {
         global $DB;
 
@@ -53,7 +53,7 @@ class PluginBehaviorsChange
             $max = 0;
             $sql = [
                 'SELECT' => ['MAX' => 'id AS max'],
-                'FROM' => 'glpi_changes'
+                'FROM' => 'glpi_changes',
             ];
             foreach ($DB->request($sql) as $data) {
                 $max = $data['max'];
@@ -69,7 +69,7 @@ class PluginBehaviorsChange
      * @param Change $change
      * @return false|void
      */
-    static function beforeUpdate(Change $change)
+    public static function beforeUpdate(Change $change)
     {
         global $DB;
 

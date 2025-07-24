@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,13 +34,12 @@
 
 class PluginBehaviorsProfile extends PluginBehaviorsCommon
 {
-
     /**
      * @param Profile $srce
      * @param array $input
      * @return array
      */
-    static function preClone(Profile $srce, array $input)
+    public static function preClone(Profile $srce, array $input)
     {
         // decode array
         if (isset($input['helpdesk_item_type'])
@@ -68,7 +68,7 @@ class PluginBehaviorsProfile extends PluginBehaviorsCommon
      * @since version 0.90.1
      *
      */
-    static function postClone(Profile $clone, $oldid)
+    public static function postClone(Profile $clone, $oldid)
     {
         $rights = ProfileRight::getProfileRights($oldid);
         $pright = new ProfileRight();
