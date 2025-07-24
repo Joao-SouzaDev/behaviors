@@ -1045,25 +1045,13 @@ class PluginBehaviorsTicket
             }
         }
 
-        if ($config->getField('use_requester_item_group')
-            && isset($ticket->input['items_id'])
-            && (is_array($ticket->input['items_id']))) {
-            foreach ($ticket->input['items_id'] as $type => $items) {
-                if (($item = $dbu->getItemForItemtype($type))
-                    && !isset($ticket->input['_itil_requester']['groups_id'])) {
-                    if ($item->isField('groups_id')) {
-                        foreach ($items as $itemid) {
-                            if ($item->getFromDB($itemid)) {
-                                $ticket->input['_itil_requester'] = [
-                                    '_type' => 'group',
-                                    'groups_id' => $item->getField('groups_id'),
-                                ];
-                            }
-                        }
-                    }
-                }
-            }
-        }
+//        if ($config->getField('use_requester_item_group')
+//            && isset($ticket->input['_actors']['requester'])) {
+//            $requesters = self::useRequesterItemGroup($ticket->input);
+//            if ($requesters !== null) {
+//                $ticket->input['_actors']['requester'] = self::removeDuplicates($requesters);
+//            }
+//        }
 
         if ($config->getField('use_assign_user_group_update')
             && isset($ticket->input['_actors']['assign'])) {
