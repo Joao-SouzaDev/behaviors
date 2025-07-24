@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -33,20 +34,19 @@
 
 class PluginBehaviorsTicket
 {
-
-    const LAST_TECH_ASSIGN = 50;
-    const LAST_GROUP_ASSIGN = 51;
-    const LAST_SUPPLIER_ASSIGN = 52;
-    const LAST_WATCHER_ADDED = 53;
-    const SUPERVISOR_LAST_GROUP_ASSIGN = 54;
-    const LAST_GROUP_ASSIGN_WITHOUT_SUPERVISOR = 55;
+    public const LAST_TECH_ASSIGN = 50;
+    public const LAST_GROUP_ASSIGN = 51;
+    public const LAST_SUPPLIER_ASSIGN = 52;
+    public const LAST_WATCHER_ADDED = 53;
+    public const SUPERVISOR_LAST_GROUP_ASSIGN = 54;
+    public const LAST_GROUP_ASSIGN_WITHOUT_SUPERVISOR = 55;
 
 
     /**
      * @param NotificationTargetTicket $target
      * @return void
      */
-    static function addEvents(NotificationTargetTicket $target)
+    public static function addEvents(NotificationTargetTicket $target)
     {
         $config = PluginBehaviorsConfig::getInstance();
 
@@ -54,24 +54,24 @@ class PluginBehaviorsTicket
             Plugin::loadLang('behaviors');
             $target->events['plugin_behaviors_ticketreopen']
                 = sprintf(
-                __('%1$s - %2$s'),
-                __('Behaviours', 'behaviors'),
-                __('Reopen ticket', 'behaviors')
-            );
+                    __('%1$s - %2$s'),
+                    __('Behaviours', 'behaviors'),
+                    __('Reopen ticket', 'behaviors')
+                );
 
             $target->events['plugin_behaviors_ticketstatus']
                 = sprintf(
-                __('%1$s - %2$s'),
-                __('Behaviours', 'behaviors'),
-                __('Change status', 'behaviors')
-            );
+                    __('%1$s - %2$s'),
+                    __('Behaviours', 'behaviors'),
+                    __('Change status', 'behaviors')
+                );
 
             $target->events['plugin_behaviors_ticketwaiting']
                 = sprintf(
-                __('%1$s - %2$s'),
-                __('Behaviours', 'behaviors'),
-                __('Ticket waiting', 'behaviors')
-            );
+                    __('%1$s - %2$s'),
+                    __('Behaviours', 'behaviors'),
+                    __('Ticket waiting', 'behaviors')
+                );
 
             PluginBehaviorsDocument_Item::addEvents($target);
         }
@@ -82,7 +82,7 @@ class PluginBehaviorsTicket
      * @param NotificationTargetTicket $target
      * @return void
      */
-    static function addTargets(NotificationTargetTicket $target)
+    public static function addTargets(NotificationTargetTicket $target)
     {
         // No new recipients for globals notifications
         $alert = ['alertnotclosed', 'recall', 'recall_ola'];
@@ -143,30 +143,30 @@ class PluginBehaviorsTicket
      * @param NotificationTargetTicket $target
      * @return void
      */
-    static function addActionTargets(NotificationTargetTicket $target)
+    public static function addActionTargets(NotificationTargetTicket $target)
     {
         switch ($target->data['items_id']) {
-            case self::LAST_TECH_ASSIGN :
+            case self::LAST_TECH_ASSIGN:
                 self::getLastLinkedUserByType(CommonITILActor::ASSIGN, $target);
                 break;
 
-            case self::LAST_GROUP_ASSIGN :
+            case self::LAST_GROUP_ASSIGN:
                 self::getLastLinkedGroupByType(CommonITILActor::ASSIGN, $target);
                 break;
 
-            case self::LAST_SUPPLIER_ASSIGN :
+            case self::LAST_SUPPLIER_ASSIGN:
                 self::getLastSupplierAddress($target);
                 break;
 
-            case self::LAST_WATCHER_ADDED :
+            case self::LAST_WATCHER_ADDED:
                 self::getLastLinkedUserByType(CommonITILActor::OBSERVER, $target);
                 break;
 
-            case self::SUPERVISOR_LAST_GROUP_ASSIGN :
+            case self::SUPERVISOR_LAST_GROUP_ASSIGN:
                 self::getLastLinkedGroupByType(CommonITILActor::ASSIGN, $target, 1);
                 break;
 
-            case self::LAST_GROUP_ASSIGN_WITHOUT_SUPERVISOR :
+            case self::LAST_GROUP_ASSIGN_WITHOUT_SUPERVISOR:
                 self::getLastLinkedGroupByType(CommonITILActor::ASSIGN, $target, 2);
                 break;
         }
@@ -178,7 +178,7 @@ class PluginBehaviorsTicket
      * @param $target
      * @return void
      */
-    static function getLastLinkedUserByType($type, $target)
+    public static function getLastLinkedUserByType($type, $target)
     {
         global $DB, $CFG_GLPI;
 
@@ -241,7 +241,7 @@ class PluginBehaviorsTicket
                 $target->addToRecipientsList([
                     'email' => $author_email,
                     'language' => $author_lang,
-                    'users_id' => $author_id
+                    'users_id' => $author_id,
                 ]);
             }
         }
@@ -255,15 +255,15 @@ class PluginBehaviorsTicket
                     $fkfield => $target->obj->fields["id"],
                     'users_id' => 0,
                     'use_notification' => 1,
-                    'type' => $type
-                ]
+                    'type' => $type,
+                ],
             ]) as $data
         ) {
             if (NotificationMailing::isUserAddressValid($data['alternative_email'])) {
                 $target->addToRecipientsList([
                     'email' => $data['alternative_email'],
                     'language' => $CFG_GLPI["language"],
-                    'users_id' => -1
+                    'users_id' => -1,
                 ]);
             }
         }
@@ -276,7 +276,7 @@ class PluginBehaviorsTicket
      * @param $supervisor
      * @return void
      */
-    static function getLastLinkedGroupByType($type, $target, $supervisor = 0)
+    public static function getLastLinkedGroupByType($type, $target, $supervisor = 0)
     {
         global $DB;
 
@@ -289,8 +289,8 @@ class PluginBehaviorsTicket
             'FROM' => $grouplinktable,
             'WHERE' => [
                 $grouplinktable . '.' . $fkfield => $target->obj->fields["id"],
-                $grouplinktable . '.type' => $type
-            ]
+                $grouplinktable . '.type' => $type,
+            ],
         ];
         $result = $DB->request($last);
 
@@ -300,8 +300,8 @@ class PluginBehaviorsTicket
             'FROM' => $grouplinktable,
             'WHERE' => [
                 $grouplinktable . '.' . $fkfield => $target->obj->fields["id"],
-                $grouplinktable . '.type' => $type
-            ]
+                $grouplinktable . '.type' => $type,
+            ],
         ];
 
         if ($data = $result->current()) {
@@ -321,7 +321,7 @@ class PluginBehaviorsTicket
      * @param $target
      * @return void
      */
-    static function getLastSupplierAddress($target)
+    public static function getLastSupplierAddress($target)
     {
         global $DB;
 
@@ -334,7 +334,7 @@ class PluginBehaviorsTicket
             $last = [
                 'SELECT' => ['MAX' => 'id AS lastid'],
                 'FROM' => $supplierlinktable,
-                'WHERE' => [$supplierlinktable . '.' . $fkfield => $target->obj->fields["id"]]
+                'WHERE' => [$supplierlinktable . '.' . $fkfield => $target->obj->fields["id"]],
             ];
 
             $result = $DB->request($last);
@@ -350,11 +350,11 @@ class PluginBehaviorsTicket
                     => [
                         'FKEY' => [
                             $supplierlinktable => 'suppliers_id',
-                            'glpi_suppliers' => 'id'
-                        ]
-                    ]
+                            'glpi_suppliers' => 'id',
+                        ],
+                    ],
                 ],
-                'WHERE' => [$supplierlinktable . '.' . $fkfield => $target->obj->getID()]
+                'WHERE' => [$supplierlinktable . '.' . $fkfield => $target->obj->getID()],
             ];
 
             $object = new $target->obj->supplierlinkclass();
@@ -372,7 +372,7 @@ class PluginBehaviorsTicket
      * @param Ticket $ticket
      * @return false|void
      */
-    static function beforeAdd(Ticket $ticket)
+    public static function beforeAdd(Ticket $ticket)
     {
         global $DB;
 
@@ -387,7 +387,7 @@ class PluginBehaviorsTicket
             $max = 0;
             $sql = [
                 'SELECT' => ['MAX' => 'id AS max'],
-                'FROM' => 'glpi_tickets'
+                'FROM' => 'glpi_tickets',
             ];
             foreach ($DB->request($sql) as $data) {
                 $max = $data['max'];
@@ -408,7 +408,7 @@ class PluginBehaviorsTicket
                         $requesters
                     );
                 } else {
-                    if ($requesters !== NULL) {
+                    if ($requesters !== null) {
                         $ticket->input['_actors']['requester'] = $requesters;
                     }
                 }
@@ -419,7 +419,7 @@ class PluginBehaviorsTicket
             if (!isset($ticket->input['_groups_id_assign'])
                 || $ticket->input['_groups_id_assign'] == 0) {
                 $assigns = self::useAssignTechGroup($ticket->input);
-                if ($assigns !== NULL) {
+                if ($assigns !== null) {
                     $ticket->input['_actors']['assign'] = self::removeDuplicates($assigns);
                 }
             }
@@ -445,7 +445,7 @@ class PluginBehaviorsTicket
      * @param $array
      * @return array|void
      */
-    static function removeDuplicates($array)
+    public static function removeDuplicates($array)
     {
         $unique = [];
         $filteredArray = [];
@@ -467,7 +467,7 @@ class PluginBehaviorsTicket
      * @param $input
      * @return array|mixed|void
      */
-    static function useRequesterItemGroup($input)
+    public static function useRequesterItemGroup($input)
     {
         $config = PluginBehaviorsConfig::getInstance();
         if ($config->getField('use_requester_item_group')
@@ -486,7 +486,7 @@ class PluginBehaviorsTicket
                                     'itemtype' => 'User',
                                     'items_id' => $usr,
                                     'use_notification' => "1",
-                                    'alternative_email' => ""
+                                    'alternative_email' => "",
                                 ];
                             }
                         } else {
@@ -494,7 +494,7 @@ class PluginBehaviorsTicket
                                 'itemtype' => 'User',
                                 'items_id' => $input['_users_id_requester'],
                                 'use_notification' => "1",
-                                'alternative_email' => ""
+                                'alternative_email' => "",
                             ];
                         }
                     }
@@ -514,7 +514,7 @@ class PluginBehaviorsTicket
                                         'itemtype' => 'Group',
                                         'items_id' => $item->getField('groups_id'),
                                         'use_notification' => "1",
-                                        'alternative_email' => ""
+                                        'alternative_email' => "",
                                     ];
                                 }
                             }
@@ -531,7 +531,7 @@ class PluginBehaviorsTicket
      * @param $input
      * @return array|mixed|void
      */
-    static function useRequesterUserGroup($input)
+    public static function useRequesterUserGroup($input)
     {
         $config = PluginBehaviorsConfig::getInstance();
         if ($config->getField('use_requester_user_group') > 0) {
@@ -548,14 +548,14 @@ class PluginBehaviorsTicket
                         'glpi_users.is_deleted' => 0, [
                             'OR' => [
                                 ['glpi_users.begin_date' => null],
-                                ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]]
+                                ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]],
                             ],
                         ], [
                             'OR'  => [
                                 ['glpi_users.end_date'   => null],
-                                ['glpi_users.end_date'   => ['>', new QueryExpression('NOW()')]]
-                            ]
-                        ]
+                                ['glpi_users.end_date'   => ['>', new QueryExpression('NOW()')]],
+                            ],
+                        ],
                     ];
                     $user = new User();
                     if ($user->getFromDBbyEmail($email, $condition)) {
@@ -576,7 +576,7 @@ class PluginBehaviorsTicket
                                 'itemtype' => 'User',
                                 'items_id' => $usr,
                                 'use_notification' => "1",
-                                'alternative_email' => ""
+                                'alternative_email' => "",
                             ];
                         }
                     }
@@ -587,7 +587,7 @@ class PluginBehaviorsTicket
                             'itemtype' => 'User',
                             'items_id' => $input['_users_id_requester'],
                             'use_notification' => "1",
-                            'alternative_email' => ""
+                            'alternative_email' => "",
                         ];
                     }
                 }
@@ -600,7 +600,7 @@ class PluginBehaviorsTicket
                                 'itemtype' => 'Group',
                                 'items_id' => $grp,
                                 'use_notification' => "1",
-                                'alternative_email' => ""
+                                'alternative_email' => "",
                             ];
                         }
                     }
@@ -611,7 +611,7 @@ class PluginBehaviorsTicket
                             'itemtype' => 'Group',
                             'items_id' => $input['_groups_id_requester'],
                             'use_notification' => "1",
-                            'alternative_email' => ""
+                            'alternative_email' => "",
                         ];
                     }
                 }
@@ -651,7 +651,7 @@ class PluginBehaviorsTicket
                                 'itemtype' => 'Group',
                                 'items_id' => $grp,
                                 'use_notification' => "1",
-                                'alternative_email' => ""
+                                'alternative_email' => "",
                             ];
                         }
                     } else {
@@ -673,7 +673,7 @@ class PluginBehaviorsTicket
                                     'itemtype' => 'Group',
                                     'items_id' => $grp,
                                     'use_notification' => "1",
-                                    'alternative_email' => ""
+                                    'alternative_email' => "",
                                 ];
                             }
                         }
@@ -688,7 +688,7 @@ class PluginBehaviorsTicket
      * @param $input
      * @return array|mixed|void
      */
-    static function useAssignTechGroup($input)
+    public static function useAssignTechGroup($input)
     {
         $config = PluginBehaviorsConfig::getInstance();
 
@@ -708,7 +708,7 @@ class PluginBehaviorsTicket
                                 'itemtype' => 'User',
                                 'items_id' => $usr,
                                 'use_notification' => "1",
-                                'alternative_email' => ""
+                                'alternative_email' => "",
                             ];
                         }
                     }
@@ -719,7 +719,7 @@ class PluginBehaviorsTicket
                             'itemtype' => 'User',
                             'items_id' => $input['_users_id_assign'],
                             'use_notification' => "1",
-                            'alternative_email' => ""
+                            'alternative_email' => "",
                         ];
                     }
                 }
@@ -732,7 +732,7 @@ class PluginBehaviorsTicket
                                 'itemtype' => 'Group',
                                 'items_id' => $grp,
                                 'use_notification' => "1",
-                                'alternative_email' => ""
+                                'alternative_email' => "",
                             ];
                         }
                     }
@@ -743,7 +743,7 @@ class PluginBehaviorsTicket
                             'itemtype' => 'Group',
                             'items_id' => $input['_groups_id_assign'],
                             'use_notification' => "1",
-                            'alternative_email' => ""
+                            'alternative_email' => "",
                         ];
                     }
                 }
@@ -784,7 +784,7 @@ class PluginBehaviorsTicket
                                 'itemtype' => 'Group',
                                 'items_id' => $grp,
                                 'use_notification' => "1",
-                                'alternative_email' => ""
+                                'alternative_email' => "",
                             ];
                         }
                     } else {
@@ -806,7 +806,7 @@ class PluginBehaviorsTicket
                                     'itemtype' => 'Group',
                                     'items_id' => $grp,
                                     'use_notification' => "1",
-                                    'alternative_email' => ""
+                                    'alternative_email' => "",
                                 ];
                             }
                         }
@@ -821,7 +821,7 @@ class PluginBehaviorsTicket
      * @param Ticket $ticket
      * @return false|void
      */
-    static function afterPrepareAdd(Ticket $ticket)
+    public static function afterPrepareAdd(Ticket $ticket)
     {
         if (!is_array($ticket->input) || !count($ticket->input)) {
             // Already cancel by another plugin
@@ -839,18 +839,18 @@ class PluginBehaviorsTicket
                 // First group
                 $ticket->input['_groups_id_assign']
                     = PluginBehaviorsUser::getTechnicianGroup(
-                    $ticket->input['entities_id'],
-                    $ticket->input['_users_id_assign'],
-                    true
-                );
+                        $ticket->input['entities_id'],
+                        $ticket->input['_users_id_assign'],
+                        true
+                    );
             } else {
                 // All groups
                 $ticket->input['_additional_groups_assigns']
                     = PluginBehaviorsUser::getTechnicianGroup(
-                    $ticket->input['entities_id'],
-                    $ticket->input['_users_id_assign'],
-                    false
-                );
+                        $ticket->input['entities_id'],
+                        $ticket->input['_users_id_assign'],
+                        false
+                    );
             }
         }
     }
@@ -860,7 +860,7 @@ class PluginBehaviorsTicket
      * @param Ticket $ticket
      * @return false|void
      */
-    static function beforeUpdate(Ticket $ticket)
+    public static function beforeUpdate(Ticket $ticket)
     {
         global $DB;
 
@@ -877,7 +877,7 @@ class PluginBehaviorsTicket
             || !Session::haveRight('ticket', UPDATE)) {
             return false; // No check
         }
-        
+
         if (isset($ticket->input['date'])) {
             if ($config->getField('is_ticketdate_locked')) {
                 unset($ticket->input['date']);
@@ -896,13 +896,13 @@ class PluginBehaviorsTicket
                 'SELECT' => [
                     'MAX' => 'id AS max',
                     'solutiontypes_id',
-                    'content'
+                    'content',
                 ],
                 'FROM' => 'glpi_itilsolutions',
                 'WHERE' => [
                     'items_id' => $ticket->getID(),
-                    'itemtype' => 'Ticket'
-                ]
+                    'itemtype' => 'Ticket',
+                ],
             ];
 
             foreach ($DB->request($sql) as $data) {
@@ -932,15 +932,12 @@ class PluginBehaviorsTicket
                 }
             }
 
-            $dur = (isset($ticket->input['actiontime'])
-                ? $ticket->input['actiontime']
-                : $ticket->fields['actiontime']);
-            $cat = (isset($ticket->input['itilcategories_id'])
-                ? $ticket->input['itilcategories_id']
-                : $ticket->fields['itilcategories_id']);
-            $loc = (isset($ticket->input['locations_id'])
-                ? $ticket->input['locations_id']
-                : $ticket->fields['locations_id']);
+            $dur = ($ticket->input['actiontime']
+                ?? $ticket->fields['actiontime']);
+            $cat = ($ticket->input['itilcategories_id']
+                ?? $ticket->fields['itilcategories_id']);
+            $loc = ($ticket->input['locations_id']
+                ?? $ticket->fields['locations_id']);
 
             // Wand to solve/close the ticket
             if ($config->getField('is_ticketrealtime_mandatory')) {
@@ -971,7 +968,6 @@ class PluginBehaviorsTicket
             }
             if ($config->getField('is_tickettech_mandatory')) {
                 if (($ticket->countUsers(CommonITILActor::ASSIGN) == 0)
-                    && !isset($ticket->input["_itil_assign"]['users_id'])
                     && !$config->getField('ticketsolved_updatetech')) {
                     unset($ticket->input['status']);
                     Session::addMessageAfterRedirect(
@@ -985,8 +981,7 @@ class PluginBehaviorsTicket
                 }
             }
             if ($config->getField('is_tickettechgroup_mandatory')) {
-                if (($ticket->countGroups(CommonITILActor::ASSIGN) == 0)
-                    && !isset($ticket->input["_itil_assign"]['groups_id'])) {
+                if (($ticket->countGroups(CommonITILActor::ASSIGN) == 0)) {
                     unset($ticket->input['status']);
                     Session::addMessageAfterRedirect(
                         __(
@@ -1032,16 +1027,13 @@ class PluginBehaviorsTicket
                 }
             }
         }
-        $cat = (isset($ticket->input['itilcategories_id'])
-            ? $ticket->input['itilcategories_id']
-            : $ticket->fields['itilcategories_id']);
+        $cat = ($ticket->input['itilcategories_id']
+            ?? $ticket->fields['itilcategories_id']);
 
         if ($config->getField('is_ticketcategory_mandatory_on_assign')) {
             if (!$cat
-                && isset($ticket->input['_itil_assign'])
-                && ($ticket->input['_itil_assign']['users_id']
-                    || $ticket->input['_itil_assign']['groups_id'])) {
-                unset($ticket->input);
+                && isset($ticket->input['_actors']['assign'])) {
+                $ticket->input = [];
                 Session::addMessageAfterRedirect(
                     __(
                         "Category is mandatory when you assign a ticket",
@@ -1064,7 +1056,7 @@ class PluginBehaviorsTicket
                             if ($item->getFromDB($itemid)) {
                                 $ticket->input['_itil_requester'] = [
                                     '_type' => 'group',
-                                    'groups_id' => $item->getField('groups_id')
+                                    'groups_id' => $item->getField('groups_id'),
                                 ];
                             }
                         }
@@ -1073,7 +1065,8 @@ class PluginBehaviorsTicket
             }
         }
 
-        if ($config->getField('use_assign_user_group_update')) {
+        if ($config->getField('use_assign_user_group_update')
+            && isset($ticket->input['_actors']['assign'])) {
             $assigns = self::useAssignTechGroup($ticket->input);
             if ($assigns !== null) {
                 $ticket->input['_actors']['assign'] = self::removeDuplicates($assigns);
@@ -1106,7 +1099,7 @@ class PluginBehaviorsTicket
                 $ticket_user->add([
                     'tickets_id' => $ticket->getID(),
                     'users_id' => Session::getLoginUserID(),
-                    'type' => CommonITILActor::ASSIGN
+                    'type' => CommonITILActor::ASSIGN,
                 ]);
             }
         }
@@ -1116,7 +1109,7 @@ class PluginBehaviorsTicket
     /**
      * @return void
      */
-    static function onNewTicket()
+    public static function onNewTicket()
     {
         if (isset($_SESSION['glpiactiveprofile']['interface'])
             && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
@@ -1152,7 +1145,7 @@ class PluginBehaviorsTicket
                                             'itemtype' => 'Group',
                                             'items_id' => $grp,
                                             'use_notification' => "1",
-                                            'alternative_email' => ""
+                                            'alternative_email' => "",
                                         ];
                                         $_SESSION['glpi_behaviors_auto_group_request'][] = $grp;
                                     }
@@ -1175,7 +1168,7 @@ class PluginBehaviorsTicket
                                                 'itemtype' => 'Group',
                                                 'items_id' => $grp,
                                                 'use_notification' => "1",
-                                                'alternative_email' => ""
+                                                'alternative_email' => "",
                                             ];
                                             $_SESSION['glpi_behaviors_auto_group_request'][] = $grp;
                                         }
@@ -1218,7 +1211,7 @@ class PluginBehaviorsTicket
                                             'itemtype' => 'Group',
                                             'items_id' => $grp,
                                             'use_notification' => "1",
-                                            'alternative_email' => ""
+                                            'alternative_email' => "",
                                         ];
                                         $_SESSION['glpi_behaviors_auto_group_assign'][] = $grp;
                                     }
@@ -1241,7 +1234,7 @@ class PluginBehaviorsTicket
                                                 'itemtype' => 'Group',
                                                 'items_id' => $grp,
                                                 'use_notification' => "1",
-                                                'alternative_email' => ""
+                                                'alternative_email' => "",
                                             ];
                                             $_SESSION['glpi_behaviors_auto_group_assign'][] = $grp;
                                         }
@@ -1267,19 +1260,19 @@ class PluginBehaviorsTicket
      * @param Ticket $ticket
      * @return void
      */
-    static function afterUpdate(Ticket $ticket)
+    public static function afterUpdate(Ticket $ticket)
     {
         $config = PluginBehaviorsConfig::getInstance();
 
         if ($config->getField('add_notif')
             && in_array('status', $ticket->updates)) {
             if (in_array(
-                    $ticket->oldvalues['status'],
-                    array_merge(
-                        Ticket::getSolvedStatusArray(),
-                        Ticket::getClosedStatusArray()
-                    )
+                $ticket->oldvalues['status'],
+                array_merge(
+                    Ticket::getSolvedStatusArray(),
+                    Ticket::getClosedStatusArray()
                 )
+            )
                 && !in_array(
                     $ticket->input['status'],
                     array_merge(
@@ -1304,7 +1297,7 @@ class PluginBehaviorsTicket
      * @param array $input
      * @return array
      */
-    static function preClone(Ticket $srce, array $input)
+    public static function preClone(Ticket $srce, array $input)
     {
         global $DB;
 
@@ -1355,7 +1348,7 @@ class PluginBehaviorsTicket
      * @param $oldid
      * @return void
      */
-    static function postClone(Ticket $clone, $oldid)
+    public static function postClone(Ticket $clone, $oldid)
     {
         global $DB;
 
@@ -1369,7 +1362,7 @@ class PluginBehaviorsTicket
             $input = [
                 'itemtype' => $dataitem['itemtype'],
                 'items_id' => $dataitem['items_id'],
-                'tickets_id' => $clone->getField('id')
+                'tickets_id' => $clone->getField('id'),
             ];
             $item->add($input);
         }
@@ -1379,7 +1372,7 @@ class PluginBehaviorsTicket
         $inputlink = [
             'tickets_id_1' => $clone->getField('id'),
             'tickets_id_2' => $oldid,
-            'link' => 1
+            'link' => 1,
         ];
         $link->add($inputlink);
 
@@ -1387,14 +1380,14 @@ class PluginBehaviorsTicket
             "glpi_documents_items",
             [
                 'itemtype' => 'Ticket',
-                'items_id' => $oldid
+                'items_id' => $oldid,
             ]
         )) {
             $docitem = new Document_Item();
             foreach (
                 $DB->request("glpi_documents_items", [
                     'itemtype' => 'Ticket',
-                    'items_id' => $oldid
+                    'items_id' => $oldid,
                 ]) as $doc
             ) {
                 $inputdoc = [
@@ -1402,7 +1395,7 @@ class PluginBehaviorsTicket
                     'items_id' => $clone->getField('id'),
                     'itemtype' => 'Ticket',
                     'entities_id' => $doc['entities_id'],
-                    'is_recursive' => $doc['is_recursive']
+                    'is_recursive' => $doc['is_recursive'],
                 ];
                 $docitem->add($inputdoc);
             }
@@ -1416,7 +1409,7 @@ class PluginBehaviorsTicket
      * @param $target
      * @return void
      */
-    static function addForGroup($manager, $group_id, $target)
+    public static function addForGroup($manager, $group_id, $target)
     {
         global $DB;
 
