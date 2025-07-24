@@ -616,6 +616,15 @@ class PluginBehaviorsTicket
                     }
                 }
             }
+            $entities_id = $_SESSION['glpiactive_entity'];
+            if (!isset($input['entities_id'])) {
+                $ticket = new Ticket();
+                if ($ticket->getFromDB($input['id'])) {
+                    $entities_id = $ticket->fields['entities_id'];
+                }
+            } else {
+                $entities_id = $input['entities_id'];
+            }
 
             if (count($actors_requester) > 0) {
                 $requesters = $actors_requester;
@@ -628,7 +637,7 @@ class PluginBehaviorsTicket
                         // First group
                         if ($requester['itemtype'] == 'User') {
                             $grp = PluginBehaviorsUser::getRequesterGroup(
-                                $input['entities_id'],
+                                $entities_id,
                                 $requester['items_id'],
                                 true
                             );
@@ -649,7 +658,7 @@ class PluginBehaviorsTicket
                         // All groups
                         if ($requester['itemtype'] == 'User') {
                             $grps = PluginBehaviorsUser::getRequesterGroup(
-                                $input['entities_id'],
+                                $entities_id,
                                 $requester['items_id'],
                                 false
                             );
@@ -740,6 +749,16 @@ class PluginBehaviorsTicket
                 }
             }
 
+            $entities_id = $_SESSION['glpiactive_entity'];
+            if (!isset($input['entities_id'])) {
+                $ticket = new Ticket();
+                if ($ticket->getFromDB($input['id'])) {
+                    $entities_id = $ticket->fields['entities_id'];
+                }
+            } else {
+                $entities_id = $input['entities_id'];
+            }
+
             if (count($actors_assign) > 0) {
                 $assigns = $actors_assign;
                 // Select first group of this user
@@ -751,7 +770,7 @@ class PluginBehaviorsTicket
                         // First group
                         if ($assign['itemtype'] == 'User') {
                             $grp = PluginBehaviorsUser::getTechnicianGroup(
-                                $input['entities_id'],
+                                $entities_id,
                                 $assign['items_id'],
                                 true
                             );
@@ -772,7 +791,7 @@ class PluginBehaviorsTicket
                         // All groups
                         if ($assign['itemtype'] == 'User') {
                             $grps = PluginBehaviorsUser::getTechnicianGroup(
-                                $input['entities_id'],
+                                $entities_id,
                                 $assign['items_id'],
                                 false
                             );
@@ -1053,28 +1072,11 @@ class PluginBehaviorsTicket
                 }
             }
         }
-        if ($config->getField('use_assign_user_group_update')
-            && isset($ticket->input['_itil_assign'])
-            && ($ticket->input['_itil_assign']['_type'] == 'user')
-            && $ticket->input['_itil_assign']['users_id']) {
-            if ($config->getField('use_assign_user_group_update') == 1) {
-                // First group
-                $ticket->input['_additional_groups_assigns']
-                    = [
-                    PluginBehaviorsUser::getTechnicianGroup(
-                        $ticket->fields['entities_id'],
-                        $ticket->input['_itil_assign']['users_id'],
-                        true
-                    )
-                ];
-            } else {
-                // All groups
-                $ticket->input['_additional_groups_assigns']
-                    = PluginBehaviorsUser::getTechnicianGroup(
-                    $ticket->fields['entities_id'],
-                    $ticket->input['_itil_assign']['users_id'],
-                    false
-                );
+
+        if ($config->getField('use_assign_user_group_update')) {
+            $assigns = self::useAssignTechGroup($ticket->input);
+            if ($assigns !== null) {
+                $ticket->input['_actors']['assign'] = self::removeDuplicates($assigns);
             }
         }
 
