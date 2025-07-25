@@ -26,7 +26,7 @@ This plugin allows you to add optional behaviors to GLPI.
 <br />- add requester's group / technician's group
 <br />- ticket's number format
 <br />- new events in notifications
-br />- clone profiles / notifications
+<br />- clone profiles / notifications
 
 This project in on Transifex - Help up to translate it in your language
 
