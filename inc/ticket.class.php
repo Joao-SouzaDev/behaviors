@@ -418,7 +418,7 @@ class PluginBehaviorsTicket
         if ($config->getField('use_assign_user_group') > 0) {
             if (!isset($ticket->input['_groups_id_assign'])
                 || $ticket->input['_groups_id_assign'] == 0) {
-                $assigns = self::useAssignTechGroup($ticket->input);
+                $assigns = self::useAssignTechGroup($ticket->input, 'use_assign_user_group');
                 if ($assigns !== null) {
                     $ticket->input['_actors']['assign'] = self::removeDuplicates($assigns);
                 }
@@ -688,11 +688,11 @@ class PluginBehaviorsTicket
      * @param $input
      * @return array|mixed|void
      */
-    public static function useAssignTechGroup($input)
+    public static function useAssignTechGroup($input, $type)
     {
         $config = PluginBehaviorsConfig::getInstance();
 
-        if ($config->getField('use_assign_user_group') > 0) {
+        if ($config->getField($type) > 0) {
             $actors_assign = [];
             if (isset($input['_actors']['assign'])) {
                 $actors_assign = $input['_actors']['assign'];
@@ -766,7 +766,7 @@ class PluginBehaviorsTicket
                 $grp = 0;
                 $grps = [];
                 foreach ($assigns as $assign) {
-                    if ($config->getField('use_assign_user_group') == 1) {
+                    if ($config->getField($type) == 1) {
                         // First group
                         if ($assign['itemtype'] == 'User') {
                             $grp = PluginBehaviorsUser::getTechnicianGroup(
@@ -775,10 +775,10 @@ class PluginBehaviorsTicket
                                 true
                             );
                         }
-                        if ($grp > 0 && $assign['itemtype'] == 'Group'
-                            && $assign['items_id'] == $grp) {
-                            $ko++;
-                        }
+//                        if ($grp > 0 && $assign['itemtype'] == 'Group'
+//                            && $assign['items_id'] == $grp) {
+//                            $ko++;
+//                        }
                         if ($grp > 0 && $ko == 0) {
                             $actors_assign[] = [
                                 'itemtype' => 'Group',
@@ -1055,7 +1055,7 @@ class PluginBehaviorsTicket
 
         if ($config->getField('use_assign_user_group_update')
             && isset($ticket->input['_actors']['assign'])) {
-            $assigns = self::useAssignTechGroup($ticket->input);
+            $assigns = self::useAssignTechGroup($ticket->input, 'use_assign_user_group_update');
             if ($assigns !== null) {
                 $ticket->input['_actors']['assign'] = self::removeDuplicates($assigns);
             }
