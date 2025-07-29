@@ -362,8 +362,16 @@ class PluginBehaviorsCommon extends CommonGLPI
                     }
                 }
             }
-            if ($obj['global_validation'] == TicketValidation::WAITING && $config->getField('is_ticketvalidation_mandatory')) {
-                $warnings[] = __("You cannot solve/close a ticket with pending validation", 'behaviors');
+            foreach (
+                $DB->request(
+                    'glpi_ticketvalidations',
+                    ['tickets_id' => $obj->getField('id')]
+                ) as $validation
+            ) {
+                if ($validation['status'] == TicketValidation::WAITING && $config->getField('is_ticketvalidation_mandatory')) {
+                    $warnings[] = __("You cannot solve/close a ticket with pending validation", 'behaviors');
+                    break;
+                }
             }
         }
 

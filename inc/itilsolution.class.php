@@ -78,19 +78,25 @@ class PluginBehaviorsITILSolution
                 );
                 return;
             }
-            if ($ticket['global_validation'] == TicketValidation::WAITING && $config->getField('is_ticketvalidation_mandatory')) {
-                $soluce->input = false;
-                Session::addMessageAfterRedirect(
-                    __(
-                        "You cannot solve/close a ticket with validation pending",
-                        'behaviors'
-                    ),
-                    true,
-                    ERROR
-                );
-                return;
+            foreach (
+                $DB->request(
+                    'glpi_ticketvalidations',
+                    ['tickets_id' => $ticket->getField('id')]
+                ) as $validation
+            ) {
+                if ($validation['status'] == 2 && $config->getField('is_ticketvalidation_mandatory')) {
+                    $soluce->input = false;
+                    Session::addMessageAfterRedirect(
+                        __(
+                            "You cannot solve/close a ticket with validation pending",
+                            'behaviors'
+                        ),
+                        true,
+                        ERROR
+                    );
+                    return;
+                }
             }
-
             if (
                 $config->getField('is_ticketsolution_mandatory')
                 && empty($soluce->input['content'])
