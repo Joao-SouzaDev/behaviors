@@ -376,11 +376,13 @@ class PluginBehaviorsCommon extends CommonGLPI
                     $responded++;
                 }
             }
-            $percentWaiting = ($awaiting / ($responded + $awaiting) * 100);
-            if ($percentWaiting > 0) {
-                if (is_numeric($obj->getField('validation_percent')) && $obj->getField('validation_percent') > 0) {
-                    if ($percentWaiting > $obj->getField('validation_percent')) {
-                        $warnings[] = __("You cannot solve/close a ticket with pending validation", 'behaviors');
+            if ($awaiting > 0) {
+                $percentWaiting = ($awaiting / ($responded + $awaiting) * 100);
+                if ($percentWaiting > 0) {
+                    if (is_numeric($obj->getField('validation_percent')) && $obj->getField('validation_percent') > 0) {
+                        if ($percentWaiting > $obj->getField('validation_percent')) {
+                            $warnings[] = __("You cannot solve/close a ticket with pending validation", 'behaviors');
+                        }
                     }
                 }
             }

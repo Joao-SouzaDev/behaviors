@@ -92,20 +92,22 @@ class PluginBehaviorsITILSolution
                     $responded++;
                 }
             }
-            $percentWaiting = ($awaiting / ($responded + $awaiting) * 100);
-            if ($percentWaiting > 0) {
-                if (is_numeric($ticket->getField('validation_percent')) && $ticket->getField('validation_percent') > 0) {
-                    if ($percentWaiting > $ticket->getField('validation_percent')) {
-                        $soluce->input = false;
-                        Session::addMessageAfterRedirect(
-                            __(
-                                "You cannot solve/close a ticket with validation pending",
-                                'behaviors'
-                            ),
-                            true,
-                            ERROR
-                        );
-                        return;
+            if ($awaiting > 0) {
+                $percentWaiting = ($awaiting / ($responded + $awaiting) * 100);
+                if ($percentWaiting > 0) {
+                    if (is_numeric($ticket->getField('validation_percent')) && $ticket->getField('validation_percent') > 0) {
+                        if ($percentWaiting > $ticket->getField('validation_percent')) {
+                            $soluce->input = false;
+                            Session::addMessageAfterRedirect(
+                                __(
+                                    "You cannot solve/close a ticket with validation pending",
+                                    'behaviors'
+                                ),
+                                true,
+                                ERROR
+                            );
+                            return;
+                        }
                     }
                 }
             }
