@@ -78,23 +78,35 @@ class PluginBehaviorsITILSolution
                 );
                 return;
             }
+            $awaiting = 0;
+            $responded = 0;
             foreach (
                 $DB->request(
                     'glpi_ticketvalidations',
                     ['tickets_id' => $ticket->getField('id')]
                 ) as $validation
             ) {
-                if ($validation['status'] == 2 && $config->getField('is_ticketvalidation_mandatory')) {
-                    $soluce->input = false;
-                    Session::addMessageAfterRedirect(
-                        __(
-                            "You cannot solve/close a ticket with validation pending",
-                            'behaviors'
-                        ),
-                        true,
-                        ERROR
-                    );
-                    return;
+                if ($validation['status'] == TicketValidation::WAITING) {
+                    $awaiting++;
+                } else {
+                    $responded++;
+                }
+            }
+            $percentWaiting = ($awaiting / ($responded + $awaiting) * 100);
+            if ($percentWaiting > 0) {
+                if (is_numeric($ticket->getField('validation_percent')) && $ticket->getField('validation_percent') > 0) {
+                    if ($percentWaiting > $ticket->getField('validation_percent')) {
+                        $soluce->input = false;
+                        Session::addMessageAfterRedirect(
+                            __(
+                                "You cannot solve/close a ticket with validation pending",
+                                'behaviors'
+                            ),
+                            true,
+                            ERROR
+                        );
+                        return;
+                    }
                 }
             }
             if (

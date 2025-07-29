@@ -362,15 +362,26 @@ class PluginBehaviorsCommon extends CommonGLPI
                     }
                 }
             }
+            $awaiting = 0;
+            $responded = 0;
             foreach (
                 $DB->request(
                     'glpi_ticketvalidations',
                     ['tickets_id' => $obj->getField('id')]
                 ) as $validation
             ) {
-                if ($validation['status'] == TicketValidation::WAITING && $config->getField('is_ticketvalidation_mandatory')) {
-                    $warnings[] = __("You cannot solve/close a ticket with pending validation", 'behaviors');
-                    break;
+                if ($validation['status'] == TicketValidation::WAITING) {
+                    $awaiting++;
+                } else {
+                    $responded++;
+                }
+            }
+            $percentWaiting = ($awaiting / ($responded + $awaiting) * 100);
+            if ($percentWaiting > 0) {
+                if (is_numeric($obj->getField('validation_percent')) && $obj->getField('validation_percent') > 0) {
+                    if ($percentWaiting > $obj->getField('validation_percent')) {
+                        $warnings[] = __("You cannot solve/close a ticket with pending validation", 'behaviors');
+                    }
                 }
             }
         }
