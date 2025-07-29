@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <name>Behaviors</name>
+    <key>behaviors</key>
+    <state>stable</state>
+    <logo>https://raw.githubusercontent.com/InfotelGLPI/behaviors/master/behaviors.png</logo>
+    <description>
+        <short>
+            <fr><![CDATA[Cette extension permet d'ajouter des comportements optionnels à GLPI.]]></fr>
+            <en><![CDATA[This plugin allows you to add optional behaviors to GLPI.]]></en>
+        </short>
+        <long>
+            <fr><![CDATA[Cette extension permet d'ajouter des comportements optionnels à GLPI.
+        <br />- champs obligatoires
+        <br />- groupe du demandeur
+        <br />- format des numéros de tickets
+        <br />- nouveaux évènements dans les notifications
+   ]]></fr>
+            <en><![CDATA[This plugin allows you to add optional behaviors to GLPI.
+      <br />- mandatory fields
+      <br />- requester's group
+      <br />- ticket's number format
+      <br />- new events in notifications 
+   ]]></en>
+        </long>
+    </description>
+    <homepage>https://github.com/InfotelGLPI/behaviors</homepage>
+    <download>https://github.com/InfotelGLPI/behaviors/releases</download>
+    <authors>
+        <author>Infotel</author>
+        <author>Remi Collet</author>
+        <author>Nelly Mahu-Lasson</author>
+    </authors>
+    <versions>
+        <version>
+            <num>2.7.8</num>
+            <compatibility>~10.0.5</compatibility>
+            <download_url>https://github.com/InfotelGLPI/behaviors/releases/download/2.7.8/glpi-behaviors-2.7.8.tar.bz2</download_url>
+        </version>
+        <version>
+            <num>2.7.7</num>
+            <compatibility>~10.0.5</compatibility>
+            <download_url>https://github.com/InfotelGLPI/behaviors/releases/download/2.7.7/glpi-behaviors-2.7.7.tar.bz2</download_url>
+        </version>
+        <version>
+            <num>2.7.6</num>
+            <compatibility>~10.0.5</compatibility>
+            <download_url>https://github.com/InfotelGLPI/behaviors/releases/download/2.7.6/glpi-behaviors-2.7.6.tar.bz2</download_url>
+        </version>
+        <version>
+            <num>2.7.5</num>
+            <compatibility>~10.0.5</compatibility>
+            <download_url>https://github.com/InfotelGLPI/behaviors/releases/download/2.7.5/glpi-behaviors-2.7.5.tar.bz2</download_url>
+        </version>
+        <version>
+            <num>2.7.4</num>
+            <compatibility>~10.0.5</compatibility>
+            <download_url>https://github.com/InfotelGLPI/behaviors/releases/download/2.7.4/glpi-behaviors-2.7.4.tar.bz2</download_url>
+        </version>
+    </versions>
+    <langs>
+        <lang>cs_CZ</lang>
+        <lang>de_DE</lang>
+        <lang>en_GB</lang>
+        <lang>es_AR</lang>
+        <lang>es_ES</lang>
+        <lang>fi_FI</lang>
+        <lang>fr_FR</lang>
+        <lang>hu_HU</lang>
+        <lang>it_IT</lang>
+        <lang>lv_LV</lang>
+        <lang>nl_NL</lang>
+        <lang>pt_BR</lang>
+        <lang>ro_RO</lang>
+        <lang>ru_RU</lang>
+        <lang>tr_TR</lang>
+    </langs>
+    <license><![CDATA[AGPL v3+]]></license>
+    <tags>
+        <fr>
+            <tag>helpdesk</tag>
+            <tag>inventaire</tag>
+        </fr>
+        <en>
+            <tag>helpdesk</tag>
+            <tag>inventory</tag>
+        </en>
+    </tags>
+</root>

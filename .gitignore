@@ -1,0 +1,39 @@
+# Ignore vendor dependencies
+/vendor/
+
+# Ignore Composer files if not used in plugin
+composer.lock
+composer.phar
+
+# Ignore IDE and editor files
+*.swp
+*.swo
+*.bak
+*.tmp
+*.idea/
+*.vscode/
+*.DS_Store
+
+# Ignore logs and cache
+/logs/
+cache/
+*.log
+
+# Ignore environment/config files
+.env
+.env.*
+
+# Ignore test output
+/phpunit.xml
+/build/
+coverage/
+
+# Ignore node modules if using frontend tooling
+/node_modules/
+
+# Ignore generated documentation
+/docs/
+
+# Ignore uploads or user data
+/files/
+uploads/
