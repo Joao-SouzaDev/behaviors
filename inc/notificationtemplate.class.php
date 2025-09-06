@@ -46,12 +46,18 @@ class PluginBehaviorsNotificationTemplate extends PluginBehaviorsCommon
         $trad = new NotificationTemplateTranslation();
         $dbu = new DbUtils();
         $fkey = $dbu->getForeignKeyFieldForTable($clone->getTable());
-        $crit = [$fkey => $oldid];
 
-        foreach ($DB->request($trad->getTable(), $crit) as $data) {
+        $crit = [
+            'FROM' => $trad->getTable(),
+            'WHERE' => [
+                $fkey => $oldid
+            ]
+        ];
+
+        foreach ($DB->request($crit) as $data) {
             unset($data['id']);
             $data[$fkey] = $clone->getID();
-            $trad->add(Toolbox::addslashes_deep($data));
+            $trad->add($data);
         }
     }
 }

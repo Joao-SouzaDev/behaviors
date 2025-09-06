@@ -200,7 +200,7 @@ class PluginBehaviorsCommon extends CommonGLPI
         // Read original and prepare clone
         $item->check($param['id'], READ);
 
-        $input = ToolBox::addslashes_deep($item->fields);
+        $input = $item->fields;
         $input['name'] = $param['name'];
         $input['_add'] = 1;
         $input['_old_id'] = $input['id'];
@@ -339,11 +339,14 @@ class PluginBehaviorsCommon extends CommonGLPI
             }
 
             if ($config->getField('is_tickettasktodo')) {
+                $crit = [
+                    'FROM' => 'glpi_tickettasks',
+                    'WHERE' => [
+                        'tickets_id' => $obj->getField('id')
+                    ]
+                ];
                 foreach (
-                    $DB->request(
-                        'glpi_tickettasks',
-                        ['tickets_id' => $obj->getField('id')]
-                    ) as $task
+                    $DB->request($crit) as $task
                 ) {
                     if ($task['state'] == 1) {
                         $warnings[] = __("You cannot solve/close a ticket with task do to", 'behaviors');
@@ -355,11 +358,14 @@ class PluginBehaviorsCommon extends CommonGLPI
 
         if ($obj->getType() == 'Problem') {
             if ($config->getField('is_problemtasktodo')) {
+                $crit = [
+                    'FROM' => 'glpi_problemtasks',
+                    'WHERE' => [
+                        'problems_id' => $obj->getField('id')
+                    ]
+                ];
                 foreach (
-                    $DB->request(
-                        'glpi_problemtasks',
-                        ['problems_id' => $obj->getField('id')]
-                    ) as $task
+                    $DB->request($crit) as $task
                 ) {
                     if ($task['state'] == 1) {
                         $warnings[] = __("You cannot solve/close a problem with task do to", 'behaviors');
@@ -371,10 +377,16 @@ class PluginBehaviorsCommon extends CommonGLPI
 
         if ($obj->getType() == 'Change') {
             if ($config->getField('is_changetasktodo')) {
+
+                $crit = [
+                    'FROM' => 'glpi_changetasks',
+                    'WHERE' => [
+                        'changes_id' => $obj->getField('id')
+                    ]
+                ];
+
                 foreach (
-                    $DB->request(
-                        'glpi_changetasks',
-                        ['changes_id' => $obj->getField('id')]
+                    $DB->request($crit
                     ) as $task
                 ) {
                     if ($task['state'] == 1) {
@@ -408,7 +420,7 @@ class PluginBehaviorsCommon extends CommonGLPI
                     echo "<div style='display:flex;align-items: center;'>";
 
                     echo "<div style='margin-right: 20px;'>";
-                    echo "<i class='fas fa-exclamation-triangle fa-2x' style='color:orange;vertical-align: top;'></i>";
+                    echo "<i class='ti ti-alert-triangle' style='font-size:2em;color:orange;vertical-align: top;'></i>";
                     echo "</div>";
 
                     echo "<div>";
@@ -443,7 +455,7 @@ class PluginBehaviorsCommon extends CommonGLPI
                     echo "<div class='d-flex'>";
 
                     echo "<div class='me-2'>";
-                    echo "<i class='fas fa-exclamation-triangle fa-2x' style='color:orange'></i>";
+                    echo "<i class='ti ti-alert-triangle' style='font-size:2em;color:orange'></i>";
                     echo "</div>";
 
                     echo "<div>";

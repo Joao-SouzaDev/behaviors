@@ -51,20 +51,33 @@ class PluginBehaviorsTicket_User
         $config = PluginBehaviorsConfig::getInstance();
         if (($config->getField('single_tech_mode') != 0)
             && ($item->input['type'] == CommonITILActor::ASSIGN)) {
+
+
             $crit = [
-                'tickets_id' => $item->input['tickets_id'],
-                'type' => CommonITILActor::ASSIGN,
+                'FROM' => 'glpi_tickets_users',
+                'WHERE' => [
+                    'tickets_id' => $item->input['tickets_id'],
+                    'type' => CommonITILActor::ASSIGN,
+                ]
             ];
 
-            foreach ($DB->request('glpi_tickets_users', $crit) as $data) {
+            foreach ($DB->request($crit) as $data) {
                 if ($data['id'] != $item->getID()) {
                     $gu = new Ticket_User();
                     $gu->delete($data);
                 }
             }
 
+            $crit = [
+                'FROM' => 'glpi_groups_tickets',
+                'WHERE' => [
+                    'tickets_id' => $item->input['tickets_id'],
+                    'type' => CommonITILActor::ASSIGN,
+                ]
+            ];
+
             if ($config->getField('single_tech_mode') == 2) {
-                foreach ($DB->request('glpi_groups_tickets', $crit) as $data) {
+                foreach ($DB->request($crit) as $data) {
                     $gu = new Group_Ticket();
                     $gu->delete($data);
                 }

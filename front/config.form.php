@@ -31,11 +31,7 @@
  * --------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
-
-// No autoload when plugin is not activated
-require_once('../inc/config.class.php');
-
+global $CFG_GLPI;
 $config = new PluginBehaviorsConfig();
 if (isset($_POST["update"])) {
     $config->check($_POST['id'], UPDATE);

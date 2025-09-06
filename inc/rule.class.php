@@ -57,19 +57,31 @@ class PluginBehaviorsRule extends PluginBehaviorsCommon
 
         $dbu = new DbUtils();
         $fkey = $dbu->getForeignKeyFieldForTable($clone->getTable());
-        $crit = [$fkey => $oldid];
-
         $criteria = new RuleCriteria();
+        $crit = [
+            'FROM' => $criteria->getTable(),
+            'WHERE' => [
+                $fkey => $oldid
+            ]
+        ];
+
         foreach ($DB->request($criteria->getTable(), $crit) as $data) {
             unset($data['id']);
             $data[$fkey] = $clone->getID();
-            $criteria->add(Toolbox::addslashes_deep($data));
+            $criteria->add($data);
         }
         $action = new RuleAction();
-        foreach ($DB->request($action->getTable(), $crit) as $data) {
+        $crit = [
+            'FROM' => $action->getTable(),
+            'WHERE' => [
+                $fkey => $oldid
+            ]
+        ];
+
+        foreach ($DB->request($crit) as $data) {
             unset($data['id']);
             $data[$fkey] = $clone->getID();
-            $action->add(Toolbox::addslashes_deep($data));
+            $action->add($data);
         }
     }
 }

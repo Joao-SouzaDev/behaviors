@@ -186,41 +186,50 @@ class PluginBehaviorsTicket
         $userlinktable = $dbu->getTableForItemType($target->obj->userlinkclass);
         $fkfield = $target->obj->getForeignKeyField();
 
-        $last = "SELECT MAX(`id`) AS lastid
-               FROM `$userlinktable`
-               WHERE `$userlinktable`.`$fkfield` = '" . $target->obj->fields["id"] . "'
-                     AND `$userlinktable`.`type` = '$type'";
+        $last = [
+            'SELECT' => ['MAX' => 'id AS lastid'],
+            'FROM' => $userlinktable,
+            'WHERE' => [
+                $userlinktable . '.' . $fkfield => $target->obj->fields["id"],
+                $userlinktable . '.type' => $type,
+            ],
+        ];
         $result = $DB->request($last);
 
-        $querylast = '';
+        $querylast = [];
         if ($data = $result->current()) {
             $object = new $target->obj->userlinkclass();
             if ($object->getFromDB($data['lastid'])) {
-                $querylast = " AND `$userlinktable`.`users_id` = '" . $object->fields['users_id'] . "'";
+                $querylast = [$userlinktable.'users_id' => $object->fields['users_id']];
             }
         }
 
-        //Look for the user by his id
-        $query = "SELECT DISTINCT `glpi_users`.`id` AS users_id,
-                                 `glpi_users`.`language` AS language,
-                                 `$userlinktable`.`use_notification` AS notif,
-                                 `$userlinktable`.`alternative_email` AS altemail
-                 FROM `$userlinktable`
-                 LEFT JOIN `glpi_users` ON (`$userlinktable`.`users_id` = `glpi_users`.`id`)
-                 INNER JOIN `glpi_profiles_users`
-                    ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id` " .
-            $dbu->getEntitiesRestrictRequest(
-                "AND",
-                "glpi_profiles_users",
-                "entities_id",
-                $target->getEntity(),
-                true
-            ) . ")
-                 WHERE `$userlinktable`.`$fkfield` = '" . $target->obj->fields["id"] . "'
-                       AND `$userlinktable`.`type` = '$type'
-                       $querylast";
+        $criteria = [
+            'SELECT' => ['glpi_users.id AS users_id',
+                'glpi_users.language AS language',
+                $userlinktable.'use_notification AS notif',
+                $userlinktable.'alternative_email AS altemail',],
+            'DISTINCT'        => true,
+            'FROM' => $userlinktable,
+            'INNER JOIN' => [
+                'glpi_profiles_users' => [
+                    'ON' => [
+                        'glpi_profiles_users' => 'users_id',
+                        'glpi_users' => 'id'
+                    ]
+                ],
+            ],
+            'WHERE' => [
+                $userlinktable.$fkfield => $target->obj->fields["id"],
+                $userlinktable.'type' => $type,
+            ]
+        ];
+        $criteria['WHERE'] = $criteria['WHERE'] + $querylast;
+        $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
+                'glpi_profiles_users', 'entities_id', $target->getEntity(), true
+            );
 
-        foreach ($DB->request($query) as $data) {
+        foreach ($DB->request($criteria) as $data) {
             //Add the user email and language in the notified users list
             if ($data['notif']) {
                 $author_email = UserEmail::getDefaultForUser($data['users_id']);
@@ -394,7 +403,7 @@ class PluginBehaviorsTicket
             }
             $want = date($config->getField('tickets_id_format'));
             if ($max < $want) {
-                $DB->query("ALTER TABLE `glpi_tickets` AUTO_INCREMENT=$want");
+                $DB->doQuery("ALTER TABLE `glpi_tickets` AUTO_INCREMENT=$want");
             }
         }
 
@@ -1007,11 +1016,16 @@ class PluginBehaviorsTicket
                 }
             }
             if ($config->getField('is_tickettasktodo')) {
+
+                $crit = [
+                    'FROM' => 'glpi_tickettasks',
+                    'WHERE' => [
+                        'tickets_id' => $ticket->getField('id')
+                    ]
+                ];
+
                 foreach (
-                    $DB->request(
-                        'glpi_tickettasks',
-                        ['tickets_id' => $ticket->getField('id')]
-                    ) as $task
+                    $DB->request($crit) as $task
                 ) {
                     if ($task['state'] == 1) {
                         Session::addMessageAfterRedirect(
@@ -1342,11 +1356,15 @@ class PluginBehaviorsTicket
 
         $dbu = new DbUtils();
         $fkey = $dbu->getForeignKeyFieldForTable($clone->getTable());
-        $crit = [$fkey => $oldid];
-
         // add items of tickets source
         $item = new Item_Ticket();
-        foreach ($DB->request($item->getTable(), $crit) as $dataitem) {
+        $crit = [
+            'FROM' => $item->getTable(),
+            'WHERE' => [
+                $fkey => $oldid
+            ]
+        ];
+        foreach ($DB->request($crit) as $dataitem) {
             $input = [
                 'itemtype' => $dataitem['itemtype'],
                 'items_id' => $dataitem['items_id'],
@@ -1372,11 +1390,15 @@ class PluginBehaviorsTicket
             ]
         )) {
             $docitem = new Document_Item();
-            foreach (
-                $DB->request("glpi_documents_items", [
+            $query = [
+                'FROM' => 'glpi_documents_items',
+                'WHERE' => [
                     'itemtype' => 'Ticket',
                     'items_id' => $oldid,
-                ]) as $doc
+                ]
+            ];
+            foreach (
+                $DB->request($query) as $doc
             ) {
                 $inputdoc = [
                     'documents_id' => $doc['documents_id'],
@@ -1405,30 +1427,47 @@ class PluginBehaviorsTicket
 
         // members/managers of the group allowed on object entity
         // filter group with 'is_assign' (attribute can be unset after notification)
-        $query = "SELECT DISTINCT `glpi_users`.`id` AS users_id,
-                               `glpi_users`.`language` AS language
-               FROM `glpi_groups_users`
-               INNER JOIN `glpi_users` ON (`glpi_groups_users`.`users_id` = `glpi_users`.`id`)
-               INNER JOIN `glpi_profiles_users`
-                     ON (`glpi_profiles_users`.`users_id` = `glpi_users`.`id` " .
-            $dbu->getEntitiesRestrictRequest(
-                "AND",
-                "glpi_profiles_users",
-                "entities_id",
-                $target->getEntity(),
-                true
-            ) . ")
-                           INNER JOIN `glpi_groups` ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
-                           WHERE `glpi_groups_users`.`groups_id` = '$group_id'
-                           AND `glpi_groups`.`is_notify`";
-
+        $criteria = [
+            'SELECT' => ['glpi_users.id AS users_id',
+                'glpi_users.language AS language'],
+            'DISTINCT'        => true,
+            'FROM' => 'glpi_groups_users',
+            'INNER JOIN' => [
+                'glpi_users' => [
+                    'ON' => [
+                        'glpi_groups_users' => 'users_id',
+                        'glpi_users' => 'id'
+                    ]
+                ],
+                'glpi_profiles_users' => [
+                    'ON' => [
+                        'glpi_profiles_users' => 'users_id',
+                        'glpi_users' => 'id'
+                    ]
+                ],
+                'glpi_groups' => [
+                    'ON' => [
+                        'glpi_groups_users' => 'users_id',
+                        'glpi_users' => 'id'
+                    ]
+                ],
+            ],
+            'WHERE' => [
+                'glpi_groups_users'.'groups_id' => $group_id,
+                'glpi_groups'.'is_notify' => 1,
+            ]
+        ];
         if ($manager == 1) {
-            $query .= " AND `glpi_groups_users`.`is_manager` ";
+            $criteria['WHERE'] = $criteria['WHERE'] +  ['glpi_groups_users.is_manager' => 1];
         } elseif ($manager == 2) {
-            $query .= " AND NOT `glpi_groups_users`.`is_manager` ";
+            $criteria['WHERE'] = $criteria['WHERE'] +  ['NOT'       => ['glpi_groups_users.is_manager' => null]];
         }
 
-        foreach ($DB->request($query, '', true) as $data) {
+        $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
+                'glpi_profiles_users', 'entities_id', $target->getEntity(), true
+            );
+
+        foreach ($DB->request($criteria) as $data) {
             $target->addToRecipientsList($data);
         }
     }

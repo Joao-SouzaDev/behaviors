@@ -60,7 +60,7 @@ class PluginBehaviorsChange
             }
             $want = date($config->getField('changes_id_format'));
             if ($max < $want) {
-                $DB->query("ALTER TABLE `glpi_changes` AUTO_INCREMENT=$want");
+                $DB->doQuery("ALTER TABLE `glpi_changes` AUTO_INCREMENT=$want");
             }
         }
     }
@@ -96,11 +96,14 @@ class PluginBehaviorsChange
             )) {
 
             if ($config->getField('is_changetasktodo')) {
+                $crit = [
+                    'FROM' => 'glpi_changetasks',
+                    'WHERE' => [
+                        'changes_id' => $change->getField('id')
+                    ]
+                ];
                 foreach (
-                    $DB->request(
-                        'glpi_changetasks',
-                        ['changes_id' => $change->getField('id')]
-                    ) as $task
+                    $DB->request($crit) as $task
                 ) {
                     if ($task['state'] == 1) {
                         Session::addMessageAfterRedirect(

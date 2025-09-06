@@ -31,7 +31,7 @@
  * --------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
+use Glpi\Exception\Http\BadRequestHttpException;
 
 $config = new PluginBehaviorsCommon();
 if (isset($_POST["_clone"])) {
@@ -39,4 +39,5 @@ if (isset($_POST["_clone"])) {
 
     Html::back();
 }
-Html::displayErrorAndDie('Lost!');
+throw new BadRequestHttpException();
+

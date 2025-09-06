@@ -32,7 +32,7 @@
  * --------------------------------------------------------------------------
  */
 
-define('PLUGIN_BEHAVIORS_VERSION', '2.7.8');
+define('PLUGIN_BEHAVIORS_VERSION', '3.0.0');
 // Init the hooks of the plugins -Needed
 function plugin_init_behaviors()
 {
@@ -118,11 +118,11 @@ function plugin_version_behaviors()
         'license' => 'AGPLv3+',
         'author' => 'Infotel, Remi Collet, Nelly Mahu-Lasson',
         'homepage' => 'https://github.com/InfotelGLPI/behaviors',
-        'minGlpiVersion' => '10.0.5',
+        'minGlpiVersion' => '11.0.0',
         'requirements' => [
             'glpi' => [
-                'min' => '10.0.5',
-                'max' => '11.0.0',
+                'min' => '11.0.0',
+                'max' => '12.0.0',
             ],
         ],
     ];

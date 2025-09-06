@@ -63,13 +63,16 @@ class PluginBehaviorsProblem
                     Problem::getclosedStatusArray()
                 )
             )) {
-            $soluce = $DB->request(
-                'glpi_itilsolutions',
-                [
+
+            $crit = [
+                'FROM' => 'glpi_itilsolutions',
+                'WHERE' => [
                     'itemtype' => 'Problem',
                     'items_id' => $problem->input['id'],
                 ]
-            );
+            ];
+
+            $soluce = $DB->request($crit);
 
             if ($config->getField('is_problemsolutiontype_mandatory')
                 && !count($soluce)) {

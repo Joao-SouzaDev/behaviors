@@ -211,11 +211,14 @@ class PluginBehaviorsITILSolution
                 return;
             }
             if ($config->getField('is_tickettasktodo')) {
+                $crit = [
+                    'FROM' => 'glpi_tickettasks',
+                    'WHERE' => [
+                        'tickets_id' => $ticket->getField('id')
+                    ]
+                ];
                 foreach (
-                    $DB->request(
-                        'glpi_tickettasks',
-                        ['tickets_id' => $ticket->getField('id')]
-                    ) as $task
+                    $DB->request($crit) as $task
                 ) {
                     if ($task['state'] == 1) {
                         $soluce->input = false;
@@ -251,11 +254,14 @@ class PluginBehaviorsITILSolution
                 return;
             }
             if ($config->getField('is_problemtasktodo')) {
+                $crit = [
+                    'FROM' => 'glpi_problemtasks',
+                    'WHERE' => [
+                        'problems_id' => $problem->getField('id')
+                    ]
+                ];
                 foreach (
-                    $DB->request(
-                        'glpi_problemtasks',
-                        ['problems_id' => $problem->getField('id')]
-                    ) as $task
+                    $DB->request($crit) as $task
                 ) {
                     if ($task['state'] == 1) {
                         $soluce->input = false;
@@ -278,11 +284,17 @@ class PluginBehaviorsITILSolution
         if ($change->getFromDB($soluce->input['items_id'])
             && $soluce->input['itemtype'] == 'Change') {
             if ($config->getField('is_changetasktodo')) {
+
+                $crit = [
+                    'FROM' => 'glpi_changetasks',
+                    'WHERE' => [
+                        'changes_id' => $change->getField('id')
+                    ]
+                ];
+
                 foreach (
                     $DB->request(
-                        'glpi_changetasks',
-                        ['changes_id' => $change->getField('id')]
-                    ) as $task
+                        $crit) as $task
                 ) {
                     if ($task['state'] == 1) {
                         $soluce->input = false;

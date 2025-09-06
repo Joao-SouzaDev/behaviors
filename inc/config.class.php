@@ -37,13 +37,13 @@ class PluginBehaviorsConfig extends CommonDBTM
     private static $_instance = null;
     static $rightname = 'config';
 
-    static function canCreate()
+    static function canCreate(): bool
     {
         return Session::haveRight('config', UPDATE);
     }
 
 
-    static function canView()
+    static function canView(): bool
     {
         return Session::haveRight('config', READ);
     }
@@ -120,7 +120,7 @@ class PluginBehaviorsConfig extends CommonDBTM
                      PRIMARY KEY  (`id`)
                    ) ENGINE=InnoDB  DEFAULT CHARSET = {$default_charset}
                      COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC";
-            $DB->queryOrDie(
+            $DB->doQuery(
                 $query,
                 __('Error in creating glpi_plugin_behaviors_configs', 'behaviors') .
                 "<br>" . $DB->error()
@@ -129,7 +129,7 @@ class PluginBehaviorsConfig extends CommonDBTM
             $query = "INSERT INTO `$table`
                          (id, date_mod)
                    VALUES (1, NOW())";
-            $DB->queryOrDie(
+            $DB->doQuery(
                 $query,
                 __('Error during update glpi_plugin_behaviors_configs', 'behaviors') .
                 "<br>" . $DB->error()
@@ -189,22 +189,22 @@ class PluginBehaviorsConfig extends CommonDBTM
             $query = "UPDATE `glpi_notifications`
                    SET `event` = 'assign_user'
                    WHERE `event` = 'plugin_behaviors_ticketnewtech'";
-            $DB->queryOrDie($query, "9.2 change notification assign user to core one");
+            $DB->doQuery($query, "9.2 change notification assign user to core one");
 
             $query = "UPDATE `glpi_notifications`
                    SET `event` = 'assign_group'
                    WHERE `event` = 'plugin_behaviors_ticketnewgrp'";
-            $DB->queryOrDie($query, "9.2 change notification assign group to core one");
+            $DB->doQuery($query, "9.2 change notification assign group to core one");
 
             $query = "UPDATE `glpi_notifications`
                    SET `event` = 'assign_supplier'
                    WHERE `event` = 'plugin_behaviors_ticketnewsupp'";
-            $DB->queryOrDie($query, "9.2 change notification assign supplier to core one");
+            $DB->doQuery($query, "9.2 change notification assign supplier to core one");
 
             $query = "UPDATE `glpi_notifications`
                    SET `event` = 'observer_user'
                    WHERE `event` = 'plugin_behaviors_ticketnewwatch'";
-            $DB->queryOrDie($query, "9.2 change notification add watcher to core one");
+            $DB->doQuery($query, "9.2 change notification add watcher to core one");
 
             $mig->addField($table, 'is_tickettasktodo', 'bool', ['after' => 'clone']);
 
@@ -578,11 +578,14 @@ class PluginBehaviorsConfig extends CommonDBTM
         return false;
     }
 
+    static function getIcon() {
+        return "ti ti-settings";
+    }
 
     function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->getType() == 'Config') {
-            return self::getName();
+            return self::createTabEntry(self::getName());
         }
         return '';
     }
