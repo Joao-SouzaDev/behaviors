@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Behaviors Development Team
-# This file is distributed under the same license as the GLPI - Behaviors plugin package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: GLPI - Behaviors plugin\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-06 10:55+0000\n"
+"POT-Creation-Date: 2025-09-08 12:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: setup.php:116 inc/common.class.php:107 inc/config.class.php:60
+#: inc/document_item.class.php:52
+msgid "Add document to ticket"
+msgstr ""
+
+#: templates/config.html.twig:137
+msgid "Adding the ticket solution"
+msgstr ""
+
+#: templates/config.html.twig:278
+msgid "Additional notifications"
+msgstr ""
+
+#: templates/config.html.twig:287
+msgid "Allow Clone"
+msgstr ""
+
+#: setup.php:116 inc/common.class.php:107 inc/config.class.php:62
 #: inc/document_item.class.php:51 inc/document_item.class.php:58
 #: inc/ticket.class.php:58 inc/ticket.class.php:65 inc/ticket.class.php:72
 #: inc/ticket.class.php:95 inc/ticket.class.php:103 inc/ticket.class.php:111
@@ -26,13 +42,29 @@ msgstr ""
 msgid "Behaviours"
 msgstr ""
 
-#: inc/change.class.php:111 inc/common.class.php:393
-#: inc/itilsolution.class.php:303
-msgid "You cannot solve/close a change with task do to"
+#: templates/config.html.twig:219
+msgid "Block the solving/closing of a problem if task do to"
 msgstr ""
 
-#: inc/changetask.class.php:68
-msgid "You cannot change status of a task in a solved change"
+#: templates/config.html.twig:192
+msgid "Block the solving/closing of a the ticket if task do to"
+msgstr ""
+
+#: inc/common.class.php:312 inc/itilsolution.class.php:165
+#: inc/ticket.class.php:970 templates/config.html.twig:164
+msgid "Category is mandatory before ticket is solved/closed"
+msgstr ""
+
+#: inc/ticket.class.php:1053 templates/config.html.twig:89
+msgid "Category is mandatory when you assign a ticket"
+msgstr ""
+
+#: inc/ticket.class.php:66
+msgid "Change status"
+msgstr ""
+
+#: templates/config.html.twig:233
+msgid "Change's number format"
 msgstr ""
 
 #: inc/common.class.php:106 inc/common.class.php:124 inc/common.class.php:158
@@ -43,39 +75,198 @@ msgstr ""
 msgid "Clone of"
 msgstr ""
 
-#: inc/common.class.php:307 inc/config.class.php:559
-#: inc/itilsolution.class.php:93 inc/ticket.class.php:957
+#: templates/config.html.twig:294
+msgid "Comment"
+msgid_plural "Comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/config.html.twig:300
+msgid "Comments"
+msgstr ""
+
+#: templates/config.html.twig:248
+msgid "Delete computer in OCSNG when purged from GLPI"
+msgstr ""
+
+#: inc/document_item.class.php:59
+msgid "Delete document to ticket"
+msgstr ""
+
+#: templates/config.html.twig:113
+msgid "Deny change of ticket's creation date"
+msgstr ""
+
+#: inc/itilsolution.class.php:80 inc/itilsolution.class.php:360
+#: inc/ticket.class.php:935 templates/config.html.twig:178
+msgid "Description of solution is mandatory before ticket is solved/closed"
+msgstr ""
+
+#: inc/common.class.php:307 inc/itilsolution.class.php:93
+#: inc/ticket.class.php:957 templates/config.html.twig:199
 msgid "Duration is mandatory before ticket is solved/closed"
 msgstr ""
 
-#: inc/common.class.php:312 inc/config.class.php:506
-#: inc/itilsolution.class.php:165 inc/ticket.class.php:970
-msgid "Category is mandatory before ticket is solved/closed"
+#: inc/config.class.php:134
+msgid "Error during update glpi_plugin_behaviors_configs"
 msgstr ""
 
-#: inc/common.class.php:320 inc/config.class.php:458
-#: inc/itilsolution.class.php:179 inc/ticket.class.php:984
-msgid "Technician assigned is mandatory before ticket is solved/closed"
+#: inc/config.class.php:125
+msgid "Error in creating glpi_plugin_behaviors_configs"
 msgstr ""
 
-#: inc/common.class.php:329 inc/config.class.php:484
-#: inc/itilsolution.class.php:192 inc/ticket.class.php:997
+#: inc/common.class.php:329 inc/itilsolution.class.php:192
+#: inc/ticket.class.php:997 templates/config.html.twig:157
 msgid ""
 "Group of technicians assigned is mandatory before ticket is solved/closed"
 msgstr ""
 
-#: inc/common.class.php:337 inc/config.class.php:515
-#: inc/itilsolution.class.php:205 inc/ticket.class.php:1010
+#: templates/config.html.twig:240
+msgid "Inventory"
+msgstr ""
+
+#: inc/ticket.class.php:102
+msgid "Last group assigned"
+msgstr ""
+
+#: inc/ticket.class.php:134
+msgid "Last group assigned without supersivor"
+msgstr ""
+
+#: inc/ticket.class.php:110
+msgid "Last supplier assigned"
+msgstr ""
+
+#: inc/ticket.class.php:94
+msgid "Last technician assigned"
+msgstr ""
+
+#: inc/ticket.class.php:118
+msgid "Last watcher added"
+msgstr ""
+
+#: inc/common.class.php:337 inc/itilsolution.class.php:205
+#: inc/ticket.class.php:1010 templates/config.html.twig:171
 msgid "Location is mandatory before ticket is solved/closed"
+msgstr ""
+
+#: templates/config.html.twig:226
+msgid "New change"
+msgstr ""
+
+#: templates/config.html.twig:42
+msgid "New ticket"
+msgstr ""
+
+#: templates/config.html.twig:268
+msgid "Notification"
+msgid_plural "Notifications"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/ticket.class.php:59
+msgid "Reopen ticket"
+msgstr ""
+
+#: templates/config.html.twig:315
+msgctxt "button"
+msgid "Save"
+msgstr ""
+
+#: templates/config.html.twig:150
+msgid "Set the solution writer as the technician of the ticket"
+msgstr ""
+
+#: templates/config.html.twig:123
+msgid "Single technician and group"
+msgstr ""
+
+#: inc/ticket.class.php:126
+msgid "Supervisor of last group assigned"
+msgstr ""
+
+#: templates/config.html.twig:106
+msgid "Task category is mandatory in a task"
+msgstr ""
+
+#: inc/common.class.php:320 inc/itilsolution.class.php:179
+#: inc/ticket.class.php:984 templates/config.html.twig:143
+msgid "Technician assigned is mandatory before ticket is solved/closed"
+msgstr ""
+
+#: templates/config.html.twig:130
+msgid "Technician assignment when adding follow up"
+msgstr ""
+
+#: templates/config.html.twig:131
+msgid "The technician must belong to the group assigned to the ticket"
+msgstr ""
+
+#: inc/ticket.class.php:73
+msgid "Ticket waiting"
+msgstr ""
+
+#: templates/config.html.twig:50
+msgid "Ticket's number format"
+msgstr ""
+
+#: inc/itilsolution.class.php:248 inc/problem.class.php:82 templates/config.html.twig:213
+msgid "Type of solution is mandatory before problem is solved/closed"
+msgstr ""
+
+#: inc/itilsolution.class.php:67 inc/itilsolution.class.php:345
+#: inc/ticket.class.php:923 templates/config.html.twig:185
+msgid "Type of solution is mandatory before ticket is solved/closed"
+msgstr ""
+
+#: templates/config.html.twig:207
+msgid "Update of a problem"
+msgstr ""
+
+#: templates/config.html.twig:83
+msgid "Update of a ticket"
+msgstr ""
+
+#: templates/config.html.twig:57
+msgid "Use the associated item's group"
+msgstr ""
+
+#: templates/config.html.twig:67
+msgid "Use the requester's group"
+msgstr ""
+
+#: templates/config.html.twig:75 templates/config.html.twig:99
+msgid "Use the technician's group"
+msgstr ""
+
+#: inc/changetask.class.php:68
+msgid "You cannot change status of a task in a solved change"
+msgstr ""
+
+#: inc/problemtask.class.php:68
+msgid "You cannot change status of a task in a solved problem"
+msgstr ""
+
+#: inc/tickettask.class.php:124
+msgid "You cannot change status of a task in a solved ticket"
+msgstr ""
+
+#: inc/common.class.php:440
+msgid "You cannot resolve the ticket"
+msgstr ""
+
+#: inc/change.class.php:111 inc/common.class.php:393
+#: inc/itilsolution.class.php:303
+msgid "You cannot solve/close a change with task do to"
+msgstr ""
+
+#: inc/common.class.php:371 inc/itilsolution.class.php:270
+msgid "You cannot solve/close a problem with task do to"
 msgstr ""
 
 #: inc/common.class.php:352 inc/itilsolution.class.php:227
 #: inc/ticket.class.php:1033
 msgid "You cannot solve/close a ticket with task do to"
-msgstr ""
-
-#: inc/common.class.php:371 inc/itilsolution.class.php:270
-msgid "You cannot solve/close a problem with task do to"
 msgstr ""
 
 #: inc/common.class.php:429
@@ -86,204 +277,7 @@ msgstr ""
 msgid "You must add a solution type. it's mandatory"
 msgstr ""
 
-#: inc/common.class.php:440
-msgid "You cannot resolve the ticket"
-msgstr ""
-
 #: inc/common.class.php:463 inc/tickettask.class.php:64
 #: inc/tickettask.class.php:103
 msgid "You must define a category. it's mandatory"
-msgstr ""
-
-#: inc/config.class.php:125
-msgid "Error in creating glpi_plugin_behaviors_configs"
-msgstr ""
-
-#: inc/config.class.php:134
-msgid "Error during update glpi_plugin_behaviors_configs"
-msgstr ""
-
-#: inc/config.class.php:292
-msgid "Inventory"
-msgstr ""
-
-#: inc/config.class.php:296
-msgid "Ticket's number format"
-msgstr ""
-
-#: inc/config.class.php:306
-msgid "Delete computer in OCSNG when purged from GLPI"
-msgstr ""
-
-#: inc/config.class.php:312
-msgid "Plugin \"Item's uninstallation\" not installed"
-msgstr ""
-
-#: inc/config.class.php:315
-msgid "Plugin \"OCS Inventory NG\" not installed"
-msgstr ""
-
-#: inc/config.class.php:321
-msgid "Use the associated item's group"
-msgstr ""
-
-#: inc/config.class.php:323
-msgid "Show my assets"
-msgstr ""
-
-#: inc/config.class.php:328
-msgid "Use the requester's group"
-msgstr ""
-
-#: inc/config.class.php:334
-msgid "Show assets of my groups"
-msgstr ""
-
-#: inc/config.class.php:339 inc/config.class.php:379
-msgid "Use the technician's group"
-msgstr ""
-
-#: inc/config.class.php:346
-msgid "Notification"
-msgid_plural "Notifications"
-msgstr[0] ""
-msgstr[1] ""
-
-#: inc/config.class.php:356
-msgid "Additional notifications"
-msgstr ""
-
-#: inc/config.class.php:361 inc/ticket.class.php:1053
-msgid "Category is mandatory when you assign a ticket"
-msgstr ""
-
-#: inc/config.class.php:368
-msgid "Allow Clone"
-msgstr ""
-
-#: inc/config.class.php:372
-msgid "In the active entity"
-msgstr ""
-
-#: inc/config.class.php:373
-msgid "In the item's entity"
-msgstr ""
-
-#: inc/config.class.php:390
-msgid "Task category is mandatory in a task"
-msgstr ""
-
-#: inc/config.class.php:397 inc/itilsolution.class.php:248
-#: inc/problem.class.php:82
-msgid "Type of solution is mandatory before problem is solved/closed"
-msgstr ""
-
-#: inc/config.class.php:406
-msgid "Deny change of ticket's creation date"
-msgstr ""
-
-#: inc/config.class.php:409
-msgid "Block the solving/closing of a problem if task do to"
-msgstr ""
-
-#: inc/config.class.php:415
-msgid "Single technician and group"
-msgstr ""
-
-#: inc/config.class.php:418
-msgid "Single user and single group"
-msgstr ""
-
-#: inc/config.class.php:419
-msgid "Single user or group"
-msgstr ""
-
-#: inc/config.class.php:431
-msgid "Technician assignment when adding follow up"
-msgstr ""
-
-#: inc/config.class.php:432
-msgid "The technician must belong to the group assigned to the ticket"
-msgstr ""
-
-#: inc/config.class.php:439
-msgid "Change's number format"
-msgstr ""
-
-#: inc/config.class.php:452
-msgid "Adding the ticket solution"
-msgstr ""
-
-#: inc/config.class.php:467
-msgid "Block the solving/closing of a change if task do to"
-msgstr ""
-
-#: inc/config.class.php:473
-msgid "Set the solution writer as the technician of the ticket"
-msgstr ""
-
-#: inc/config.class.php:527 inc/itilsolution.class.php:80
-#: inc/itilsolution.class.php:360 inc/ticket.class.php:935
-msgid "Description of solution is mandatory before ticket is solved/closed"
-msgstr ""
-
-#: inc/config.class.php:541 inc/itilsolution.class.php:67
-#: inc/itilsolution.class.php:345 inc/ticket.class.php:923
-msgid "Type of solution is mandatory before ticket is solved/closed"
-msgstr ""
-
-#: inc/config.class.php:552
-msgid "Block the solving/closing of a the ticket if task do to"
-msgstr ""
-
-#: inc/document_item.class.php:52
-msgid "Add document to ticket"
-msgstr ""
-
-#: inc/document_item.class.php:59
-msgid "Delete document to ticket"
-msgstr ""
-
-#: inc/problemtask.class.php:68
-msgid "You cannot change status of a task in a solved problem"
-msgstr ""
-
-#: inc/ticket.class.php:59
-msgid "Reopen ticket"
-msgstr ""
-
-#: inc/ticket.class.php:66
-msgid "Change status"
-msgstr ""
-
-#: inc/ticket.class.php:73
-msgid "Ticket waiting"
-msgstr ""
-
-#: inc/ticket.class.php:94
-msgid "Last technician assigned"
-msgstr ""
-
-#: inc/ticket.class.php:102
-msgid "Last group assigned"
-msgstr ""
-
-#: inc/ticket.class.php:110
-msgid "Last supplier assigned"
-msgstr ""
-
-#: inc/ticket.class.php:118
-msgid "Last watcher added"
-msgstr ""
-
-#: inc/ticket.class.php:126
-msgid "Supervisor of last group assigned"
-msgstr ""
-
-#: inc/ticket.class.php:134
-msgid "Last group assigned without supersivor"
-msgstr ""
-
-#: inc/tickettask.class.php:124
-msgid "You cannot change status of a task in a solved ticket"
 msgstr ""
