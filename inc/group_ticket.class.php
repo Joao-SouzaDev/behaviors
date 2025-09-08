@@ -76,7 +76,7 @@ class PluginBehaviorsGroup_Ticket
             ];
 
             if ($config->getField('single_tech_mode') == 2) {
-                foreach ($crit) as $data) {
+                foreach ($DB->request($crit) as $data) {
                     $gu = new Ticket_User();
                     $gu->delete($data);
                 }

@@ -1,0 +1,321 @@
+{#
+ # -------------------------------------------------------------------------
+ # Escalade plugin for GLPI
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of Escalade.
+ #
+ # Escalade is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 2 of the License, or
+ # (at your option) any later version.
+ #
+ # Escalade is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with Escalade. If not, see <http://www.gnu.org/licenses/>.
+ # -------------------------------------------------------------------------
+ # @copyright Copyright (C) 2015-2023 by Escalade plugin team.
+ # @license   GPLv2 https://www.gnu.org/licenses/gpl-2.0.html
+ # @link      https://github.com/pluginsGLPI/escalade
+ # -------------------------------------------------------------------------
+ #}
+
+{% import "components/form/fields_macros.html.twig" as fields %}
+
+{% set field_options = {'label_class': 'col-8', 'input_class': 'col-4', 'full_width': false} %}
+
+{{ include('components/form/header.html.twig') }}
+<div class="card">
+    <div class="card-body">
+        <form name='form' action='{{ action }}' method='post'>
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="id" value="{{ id }}">
+
+            <div class="hr-text mt-2">
+                <i class="fa-2x ti ti-alert-circle"></i>
+                <span>{{ __('New ticket') }}</span>
+            </div>
+            <div class="row">
+
+                {{ fields.dropdownArrayField(
+                    'tickets_id_format',
+                    config["tickets_id_format"],
+                    dateformat,
+                    __("Ticket's number format", "behaviors"),
+                    field_options
+                ) }}
+
+                {{ fields.sliderField(
+                    'use_requester_item_group',
+                    config["use_requester_item_group"],
+                    __("Use the associated item's group", 'behaviors'),
+                    field_options
+                ) }}
+
+                {% set nofirstlast = {0: __("No"), 1: __('First'), 2: __('Last')} %}
+
+                {{ fields.dropdownArrayField(
+                    'use_requester_user_group',
+                    config["use_requester_user_group"],
+                    nofirstlast,
+                    __("Use the requester's group", "behaviors"),
+                    field_options
+                ) }}
+
+                {{ fields.dropdownArrayField(
+                    'use_assign_user_group',
+                    config["use_assign_user_group"],
+                    nofirstlast,
+                    __("Use the technician's group", "behaviors"),
+                    field_options
+                ) }}
+
+            </div>
+
+            <div class="hr-text">
+                <i class="fa-2x ti ti ti-alert-circle"></i>
+                <span>{{ __('Update of a ticket') }}</span>
+            </div>
+            <div class="row">
+                {{ fields.sliderField(
+                    'is_ticketcategory_mandatory_on_assign',
+                    config["is_ticketcategory_mandatory_on_assign"],
+                __('Category is mandatory when you assign a ticket', 'behaviors'),
+                    field_options
+                ) }}
+
+                {% set nofirstlast = {0: __("No"), 1: __('First'), 2: __('Last')} %}
+
+                {{ fields.dropdownArrayField(
+                    'use_assign_user_group_update',
+                    config["use_assign_user_group_update"],
+                    nofirstlast,
+                    __("Use the technician's group", "behaviors"),
+                    field_options
+                ) }}
+
+                {{ fields.sliderField(
+                    'is_tickettaskcategory_mandatory',
+                    config["is_tickettaskcategory_mandatory"],
+                __('Task category is mandatory in a task', 'behaviors'),
+                    field_options
+                ) }}
+
+                {{ fields.sliderField(
+                    'is_ticketdate_locked',
+                    config["is_ticketdate_locked"],
+                    __("Deny change of ticket's creation date", 'behaviors'),
+                    field_options
+                ) }}
+
+                {% set tab = {0: __("No"), 1: __('Single user and single group', 'behaviors'), 2: __('Single user or group', 'behaviors')} %}
+
+                {{ fields.dropdownArrayField(
+                    'use_assign_user_group_update',
+                    config["use_assign_user_group_update"],
+                    tab,
+                    __("Single technician and group", "behaviors"),
+                    field_options
+                ) }}
+
+                {{ fields.sliderField(
+                    'addfup_updatetech',
+                    config["addfup_updatetech"],
+                    __("Technician assignment when adding follow up", 'behaviors'),
+                {helper: __('The technician must belong to the group assigned to the ticket', 'behaviors')}
+                ) }}
+            </div>
+
+                <div class="hr-text">
+                    <i class="fa-2x ti ti ti-alert-circle"></i>
+                    <span>{{ __('Adding the ticket solution', 'behaviors') }}</span>
+                </div>
+                <div class="row">
+                    {{ fields.sliderField(
+                        'is_tickettech_mandatory',
+                        config["is_tickettech_mandatory"],
+                        __('Technician assigned is mandatory before ticket is solved/closed', 'behaviors'),
+                        field_options
+                    ) }}
+
+                    {{ fields.sliderField(
+                        'ticketsolved_updatetech',
+                        config["ticketsolved_updatetech"],
+                        __('Set the solution writer as the technician of the ticket', 'behaviors'),
+                        field_options
+                    ) }}
+
+                    {{ fields.sliderField(
+                        'is_tickettechgroup_mandatory',
+                        config["is_tickettechgroup_mandatory"],
+                        __('Group of technicians assigned is mandatory before ticket is solved/closed', 'behaviors'),
+                        field_options
+                    ) }}
+
+                    {{ fields.sliderField(
+                        'is_ticketcategory_mandatory',
+                        config["is_ticketcategory_mandatory"],
+                        __('Category is mandatory before ticket is solved/closed', 'behaviors'),
+                        field_options
+                    ) }}
+
+                    {{ fields.sliderField(
+                        'is_ticketlocation_mandatory',
+                        config["is_ticketlocation_mandatory"],
+                        __('Location is mandatory before ticket is solved/closed', 'behaviors'),
+                        field_options
+                    ) }}
+
+                    {{ fields.sliderField(
+                        'is_ticketsolution_mandatory',
+                        config["is_ticketsolution_mandatory"],
+                        __('Description of solution is mandatory before ticket is solved/closed', 'behaviors'),
+                        field_options
+                    ) }}
+
+                    {{ fields.sliderField(
+                        'is_ticketsolutiontype_mandatory',
+                        config["is_ticketsolutiontype_mandatory"],
+                        __('Type of solution is mandatory before ticket is solved/closed', 'behaviors'),
+                        field_options
+                    ) }}
+
+                    {{ fields.sliderField(
+                        'is_tickettasktodo',
+                        config["is_tickettasktodo"],
+                        __('Block the solving/closing of a the ticket if task do to', 'behaviors'),
+                        field_options
+                    ) }}
+
+                    {{ fields.sliderField(
+                        'is_ticketrealtime_mandatory',
+                        config["is_ticketrealtime_mandatory"],
+                        __('Duration is mandatory before ticket is solved/closed', 'behaviors'),
+                        field_options
+                    ) }}
+
+            </div>
+
+            <div class="hr-text">
+                <i class="fa-2x ti ti-alert-triangle"></i>
+                <span>{{ __('Update of a problem' ) }}</span>
+            </div>
+            <div class="row">
+                {{ fields.sliderField(
+                    'is_problemsolutiontype_mandatory',
+                    config["is_problemsolutiontype_mandatory"],
+                    __('Type of solution is mandatory before problem is solved/closed', 'behaviors'),
+                    field_options
+                ) }}
+                {{ fields.sliderField(
+                    'is_problemtasktodo',
+                    config["is_problemtasktodo"],
+                    __('Block the solving/closing of a problem if task do to', 'behaviors'),
+                    field_options
+                ) }}
+            </div>
+
+            <div class="hr-text">
+                <i class="fa-2x ti ti-clipboard-check"></i>
+                <span>{{ __('New change' ) }}</span>
+            </div>
+            <div class="row">
+                {{ fields.dropdownArrayField(
+                    'changes_id_format',
+                    config["changes_id_format"],
+                    dateformat,
+                    __("Change's number format", "behaviors"),
+                    field_options
+                ) }}
+            </div>
+
+            <div class="hr-text">
+                <i class="fa-2x ti ti-package"></i>
+                <span>{{ __('Inventory', 'behaviors') }}</span>
+            </div>
+
+{#            TODO uninstall & ocsinventory plugin check#}
+            <div class="row">
+                {{ fields.sliderField(
+                    'remove_from_ocs',
+                    config["remove_from_ocs"],
+                    __('Delete computer in OCSNG when purged from GLPI', 'behaviors'),
+                    field_options
+                ) }}
+{#                {{ fields.sliderField(#}
+{#                    'myasset',#}
+{#                    config["myasset"],#}
+{#                    __('Show my assets', 'behaviors'),#}
+{#                    field_options#}
+{#                ) }}#}
+{#                {{ fields.sliderField(#}
+{#                    'groupasset',#}
+{#                    config["groupasset"],#}
+{#                    __('Show assets of my groups', 'behaviors'),#}
+{#                    field_options#}
+{#                ) }}#}
+            </div>
+
+            <div class="hr-text">
+                <i class="fa-2x ti ti-bell"></i>
+                <span>{{ _n(
+                        'Notification',
+                        'Notifications',
+                        2,
+                        'behaviors'
+                    ) }}</span>
+            </div>
+            <div class="row">
+                {{ fields.sliderField(
+                    'add_notif',
+                    config["add_notif"],
+                    __('Additional notifications', 'behaviors'),
+                    field_options
+                ) }}
+                {% set tabentity = {0: __("No"), 1: __("In the active entity", "behaviors"), 2: __("In the item's entity", "behaviors")} %}
+
+                {{ fields.dropdownArrayField(
+                    'clone',
+                    config["clone"],
+                    tabentity,
+                    __('Allow Clone', 'behaviors'),
+                    field_options
+                ) }}
+            </div>
+
+            <div class="hr-text">
+                <i class="fa-2x ti ti-settings"></i>
+                <span>{{ _n('Comment', 'Comments', get_plural_number()) }}</span>
+            </div>
+            <div class="row">
+                {{ fields.textareaField(
+                    'comment',
+                    config['comment'],
+                    __("Comments"),
+                    {
+                        full_width          : true,
+                        enable_richtext     : false,
+                        enable_fileupload   : false,
+                        cols                : 30,
+                        rows                : 10
+                    }
+                ) }}
+            </div>
+            <div class="hr mt-3 mb-3"></div>
+            <div class="hstack gap-1">
+                <div class="pe-5 ms-auto">
+                    <button class="btn btn-primary" type="submit" name="update" value="1">
+                        <i class="ti ti-device-floppy"></i>
+                        <span>{{ _x('button', 'Save') }}</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
