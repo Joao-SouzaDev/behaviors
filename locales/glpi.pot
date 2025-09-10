@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-08 12:25+0000\n"
+"POT-Creation-Date: 2025-09-10 09:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,7 +34,7 @@ msgstr ""
 msgid "Allow Clone"
 msgstr ""
 
-#: setup.php:116 inc/common.class.php:107 inc/config.class.php:62
+#: setup.php:116 inc/common.class.php:109 inc/config.class.php:62
 #: inc/document_item.class.php:51 inc/document_item.class.php:58
 #: inc/ticket.class.php:58 inc/ticket.class.php:65 inc/ticket.class.php:72
 #: inc/ticket.class.php:95 inc/ticket.class.php:103 inc/ticket.class.php:111
@@ -50,7 +50,7 @@ msgstr ""
 msgid "Block the solving/closing of a the ticket if task do to"
 msgstr ""
 
-#: inc/common.class.php:312 inc/itilsolution.class.php:165
+#: inc/common.class.php:314 inc/itilsolution.class.php:165
 #: inc/ticket.class.php:970 templates/config.html.twig:164
 msgid "Category is mandatory before ticket is solved/closed"
 msgstr ""
@@ -67,11 +67,11 @@ msgstr ""
 msgid "Change's number format"
 msgstr ""
 
-#: inc/common.class.php:106 inc/common.class.php:124 inc/common.class.php:158
+#: inc/common.class.php:108 inc/common.class.php:126 inc/common.class.php:160
 msgid "Clone"
 msgstr ""
 
-#: inc/common.class.php:147 inc/common.class.php:253
+#: inc/common.class.php:149 inc/common.class.php:255
 msgid "Clone of"
 msgstr ""
 
@@ -102,7 +102,7 @@ msgstr ""
 msgid "Description of solution is mandatory before ticket is solved/closed"
 msgstr ""
 
-#: inc/common.class.php:307 inc/itilsolution.class.php:93
+#: inc/common.class.php:309 inc/itilsolution.class.php:93
 #: inc/ticket.class.php:957 templates/config.html.twig:199
 msgid "Duration is mandatory before ticket is solved/closed"
 msgstr ""
@@ -115,7 +115,7 @@ msgstr ""
 msgid "Error in creating glpi_plugin_behaviors_configs"
 msgstr ""
 
-#: inc/common.class.php:329 inc/itilsolution.class.php:192
+#: inc/common.class.php:331 inc/itilsolution.class.php:192
 #: inc/ticket.class.php:997 templates/config.html.twig:157
 msgid ""
 "Group of technicians assigned is mandatory before ticket is solved/closed"
@@ -145,7 +145,7 @@ msgstr ""
 msgid "Last watcher added"
 msgstr ""
 
-#: inc/common.class.php:337 inc/itilsolution.class.php:205
+#: inc/common.class.php:339 inc/itilsolution.class.php:205
 #: inc/ticket.class.php:1010 templates/config.html.twig:171
 msgid "Location is mandatory before ticket is solved/closed"
 msgstr ""
@@ -189,7 +189,7 @@ msgstr ""
 msgid "Task category is mandatory in a task"
 msgstr ""
 
-#: inc/common.class.php:320 inc/itilsolution.class.php:179
+#: inc/common.class.php:322 inc/itilsolution.class.php:179
 #: inc/ticket.class.php:984 templates/config.html.twig:143
 msgid "Technician assigned is mandatory before ticket is solved/closed"
 msgstr ""
@@ -251,33 +251,33 @@ msgstr ""
 msgid "You cannot change status of a task in a solved ticket"
 msgstr ""
 
-#: inc/common.class.php:440
+#: inc/common.class.php:442
 msgid "You cannot resolve the ticket"
 msgstr ""
 
-#: inc/change.class.php:111 inc/common.class.php:393
+#: inc/change.class.php:111 inc/common.class.php:395
 #: inc/itilsolution.class.php:303
 msgid "You cannot solve/close a change with task do to"
 msgstr ""
 
-#: inc/common.class.php:371 inc/itilsolution.class.php:270
+#: inc/common.class.php:373 inc/itilsolution.class.php:270
 msgid "You cannot solve/close a problem with task do to"
 msgstr ""
 
-#: inc/common.class.php:352 inc/itilsolution.class.php:227
+#: inc/common.class.php:354 inc/itilsolution.class.php:227
 #: inc/ticket.class.php:1033
 msgid "You cannot solve/close a ticket with task do to"
 msgstr ""
 
-#: inc/common.class.php:429
+#: inc/common.class.php:431
 msgid "You must add a description. it's mandatory"
 msgstr ""
 
-#: inc/common.class.php:435
+#: inc/common.class.php:437
 msgid "You must add a solution type. it's mandatory"
 msgstr ""
 
-#: inc/common.class.php:463 inc/tickettask.class.php:64
+#: inc/common.class.php:465 inc/tickettask.class.php:64
 #: inc/tickettask.class.php:103
 msgid "You must define a category. it's mandatory"
 msgstr ""
