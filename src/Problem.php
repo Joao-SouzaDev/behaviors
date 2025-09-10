@@ -32,20 +32,26 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsProblemTask
+namespace GlpiPlugin\Behaviors;
+
+use Session;
+
+class Problem
 {
     /**
-     * @param ProblemTask $task
+     * @param Problem $problem
      * @return false|void
      */
-    public static function beforeUpdate(ProblemTask $task)
+    public static function beforeUpdate(\Problem $problem)
     {
-        if (!is_array($task->input) || !count($task->input)) {
+        global $DB;
+
+        if (!is_array($problem->input) || !count($problem->input)) {
             // Already cancel by another plugin
             return false;
         }
 
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         // Check is the connected user is a tech
         if (!is_numeric(Session::getLoginUserID(false))
@@ -53,27 +59,38 @@ class PluginBehaviorsProblemTask
             return false; // No check
         }
 
-        if ($config->getField('is_problemtasktodo')) {
-            $problem = new Problem();
-            if ($problem->getFromDB($task->fields['problems_id'])) {
-                if (in_array(
-                    $problem->fields['status'],
-                    array_merge(
-                        Problem::getSolvedStatusArray(),
-                        Problem::getClosedStatusArray()
-                    )
-                )) {
-                    Session::addMessageAfterRedirect(
-                        __(
-                            "You cannot change status of a task in a solved problem",
-                            'behaviors'
-                        ),
-                        true,
-                        ERROR
-                    );
-                    unset($task->input['state']);
-                }
+        if (isset($problem->input['status'])
+            && in_array(
+                $problem->input['status'],
+                array_merge(
+                    \Problem::getSolvedStatusArray(),
+                    \Problem::getclosedStatusArray()
+                )
+            )) {
+
+            $crit = [
+                'FROM' => 'glpi_itilsolutions',
+                'WHERE' => [
+                    'itemtype' => 'Problem',
+                    'items_id' => $problem->input['id'],
+                ]
+            ];
+
+            $soluce = $DB->request($crit);
+
+            if ($config->getField('is_problemsolutiontype_mandatory')
+                && !count($soluce)) {
+                unset($problem->input['status']);
+                Session::addMessageAfterRedirect(
+                    __(
+                        "Type of solution is mandatory before problem is solved/closed",
+                        'behaviors'
+                    ),
+                    true,
+                    ERROR
+                );
             }
         }
     }
+
 }

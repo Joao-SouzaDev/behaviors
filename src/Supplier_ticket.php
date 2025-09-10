@@ -32,56 +32,23 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsRule extends PluginBehaviorsCommon
+namespace GlpiPlugin\Behaviors;
+
+use Session;
+
+class Supplier_Ticket
 {
     /**
-     * @param Rule $srce
-     * @param array $input
-     * @return array
+     * @param Supplier_Ticket $item
+     * @return false|void
      */
-    public static function preClone(Rule $srce, array $input)
+    public static function afterAdd(\Supplier_Ticket $item)
     {
-        $input['ranking'] = $srce->getNextRanking();
-        return $input;
-    }
-
-
-    /**
-     * @param Rule $clone
-     * @param $oldid
-     * @return void
-     */
-    public static function postClone(Rule $clone, $oldid)
-    {
-        global $DB;
-
-        $dbu = new DbUtils();
-        $fkey = $dbu->getForeignKeyFieldForTable($clone->getTable());
-        $criteria = new RuleCriteria();
-        $crit = [
-            'FROM' => $criteria->getTable(),
-            'WHERE' => [
-                $fkey => $oldid
-            ]
-        ];
-
-        foreach ($DB->request($criteria->getTable(), $crit) as $data) {
-            unset($data['id']);
-            $data[$fkey] = $clone->getID();
-            $criteria->add($data);
-        }
-        $action = new RuleAction();
-        $crit = [
-            'FROM' => $action->getTable(),
-            'WHERE' => [
-                $fkey => $oldid
-            ]
-        ];
-
-        foreach ($DB->request($crit) as $data) {
-            unset($data['id']);
-            $data[$fkey] = $clone->getID();
-            $action->add($data);
+        // Check is the connected user is a tech
+        if (!is_numeric(Session::getLoginUserID(false))
+            || !Session::haveRight('ticket', \Ticket::OWN)) {
+            return false; // No check
         }
     }
+
 }

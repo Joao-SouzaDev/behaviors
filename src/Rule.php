@@ -32,23 +32,40 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsNotificationTemplate extends PluginBehaviorsCommon
+namespace GlpiPlugin\Behaviors;
+
+use DbUtils;
+use RuleAction;
+use RuleCriteria;
+
+class Rule extends Common
 {
     /**
-     * @param NotificationTemplate $clone
+     * @param Rule $srce
+     * @param array $input
+     * @return array
+     */
+    public static function preClone(\Rule $srce, array $input)
+    {
+        $input['ranking'] = $srce->getNextRanking();
+        return $input;
+    }
+
+
+    /**
+     * @param Rule $clone
      * @param $oldid
      * @return void
      */
-    public static function postClone(NotificationTemplate $clone, $oldid)
+    public static function postClone(Rule $clone, $oldid)
     {
         global $DB;
 
-        $trad = new NotificationTemplateTranslation();
         $dbu = new DbUtils();
         $fkey = $dbu->getForeignKeyFieldForTable($clone->getTable());
-
+        $criteria = new RuleCriteria();
         $crit = [
-            'FROM' => $trad->getTable(),
+            'FROM' => $criteria->getTable(),
             'WHERE' => [
                 $fkey => $oldid
             ]
@@ -57,7 +74,20 @@ class PluginBehaviorsNotificationTemplate extends PluginBehaviorsCommon
         foreach ($DB->request($crit) as $data) {
             unset($data['id']);
             $data[$fkey] = $clone->getID();
-            $trad->add($data);
+            $criteria->add($data);
+        }
+        $action = new RuleAction();
+        $crit = [
+            'FROM' => $action->getTable(),
+            'WHERE' => [
+                $fkey => $oldid
+            ]
+        ];
+
+        foreach ($DB->request($crit) as $data) {
+            unset($data['id']);
+            $data[$fkey] = $clone->getID();
+            $action->add($data);
         }
     }
 }

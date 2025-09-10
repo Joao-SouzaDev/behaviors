@@ -32,8 +32,14 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsChange
+namespace GlpiPlugin\Behaviors;
+
+use Session;
+
+class Change
 {
+    private $input;
+
     /**
      * @param Change $change
      * @return false|void
@@ -47,7 +53,7 @@ class PluginBehaviorsChange
             return false;
         }
 
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         if ($config->getField('changes_id_format')) {
             $max = 0;
@@ -69,7 +75,7 @@ class PluginBehaviorsChange
      * @param Change $change
      * @return false|void
      */
-    public static function beforeUpdate(Change $change)
+    public static function beforeUpdate(\Change $change)
     {
         global $DB;
 
@@ -78,7 +84,7 @@ class PluginBehaviorsChange
             return false;
         }
 
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         // Check is the connected user is a tech
         if (!is_numeric(Session::getLoginUserID(false))
@@ -90,8 +96,8 @@ class PluginBehaviorsChange
             && in_array(
                 $change->input['status'],
                 array_merge(
-                    Change::getSolvedStatusArray(),
-                    Change::getclosedStatusArray()
+                    \Change::getSolvedStatusArray(),
+                    \Change::getclosedStatusArray()
                 )
             )) {
 

@@ -32,81 +32,97 @@
  * --------------------------------------------------------------------------
  */
 
+use GlpiPlugin\Behaviors\Common;
+use GlpiPlugin\Behaviors\Computer;
+use GlpiPlugin\Behaviors\Config;
+use GlpiPlugin\Behaviors\Document_Item;
+use GlpiPlugin\Behaviors\Group_Ticket;
+use GlpiPlugin\Behaviors\ITILSolution;
+use GlpiPlugin\Behaviors\ITILFollowup;
+use GlpiPlugin\Behaviors\Supplier_Ticket;
+use GlpiPlugin\Behaviors\Ticket;
+use GlpiPlugin\Behaviors\Ticket_User;
+use GlpiPlugin\Behaviors\TicketTask;
+use GlpiPlugin\Behaviors\Change;
+use GlpiPlugin\Behaviors\ChangeTask;
+use GlpiPlugin\Behaviors\Problem;
+use GlpiPlugin\Behaviors\ProblemTask;
+
 define('PLUGIN_BEHAVIORS_VERSION', '3.0.0');
 // Init the hooks of the plugins -Needed
 function plugin_init_behaviors()
 {
-    global $PLUGIN_HOOKS, $CFG_GLPI;
+    global $PLUGIN_HOOKS;
 
-    Plugin::registerClass('PluginBehaviorsConfig', ['addtabon' => 'Config']);
+    Plugin::registerClass(Config::class, ['addtabon' => 'Config']);
     $PLUGIN_HOOKS['config_page']['behaviors'] = 'front/config.form.php';
 
-    $PLUGIN_HOOKS['item_add']['behaviors'] =
-        [
-            'Ticket_User' => ['PluginBehaviorsTicket_User', 'afterAdd'],
-            'Group_Ticket' => ['PluginBehaviorsGroup_Ticket', 'afterAdd'],
-            'Supplier_Ticket' => ['PluginBehaviorsSupplier_Ticket', 'afterAdd'],
-            'Document_Item' => ['PluginBehaviorsDocument_Item', 'afterAdd'],
-            'ITILSolution' => ['PluginBehaviorsITILSolution', 'afterAdd'],
+    $PLUGIN_HOOKS['item_add']['behaviors']
+        = [
+            \Ticket_User::class => [Ticket_User::class, 'afterAdd'],
+            \Group_Ticket::class => [Group_Ticket::class, 'afterAdd'],
+            \Supplier_Ticket::class => [Supplier_Ticket::class, 'afterAdd'],
+            \Document_Item::class => [Document_Item::class, 'afterAdd'],
+            \ITILSolution::class => [ITILSolution::class, 'afterAdd'],
         ];
 
-    $PLUGIN_HOOKS['item_update']['behaviors'] =
-        ['Ticket' => ['PluginBehaviorsTicket', 'afterUpdate']];
+    $PLUGIN_HOOKS['item_update']['behaviors']
+        = [\Ticket::class => [Ticket::class, 'afterUpdate']];
 
-    $PLUGIN_HOOKS['pre_item_add']['behaviors'] =
-        [
-            'Ticket' => ['PluginBehaviorsTicket', 'beforeAdd'],
-            'ITILSolution' => ['PluginBehaviorsITILSolution', 'beforeAdd'],
-            'TicketTask' => ['PluginBehaviorsTickettask', 'beforeAdd'],
-            'Change' => ['PluginBehaviorsChange', 'beforeAdd'],
-            'ITILFollowup' => ['PluginBehaviorsITILFollowup', 'beforeAdd'],
+    $PLUGIN_HOOKS['pre_item_add']['behaviors']
+        = [
+            \Ticket::class => [Ticket::class, 'beforeAdd'],
+            \ITILSolution::class => [ITILSolution::class, 'beforeAdd'],
+            \TicketTask::class => [TicketTask::class, 'beforeAdd'],
+            \Change::class => [Change::class, 'beforeAdd'],
+            \ITILFollowup::class => [ITILFollowup::class, 'beforeAdd'],
         ];
 
-    $PLUGIN_HOOKS['post_prepareadd']['behaviors'] =
-        ['Ticket' => ['PluginBehaviorsTicket', 'afterPrepareAdd']];
+    $PLUGIN_HOOKS['post_prepareadd']['behaviors']
+        = [\Ticket::class => [Ticket::class, 'afterPrepareAdd']];
 
-    $PLUGIN_HOOKS['pre_item_update']['behaviors'] =
-        [
-            'Problem' => ['PluginBehaviorsProblem', 'beforeUpdate'],
-            'Ticket' => ['PluginBehaviorsTicket', 'beforeUpdate'],
-            'Change' => ['PluginBehaviorsChange', 'beforeUpdate'],
-            'ITILSolution' => ['PluginBehaviorsITILSolution', 'beforeUpdate'],
-            'TicketTask' => ['PluginBehaviorsTickettask', 'beforeUpdate'],
-            'ChangeTask' => ['PluginBehaviorsChangetask', 'beforeUpdate'],
-            'ProblemTask' => ['PluginBehaviorsProblemtask', 'beforeUpdate'],
+    $PLUGIN_HOOKS['pre_item_update']['behaviors']
+        = [
+            \Problem::class => [Problem::class, 'beforeUpdate'],
+            \Ticket::class => [Ticket::class, 'beforeUpdate'],
+            \Change::class => [Change::class, 'beforeUpdate'],
+            \ITILSolution::class => [ITILSolution::class, 'beforeUpdate'],
+            \TicketTask::class => [TicketTask::class, 'beforeUpdate'],
+            \ChangeTask::class => [ChangeTask::class, 'beforeUpdate'],
+            \ProblemTask::class => [ProblemTask::class, 'beforeUpdate'],
         ];
 
-    $PLUGIN_HOOKS['pre_item_purge']['behaviors'] =
-        ['Computer' => ['PluginBehaviorsComputer', 'beforePurge']];
+    $PLUGIN_HOOKS['pre_item_purge']['behaviors']
+        = [\Computer::class => [Computer::class, 'beforePurge']];
 
-    $PLUGIN_HOOKS['item_purge']['behaviors'] =
-        ['Document_Item' => ['PluginBehaviorsDocument_Item', 'afterPurge']];
+    $PLUGIN_HOOKS['item_purge']['behaviors']
+        = [\Document_Item::class => [Document_Item::class, 'afterPurge']];
 
     // Notifications
-    $PLUGIN_HOOKS['item_get_events']['behaviors'] =
-        ['NotificationTargetTicket' => ['PluginBehaviorsTicket', 'addEvents']];
+    $PLUGIN_HOOKS['item_get_events']['behaviors']
+        = ['NotificationTargetTicket' => [Ticket::class, 'addEvents']];
 
-    $PLUGIN_HOOKS['item_add_targets']['behaviors'] =
-        ['NotificationTargetTicket' => ['PluginBehaviorsTicket', 'addTargets']];
+    $PLUGIN_HOOKS['item_add_targets']['behaviors']
+        = ['NotificationTargetTicket' => [Ticket::class, 'addTargets']];
 
-    $PLUGIN_HOOKS['item_action_targets']['behaviors'] =
-        ['NotificationTargetTicket' => ['PluginBehaviorsTicket', 'addActionTargets']];
+    $PLUGIN_HOOKS['item_action_targets']['behaviors']
+        = ['NotificationTargetTicket' => [Ticket::class, 'addActionTargets']];
 
-    $PLUGIN_HOOKS['pre_item_form']['behaviors'] = [PluginBehaviorsCommon::class, 'messageWarning'];
-    $PLUGIN_HOOKS['post_item_form']['behaviors'] = [PluginBehaviorsCommon::class, 'deleteAddSolutionButton'];
+    $PLUGIN_HOOKS['pre_item_form']['behaviors'] = [Common::class, 'messageWarning'];
+    $PLUGIN_HOOKS['post_item_form']['behaviors'] = [Common::class, 'deleteAddSolutionButton'];
 
     // End init, when all types are registered
-    $PLUGIN_HOOKS['post_init']['behaviors'] = ['PluginBehaviorsCommon', 'postInit'];
+    $PLUGIN_HOOKS['post_init']['behaviors'] = [Common::class, 'postInit'];
 
     $PLUGIN_HOOKS['csrf_compliant']['behaviors'] = true;
 
     //TO Disable in v11
-//    foreach ($CFG_GLPI["asset_types"] as $type) {
-//        $PLUGIN_HOOKS['item_can']['behaviors'][$type] = [$type => ['PluginBehaviorsConfig', 'item_can']];
-//    }
+    //    foreach ($CFG_GLPI["asset_types"] as $type) {
+    //        $PLUGIN_HOOKS['item_can']['behaviors'][$type] = [$type => ['PluginBehaviorsConfig', 'item_can']];
+    //    }
 
     //TO Disable in v11
-//    $PLUGIN_HOOKS['add_default_where']['behaviors'] = ['PluginBehaviorsConfig', 'add_default_where'];
+    //    $PLUGIN_HOOKS['add_default_where']['behaviors'] = ['PluginBehaviorsConfig', 'add_default_where'];
 }
 
 
@@ -134,4 +150,3 @@ function plugin_behaviors_geturl(): string
     global $CFG_GLPI;
     return sprintf('%s/plugins/behaviors/', $CFG_GLPI['url_base']);
 }
-

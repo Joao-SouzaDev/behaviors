@@ -31,9 +31,18 @@
  * --------------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+namespace GlpiPlugin\Behaviors;
 
-class PluginBehaviorsConfig extends CommonDBTM
+use CommonDBTM;
+use CommonGLPI;
+use DBConnection;
+use Dropdown;
+use Glpi\Application\View\TemplateRenderer;
+use Log;
+use Migration;
+use Session;
+
+class Config extends CommonDBTM
 {
 
     private static $_instance = null;
@@ -684,8 +693,9 @@ class PluginBehaviorsConfig extends CommonDBTM
                 $oldvalue = $this->oldvalues[$update];
                 $newvalue = $this->fields[$update];
 
-                $configGLPI = new Config();
-                Log::constructHistory($configGLPI, ['value' => $update.' '.$oldvalue], ['value' => $update.' '.$newvalue]);
+                $configGLPI = new \Config();
+                Log::constructHistory($configGLPI, ['value' => $update.' '.$oldvalue],
+                    ['value' => $update.' '.$newvalue]);
             }
         }
     }

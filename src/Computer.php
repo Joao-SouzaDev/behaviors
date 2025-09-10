@@ -32,12 +32,23 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsTicketSatisfaction
+namespace GlpiPlugin\Behaviors;
+
+use PluginUninstallUninstall;
+
+class Computer extends Common
 {
     /**
-     * @param TicketSatisfaction $ticketsatisfaction
+     * @param Computer $comp
      * @return void
      */
-    public static function afterUpdate(TicketSatisfaction $ticketsatisfaction) {}
+    public static function beforePurge(\Computer $comp)
+    {
+        $config = Config::getInstance();
 
+        if (($config->getField('remove_from_ocs') > 0)
+            && class_exists('PluginUninstallUninstall')) {
+            PluginUninstallUninstall::deleteComputerInOCSByGlpiID($comp->fields['id']);
+        }
+    }
 }

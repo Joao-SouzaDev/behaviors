@@ -32,19 +32,37 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsSupplier_Ticket
+namespace GlpiPlugin\Behaviors;
+
+use DbUtils;
+use NotificationTemplateTranslation;
+
+class NotificationTemplate extends Common
 {
     /**
-     * @param Supplier_Ticket $item
-     * @return false|void
+     * @param NotificationTemplate $clone
+     * @param $oldid
+     * @return void
      */
-    public static function afterAdd(Supplier_Ticket $item)
+    public static function postClone(NotificationTemplate $clone, $oldid)
     {
-        // Check is the connected user is a tech
-        if (!is_numeric(Session::getLoginUserID(false))
-            || !Session::haveRight('ticket', Ticket::OWN)) {
-            return false; // No check
+        global $DB;
+
+        $trad = new NotificationTemplateTranslation();
+        $dbu = new DbUtils();
+        $fkey = $dbu->getForeignKeyFieldForTable($clone->getTable());
+
+        $crit = [
+            'FROM' => $trad->getTable(),
+            'WHERE' => [
+                $fkey => $oldid
+            ]
+        ];
+
+        foreach ($DB->request($crit) as $data) {
+            unset($data['id']);
+            $data[$fkey] = $clone->getID();
+            $trad->add($data);
         }
     }
-
 }

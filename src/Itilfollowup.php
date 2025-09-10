@@ -32,21 +32,25 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsITILFollowup
+namespace GlpiPlugin\Behaviors;
+use CommonITILActor;
+use Session;
+
+class ITILFollowup
 {
     /**
      * @param ITILFollowup $fup
      * @return void
      */
-    public static function beforeAdd(ITILFollowup $fup)
+    public static function beforeAdd(\ITILFollowup $fup)
     {
-        $ticket = new Ticket();
-        $config = PluginBehaviorsConfig::getInstance();
+        $ticket = new \Ticket();
+        $config = Config::getInstance();
         if ($ticket->getFromDB($fup->input['items_id'])
             && $fup->input['itemtype'] == 'Ticket') {
             if ($config->getField('addfup_updatetech')
                 && Session::haveRight('ticket', UPDATE)) {
-                $ticket_user = new Ticket_User();
+                $ticket_user = new \Ticket_User();
                 $ticket_user->getFromDBByCrit([
                     'tickets_id' => $ticket->getID(),
                     'type' => CommonITILActor::ASSIGN,
@@ -56,14 +60,14 @@ class PluginBehaviorsITILFollowup
                     || (isset($ticket_user->fields['users_id'])
                     && $ticket_user->fields['users_id'] <> Session::getLoginUserID())) {
 
-                    $group_ticket = new Group_Ticket();
+                    $group_ticket = new \Group_Ticket();
                     $group_ticket->getFromDBByCrit([
                         'tickets_id' => $ticket->getID(),
                         'type' => CommonITILActor::ASSIGN,
                     ]);
                     if (count($group_ticket->fields) > 0) {
                         if (isset($group_ticket->fields['groups_id'])) {
-                            $usergroup = Group_User::getGroupUsers($group_ticket->fields['groups_id']);
+                            $usergroup = \Group_User::getGroupUsers($group_ticket->fields['groups_id']);
                             $users = [];
                             foreach ($usergroup as $user) {
                                 $users[$user['id']] = $user['id'];
@@ -72,7 +76,7 @@ class PluginBehaviorsITILFollowup
                             if (in_array(Session::getLoginUserID(), $users)) {
 
                                 if (isset($ticket_user->fields['users_id'])) {
-                                    $ticket_user_delete = new Ticket_User();
+                                    $ticket_user_delete = new \Ticket_User();
                                     $ticket_user_delete->deleteByCriteria([
                                         'tickets_id' => $ticket->getID(),
                                         'users_id' => $ticket_user->fields['users_id'],
@@ -80,7 +84,7 @@ class PluginBehaviorsITILFollowup
                                     ]);
                                 }
 
-                                $ticket_user = new Ticket_User();
+                                $ticket_user = new \Ticket_User();
                                 $ticket_user->add([
                                     'tickets_id' => $ticket->getID(),
                                     'users_id' => Session::getLoginUserID(),
@@ -90,7 +94,7 @@ class PluginBehaviorsITILFollowup
                         }
                     } else {
                         if (isset($ticket_user->fields['users_id'])) {
-                            $ticket_user_delete = new Ticket_User();
+                            $ticket_user_delete = new \Ticket_User();
                             $ticket_user_delete->deleteByCriteria([
                                 'tickets_id' => $ticket->getID(),
                                 'users_id' => $ticket_user->fields['users_id'],

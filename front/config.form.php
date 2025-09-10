@@ -1,4 +1,5 @@
 <?php
+
 /**
  * -------------------------------------------------------------------------
  *
@@ -31,8 +32,10 @@
  * --------------------------------------------------------------------------
  */
 
+use GlpiPlugin\Behaviors\Config;
+
 global $CFG_GLPI;
-$config = new PluginBehaviorsConfig();
+$config = new Config();
 if (isset($_POST["update"])) {
     $config->check($_POST['id'], UPDATE);
 
@@ -41,6 +44,6 @@ if (isset($_POST["update"])) {
     Html::back();
 }
 Html::redirect(
-    $CFG_GLPI["root_doc"] . "/front/config.form.php?forcetab=" .
-    urlencode('PluginBehaviorsConfig$1')
+    $CFG_GLPI["root_doc"] . "/front/config.form.php?forcetab="
+    . urlencode('GlpiPlugin\Behaviors\Config$1')
 );

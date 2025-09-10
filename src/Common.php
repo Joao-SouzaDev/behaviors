@@ -32,7 +32,19 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsCommon extends CommonGLPI
+namespace GlpiPlugin\Behaviors;
+
+use CommonGLPI;
+use CommonITILActor;
+use DbUtils;
+use Dropdown;
+use Html;
+use Log;
+use Plugin;
+use PluginMoreticketConfig;
+use Session;
+
+class Common extends CommonGLPI
 {
     public static $clone_types = [
         'NotificationTemplate' => 'PluginBehaviorsNotificationTemplate',
@@ -80,13 +92,14 @@ class PluginBehaviorsCommon extends CommonGLPI
     {
         Plugin::registerClass(
             'PluginBehaviorsCommon',
-            ['addtabon' => array_keys(PluginBehaviorsCommon::getCloneTypes())]
+            ['addtabon' => array_keys(Common::getCloneTypes())]
         );
 
-        PluginBehaviorsTicket::onNewTicket();
+        Ticket::onNewTicket();
     }
 
-    static function getIcon() {
+    public static function getIcon()
+    {
         return "ti ti-settings";
     }
     /**
@@ -96,17 +109,19 @@ class PluginBehaviorsCommon extends CommonGLPI
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         if (array_key_exists($item->getType(), self::$clone_types)
             && $item->canUpdate()
             && ($config->getField('clone') > 0)
             && (isset($_SESSION['glpiactiveprofile']['interface'])
                 && ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'))) {
-            return self::createTabEntry(sprintf(
-                __('%1$s (%2$s)'),
-                __('Clone', 'behaviors'),
-                __('Behaviours', 'behaviors'))
+            return self::createTabEntry(
+                sprintf(
+                    __('%1$s (%2$s)'),
+                    __('Clone', 'behaviors'),
+                    __('Behaviours', 'behaviors')
+                )
             );
         }
         return '';
@@ -126,7 +141,7 @@ class PluginBehaviorsCommon extends CommonGLPI
         echo "<tr><th>" . __('Clone', 'behaviors') . "</th></tr>";
 
         if ($item->isEntityAssign()) {
-            $config = PluginBehaviorsConfig::getInstance();
+            $config = Config::getInstance();
 
             if ($config->getField('clone') == 1) {
                 $entities_id = $_SESSION['glpiactive_entity'];
@@ -140,8 +155,8 @@ class PluginBehaviorsCommon extends CommonGLPI
                 "<span class='b'>" . Dropdown::getDropdownName(
                     'glpi_entities',
                     $entities_id
-                ) .
-                "</span>"
+                )
+                . "</span>"
             );
             echo "</td></tr>";
         }
@@ -208,7 +223,7 @@ class PluginBehaviorsCommon extends CommonGLPI
         $input['_old_id'] = $input['id'];
         unset($input['id']);
         if ($item->isEntityAssign()) {
-            $config = PluginBehaviorsConfig::getInstance();
+            $config = Config::getInstance();
 
             if ($config->getField('clone') == 1) {
                 $entities_id = $_SESSION['glpiactive_entity'];
@@ -271,7 +286,7 @@ class PluginBehaviorsCommon extends CommonGLPI
      *
      * @param $params
      *
-     * @return string
+     * @return false
      **/
     public static function checkWarnings($params)
     {
@@ -280,7 +295,7 @@ class PluginBehaviorsCommon extends CommonGLPI
         $warnings = [];
         $obj = $params['options']['item'];
 
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         // Check is the connected user is a tech
         if (!is_numeric(Session::getLoginUserID(false))
@@ -344,8 +359,8 @@ class PluginBehaviorsCommon extends CommonGLPI
                 $crit = [
                     'FROM' => 'glpi_tickettasks',
                     'WHERE' => [
-                        'tickets_id' => $obj->getField('id')
-                    ]
+                        'tickets_id' => $obj->getField('id'),
+                    ],
                 ];
                 foreach (
                     $DB->request($crit) as $task
@@ -363,8 +378,8 @@ class PluginBehaviorsCommon extends CommonGLPI
                 $crit = [
                     'FROM' => 'glpi_problemtasks',
                     'WHERE' => [
-                        'problems_id' => $obj->getField('id')
-                    ]
+                        'problems_id' => $obj->getField('id'),
+                    ],
                 ];
                 foreach (
                     $DB->request($crit) as $task
@@ -383,12 +398,13 @@ class PluginBehaviorsCommon extends CommonGLPI
                 $crit = [
                     'FROM' => 'glpi_changetasks',
                     'WHERE' => [
-                        'changes_id' => $obj->getField('id')
-                    ]
+                        'changes_id' => $obj->getField('id'),
+                    ],
                 ];
 
                 foreach (
-                    $DB->request($crit
+                    $DB->request(
+                        $crit
                     ) as $task
                 ) {
                     if ($task['state'] == 1) {
@@ -413,7 +429,7 @@ class PluginBehaviorsCommon extends CommonGLPI
             $item = $params['item'];
             if ($item->getType() == 'ITILSolution') {
                 $warnings = self::checkWarnings($params);
-                $config = PluginBehaviorsConfig::getInstance();
+                $config = Config::getInstance();
                 if ((is_array($warnings) && count($warnings))
                     || $config->getField('is_ticketsolution_mandatory')
                     || $config->getField('is_ticketsolutiontype_mandatory')) {
@@ -450,7 +466,7 @@ class PluginBehaviorsCommon extends CommonGLPI
                 }
 
             } elseif ($item->getType() == 'TicketTask') {
-                $config = PluginBehaviorsConfig::getInstance();
+                $config = Config::getInstance();
                 if ($config->getField('is_tickettaskcategory_mandatory')) {
                     echo "<div class='alert alert-warning'>";
 

@@ -32,54 +32,50 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsTicket_User
+namespace GlpiPlugin\Behaviors;
+
+use Session;
+
+class ChangeTask
 {
     /**
-     * @param Ticket_User $item
+     * @param ChangeTask $task
      * @return false|void
      */
-    public static function afterAdd(Ticket_User $item)
+    public static function beforeUpdate(\ChangeTask $task)
     {
-        global $DB;
+        if (!is_array($task->input) || !count($task->input)) {
+            // Already cancel by another plugin
+            return false;
+        }
+
+        $config = Config::getInstance();
 
         // Check is the connected user is a tech
         if (!is_numeric(Session::getLoginUserID(false))
-            || !Session::haveRight('ticket', Ticket::OWN)) {
+            || !Session::haveRight('change', UPDATE)) {
             return false; // No check
         }
 
-        $config = PluginBehaviorsConfig::getInstance();
-        if (($config->getField('single_tech_mode') != 0)
-            && ($item->input['type'] == CommonITILActor::ASSIGN)) {
-
-
-            $crit = [
-                'FROM' => 'glpi_tickets_users',
-                'WHERE' => [
-                    'tickets_id' => $item->input['tickets_id'],
-                    'type' => CommonITILActor::ASSIGN,
-                ]
-            ];
-
-            foreach ($DB->request($crit) as $data) {
-                if ($data['id'] != $item->getID()) {
-                    $gu = new Ticket_User();
-                    $gu->delete($data);
-                }
-            }
-
-            $crit = [
-                'FROM' => 'glpi_groups_tickets',
-                'WHERE' => [
-                    'tickets_id' => $item->input['tickets_id'],
-                    'type' => CommonITILActor::ASSIGN,
-                ]
-            ];
-
-            if ($config->getField('single_tech_mode') == 2) {
-                foreach ($DB->request($crit) as $data) {
-                    $gu = new Group_Ticket();
-                    $gu->delete($data);
+        if ($config->getField('is_changetasktodo')) {
+            $change = new \Change();
+            if ($change->getFromDB($task->fields['changes_id'])) {
+                if (in_array(
+                    $change->fields['status'],
+                    array_merge(
+                        \Change::getSolvedStatusArray(),
+                        \Change::getClosedStatusArray()
+                    )
+                )) {
+                    Session::addMessageAfterRedirect(
+                        __(
+                            "You cannot change status of a task in a solved change",
+                            'behaviors'
+                        ),
+                        true,
+                        ERROR
+                    );
+                    unset($task->input['state']);
                 }
             }
         }

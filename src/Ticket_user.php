@@ -32,46 +32,59 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsChangeTask
+namespace GlpiPlugin\Behaviors;
+
+use CommonITILActor;
+use Session;
+
+class Ticket_User
 {
     /**
-     * @param ChangeTask $task
+     * @param Ticket_User $item
      * @return false|void
      */
-    public static function beforeUpdate(ChangeTask $task)
+    public static function afterAdd(\Ticket_User $item)
     {
-        if (!is_array($task->input) || !count($task->input)) {
-            // Already cancel by another plugin
-            return false;
-        }
-
-        $config = PluginBehaviorsConfig::getInstance();
+        global $DB;
 
         // Check is the connected user is a tech
         if (!is_numeric(Session::getLoginUserID(false))
-            || !Session::haveRight('change', UPDATE)) {
+            || !Session::haveRight('ticket', \Ticket::OWN)) {
             return false; // No check
         }
 
-        if ($config->getField('is_changetasktodo')) {
-            $change = new Change();
-            if ($change->getFromDB($task->fields['changes_id'])) {
-                if (in_array(
-                    $change->fields['status'],
-                    array_merge(
-                        Change::getSolvedStatusArray(),
-                        Change::getClosedStatusArray()
-                    )
-                )) {
-                    Session::addMessageAfterRedirect(
-                        __(
-                            "You cannot change status of a task in a solved change",
-                            'behaviors'
-                        ),
-                        true,
-                        ERROR
-                    );
-                    unset($task->input['state']);
+        $config = Config::getInstance();
+        if (($config->getField('single_tech_mode') != 0)
+            && ($item->input['type'] == CommonITILActor::ASSIGN)) {
+
+
+            $crit = [
+                'FROM' => 'glpi_tickets_users',
+                'WHERE' => [
+                    'tickets_id' => $item->input['tickets_id'],
+                    'type' => CommonITILActor::ASSIGN,
+                ]
+            ];
+
+            foreach ($DB->request($crit) as $data) {
+                if ($data['id'] != $item->getID()) {
+                    $gu = new \Ticket_User();
+                    $gu->delete($data);
+                }
+            }
+
+            $crit = [
+                'FROM' => 'glpi_groups_tickets',
+                'WHERE' => [
+                    'tickets_id' => $item->input['tickets_id'],
+                    'type' => CommonITILActor::ASSIGN,
+                ]
+            ];
+
+            if ($config->getField('single_tech_mode') == 2) {
+                foreach ($DB->request($crit) as $data) {
+                    $gu = new \Group_Ticket();
+                    $gu->delete($data);
                 }
             }
         }

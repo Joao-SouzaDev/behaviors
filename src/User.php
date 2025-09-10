@@ -32,7 +32,8 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsUser
+namespace GlpiPlugin\Behaviors;
+class User
 {
     /**
      * @param $entity

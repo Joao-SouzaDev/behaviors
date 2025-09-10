@@ -32,13 +32,19 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsITILSolution
+namespace GlpiPlugin\Behaviors;
+use AllowDynamicProperties;
+use CommonITILActor;
+use Session;
+
+#[AllowDynamicProperties]
+class ITILSolution
 {
     /**
      * @param ITILSolution $soluce
      * @return false|void
      */
-    public static function beforeAdd(ITILSolution $soluce)
+    public static function beforeAdd(\ITILSolution $soluce)
     {
         global $DB;
 
@@ -47,7 +53,7 @@ class PluginBehaviorsITILSolution
             return false;
         }
 
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         // Check is the connected user is a tech
         if (!is_numeric(Session::getLoginUserID(false))
@@ -56,7 +62,7 @@ class PluginBehaviorsITILSolution
         }
 
         // Want to solve/close the ticket
-        $ticket = new Ticket();
+        $ticket = new \Ticket();
         if ($ticket->getFromDB($soluce->input['items_id'])
             && ($soluce->input['itemtype'] == 'Ticket')) {
             if ($config->getField('is_ticketsolutiontype_mandatory')
@@ -237,7 +243,7 @@ class PluginBehaviorsITILSolution
         }
 
         // Want to solve/close the problem
-        $problem = new Problem();
+        $problem = new \Problem();
         if ($problem->getFromDB($soluce->input['items_id'])
             && ($soluce->input['itemtype'] == 'Problem')) {
             if ($config->getField('is_problemsolutiontype_mandatory')
@@ -280,7 +286,7 @@ class PluginBehaviorsITILSolution
         }
 
         // Want to solve/close the
-        $change = new Change();
+        $change = new \Change();
         if ($change->getFromDB($soluce->input['items_id'])
             && $soluce->input['itemtype'] == 'Change') {
             if ($config->getField('is_changetasktodo')) {
@@ -318,7 +324,7 @@ class PluginBehaviorsITILSolution
      * @param ITILSolution $soluce
      * @return false|void
      */
-    public static function beforeUpdate(ITILSolution $soluce)
+    public static function beforeUpdate(\ITILSolution $soluce)
     {
         if (!is_array($soluce->input) || !count($soluce->input)) {
             // Already cancel by another plugin
@@ -326,7 +332,7 @@ class PluginBehaviorsITILSolution
         }
 
         //Toolbox::logDebug("PluginBehaviorsTicket::beforeAdd(), Ticket=", $ticket);
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         // Check is the connected user is a tech
         if (!is_numeric(Session::getLoginUserID(false))
@@ -372,15 +378,15 @@ class PluginBehaviorsITILSolution
      * @param ITILSolution $soluce
      * @return void
      */
-    public static function afterAdd(ITILSolution $soluce)
+    public static function afterAdd(\ITILSolution $soluce)
     {
-        $ticket = new Ticket();
-        $config = PluginBehaviorsConfig::getInstance();
+        $ticket = new \Ticket();
+        $config = Config::getInstance();
         if ($ticket->getFromDB($soluce->input['items_id'])
             && $soluce->input['itemtype'] == 'Ticket') {
 
             if ($config->getField('ticketsolved_updatetech')) {
-                $ticket_user = new Ticket_User();
+                $ticket_user = new \Ticket_User();
                 $ticket_user->getFromDBByCrit([
                     'tickets_id' => $ticket->getID(),
                     'type' => CommonITILActor::ASSIGN,

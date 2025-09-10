@@ -32,13 +32,17 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsTicketTask
+namespace GlpiPlugin\Behaviors;
+
+use Session;
+
+class TicketTask
 {
     /**
      * @param TicketTask $taskticket
      * @return false|void
      */
-    public static function beforeAdd(TicketTask $taskticket)
+    public static function beforeAdd(\TicketTask $taskticket)
     {
         if (!is_array($taskticket->input) || !count($taskticket->input)) {
             // Already cancel by another plugin
@@ -46,7 +50,7 @@ class PluginBehaviorsTicketTask
         }
 
         //Toolbox::logDebug("PluginBehaviorsTicket::beforeAdd(), Ticket=", $ticket);
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         // Check is the connected user is a tech
         if (!is_numeric(Session::getLoginUserID(false))
@@ -77,7 +81,7 @@ class PluginBehaviorsTicketTask
      * @param TicketTask $taskticket
      * @return false|void
      */
-    public static function beforeUpdate(TicketTask $taskticket)
+    public static function beforeUpdate(\TicketTask $taskticket)
     {
         if (!is_array($taskticket->input) || !count($taskticket->input)) {
             // Already cancel by another plugin
@@ -85,7 +89,7 @@ class PluginBehaviorsTicketTask
         }
 
         //Toolbox::logDebug("PluginBehaviorsTicket::beforeAdd(), Ticket=", $ticket);
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         // Check is the connected user is a tech
         if (!is_numeric(Session::getLoginUserID(false))
@@ -110,13 +114,13 @@ class PluginBehaviorsTicketTask
             }
         }
         if ($config->getField('is_tickettasktodo')) {
-            $ticket = new Ticket();
+            $ticket = new \Ticket();
             if ($ticket->getFromDB($taskticket->fields['tickets_id'])) {
                 if (in_array(
                     $ticket->fields['status'],
                     array_merge(
-                        Ticket::getSolvedStatusArray(),
-                        Ticket::getClosedStatusArray()
+                        \Ticket::getSolvedStatusArray(),
+                        \Ticket::getClosedStatusArray()
                     )
                 )) {
                     Session::addMessageAfterRedirect(

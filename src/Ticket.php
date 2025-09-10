@@ -32,7 +32,21 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsTicket
+namespace GlpiPlugin\Behaviors;
+
+use CommonITILActor;
+use CommonITILObject;
+use DbUtils;
+use Item_Ticket;
+use NotificationEvent;
+use NotificationMailing;
+use NotificationTargetTicket;
+use Plugin;
+use Session;
+use Ticket_Ticket;
+use UserEmail;
+
+class Ticket
 {
     public const LAST_TECH_ASSIGN = 50;
     public const LAST_GROUP_ASSIGN = 51;
@@ -48,7 +62,7 @@ class PluginBehaviorsTicket
      */
     public static function addEvents(NotificationTargetTicket $target)
     {
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         if ($config->getField('add_notif')) {
             Plugin::loadLang('behaviors');
@@ -73,7 +87,7 @@ class PluginBehaviorsTicket
                     __('Ticket waiting', 'behaviors')
                 );
 
-            PluginBehaviorsDocument_Item::addEvents($target);
+            Document_Item::addEvents($target);
         }
     }
 
@@ -381,7 +395,7 @@ class PluginBehaviorsTicket
      * @param Ticket $ticket
      * @return false|void
      */
-    public static function beforeAdd(Ticket $ticket)
+    public static function beforeAdd(\Ticket $ticket)
     {
         global $DB;
 
@@ -390,7 +404,7 @@ class PluginBehaviorsTicket
             return false;
         }
 
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         if ($config->getField('tickets_id_format')) {
             $max = 0;
@@ -439,8 +453,8 @@ class PluginBehaviorsTicket
                 && in_array(
                     $ticket->input['status'],
                     array_merge(
-                        Ticket::getSolvedStatusArray(),
-                        Ticket::getClosedStatusArray()
+                        \Ticket::getSolvedStatusArray(),
+                        \Ticket::getClosedStatusArray()
                     )
                 ))
             && isset($ticket->input['_users_id_assign'])
@@ -478,7 +492,7 @@ class PluginBehaviorsTicket
      */
     public static function useRequesterItemGroup($input)
     {
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
         if ($config->getField('use_requester_item_group')
             && isset($input['items_id'])
             && (is_array($input['items_id']))) {
@@ -542,7 +556,7 @@ class PluginBehaviorsTicket
      */
     public static function useRequesterUserGroup($input)
     {
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
         if ($config->getField('use_requester_user_group') > 0) {
             $actors_requester = [];
             if (isset($input['_actors']['requester'])) {
@@ -566,7 +580,7 @@ class PluginBehaviorsTicket
                             ],
                         ],
                     ];
-                    $user = new User();
+                    $user = new \User();
                     if ($user->getFromDBbyEmail($email, $condition)) {
                         $input['_users_id_requester'] = $user->getID;
                     } else {
@@ -627,7 +641,7 @@ class PluginBehaviorsTicket
             }
             $entities_id = $_SESSION['glpiactive_entity'];
             if (!isset($input['entities_id'])) {
-                $ticket = new Ticket();
+                $ticket = new \Ticket();
                 if ($ticket->getFromDB($input['id'])) {
                     $entities_id = $ticket->fields['entities_id'];
                 }
@@ -645,7 +659,7 @@ class PluginBehaviorsTicket
                     if ($config->getField('use_requester_user_group') == 1) {
                         // First group
                         if ($requester['itemtype'] == 'User') {
-                            $grp = PluginBehaviorsUser::getRequesterGroup(
+                            $grp = User::getRequesterGroup(
                                 $entities_id,
                                 $requester['items_id'],
                                 true
@@ -666,7 +680,7 @@ class PluginBehaviorsTicket
                     } else {
                         // All groups
                         if ($requester['itemtype'] == 'User') {
-                            $grps = PluginBehaviorsUser::getRequesterGroup(
+                            $grps = User::getRequesterGroup(
                                 $entities_id,
                                 $requester['items_id'],
                                 false
@@ -699,7 +713,7 @@ class PluginBehaviorsTicket
      */
     public static function useAssignTechGroup($input, $type)
     {
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         if ($config->getField($type) > 0) {
             $actors_assign = [];
@@ -760,7 +774,7 @@ class PluginBehaviorsTicket
 
             $entities_id = $_SESSION['glpiactive_entity'];
             if (!isset($input['entities_id'])) {
-                $ticket = new Ticket();
+                $ticket = new \Ticket();
                 if ($ticket->getFromDB($input['id'])) {
                     $entities_id = $ticket->fields['entities_id'];
                 }
@@ -778,7 +792,7 @@ class PluginBehaviorsTicket
                     if ($config->getField($type) == 1) {
                         // First group
                         if ($assign['itemtype'] == 'User') {
-                            $grp = PluginBehaviorsUser::getTechnicianGroup(
+                            $grp = User::getTechnicianGroup(
                                 $entities_id,
                                 $assign['items_id'],
                                 true
@@ -799,7 +813,7 @@ class PluginBehaviorsTicket
                     } else {
                         // All groups
                         if ($assign['itemtype'] == 'User') {
-                            $grps = PluginBehaviorsUser::getTechnicianGroup(
+                            $grps = User::getTechnicianGroup(
                                 $entities_id,
                                 $assign['items_id'],
                                 false
@@ -830,14 +844,14 @@ class PluginBehaviorsTicket
      * @param Ticket $ticket
      * @return false|void
      */
-    public static function afterPrepareAdd(Ticket $ticket)
+    public static function afterPrepareAdd(\Ticket $ticket)
     {
         if (!is_array($ticket->input) || !count($ticket->input)) {
             // Already cancel by another plugin
             return false;
         }
 
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         if ($config->getField('use_assign_user_group')
             && isset($ticket->input['_users_id_assign'])
@@ -847,7 +861,7 @@ class PluginBehaviorsTicket
             if ($config->getField('use_assign_user_group') == 1) {
                 // First group
                 $ticket->input['_groups_id_assign']
-                    = PluginBehaviorsUser::getTechnicianGroup(
+                    = User::getTechnicianGroup(
                         $ticket->input['entities_id'],
                         $ticket->input['_users_id_assign'],
                         true
@@ -855,7 +869,7 @@ class PluginBehaviorsTicket
             } else {
                 // All groups
                 $ticket->input['_additional_groups_assigns']
-                    = PluginBehaviorsUser::getTechnicianGroup(
+                    = User::getTechnicianGroup(
                         $ticket->input['entities_id'],
                         $ticket->input['_users_id_assign'],
                         false
@@ -869,7 +883,7 @@ class PluginBehaviorsTicket
      * @param Ticket $ticket
      * @return false|void
      */
-    public static function beforeUpdate(Ticket $ticket)
+    public static function beforeUpdate(\Ticket $ticket)
     {
         global $DB;
 
@@ -879,7 +893,7 @@ class PluginBehaviorsTicket
         }
 
         $dbu = new DbUtils();
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         // Check is the connected user is a tech
         if (!is_numeric(Session::getLoginUserID(false))
@@ -897,8 +911,8 @@ class PluginBehaviorsTicket
             && in_array(
                 $ticket->input['status'],
                 array_merge(
-                    Ticket::getSolvedStatusArray(),
-                    Ticket::getClosedStatusArray()
+                    \Ticket::getSolvedStatusArray(),
+                    \Ticket::getClosedStatusArray()
                 )
             )) {
             $sql = [
@@ -1081,21 +1095,21 @@ class PluginBehaviorsTicket
             && in_array(
                 $ticket->input['status'],
                 array_merge(
-                    Ticket::getSolvedStatusArray(),
-                    Ticket::getClosedStatusArray()
+                    \Ticket::getSolvedStatusArray(),
+                    \Ticket::getClosedStatusArray()
                 )
             )) {
-            $ticket_user = new Ticket_User();
+            $ticket_user = new \Ticket_User();
             if (($ticket->countUsers(CommonITILActor::ASSIGN) == 0)
                 || (isset($ticket_user->fields['users_id'])
                     && ($ticket_user->fields['users_id'] != Session::getLoginUserID()))
-                && (((in_array($ticket->fields['status'], Ticket::getSolvedStatusArray()))
-                        && (in_array($ticket->input['status'], Ticket::getClosedStatusArray())))
+                && (((in_array($ticket->fields['status'], \Ticket::getSolvedStatusArray()))
+                        && (in_array($ticket->input['status'], \Ticket::getClosedStatusArray())))
                     || !in_array(
                         $ticket->fields['status'],
                         array_merge(
-                            Ticket::getSolvedStatusArray(),
-                            Ticket::getClosedStatusArray()
+                            \Ticket::getSolvedStatusArray(),
+                            \Ticket::getClosedStatusArray()
                         )
                     ))) {
                 $ticket_user->add([
@@ -1117,7 +1131,7 @@ class PluginBehaviorsTicket
             && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
             if (strstr($_SERVER['PHP_SELF'], "/front/ticket.form.php")
                 && (!isset($_POST['id']) || ($_POST['id'] == 0))) {
-                $config = PluginBehaviorsConfig::getInstance();
+                $config = Config::getInstance();
 
                 if ($config->getField('use_requester_user_group') > 0
                     && isset($_POST['_actors'])) {
@@ -1133,7 +1147,7 @@ class PluginBehaviorsTicket
                             if ($requester['itemtype'] == 'User') {
                                 if ($config->getField('use_requester_user_group') == 1) {
                                     // First group
-                                    $grp = PluginBehaviorsUser::getRequesterGroup(
+                                    $grp = User::getRequesterGroup(
                                         $_POST['entities_id'],
                                         $requester['items_id'],
                                         true
@@ -1155,7 +1169,7 @@ class PluginBehaviorsTicket
                                     $_POST['_actors'] = $new_actors;
                                 } else {
                                     // All groups
-                                    $grps = PluginBehaviorsUser::getRequesterGroup(
+                                    $grps = User::getRequesterGroup(
                                         $_POST['entities_id'],
                                         $requester['items_id'],
                                         false
@@ -1199,7 +1213,7 @@ class PluginBehaviorsTicket
                             if ($assigned['itemtype'] == 'User') {
                                 if ($config->getField('use_assign_user_group') == 1) {
                                     // First group
-                                    $grp = PluginBehaviorsUser::getTechnicianGroup(
+                                    $grp = User::getTechnicianGroup(
                                         $_POST['entities_id'],
                                         $assigned['items_id'],
                                         true
@@ -1221,7 +1235,7 @@ class PluginBehaviorsTicket
                                     $_POST['_actors'] = $new_actors;
                                 } else {
                                     // All groups
-                                    $grps = PluginBehaviorsUser::getTechnicianGroup(
+                                    $grps = User::getTechnicianGroup(
                                         $_POST['entities_id'],
                                         $assigned['items_id'],
                                         false
@@ -1262,24 +1276,24 @@ class PluginBehaviorsTicket
      * @param Ticket $ticket
      * @return void
      */
-    public static function afterUpdate(Ticket $ticket)
+    public static function afterUpdate(\Ticket $ticket)
     {
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         if ($config->getField('add_notif')
             && in_array('status', $ticket->updates)) {
             if (in_array(
                 $ticket->oldvalues['status'],
                 array_merge(
-                    Ticket::getSolvedStatusArray(),
-                    Ticket::getClosedStatusArray()
+                    \Ticket::getSolvedStatusArray(),
+                    \Ticket::getClosedStatusArray()
                 )
             )
                 && !in_array(
                     $ticket->input['status'],
                     array_merge(
-                        Ticket::getSolvedStatusArray(),
-                        Ticket::getClosedStatusArray()
+                        \Ticket::getSolvedStatusArray(),
+                        \Ticket::getClosedStatusArray()
                     )
                 )) {
                 NotificationEvent::raiseEvent('plugin_behaviors_ticketreopen', $ticket);
@@ -1299,7 +1313,7 @@ class PluginBehaviorsTicket
      * @param array $input
      * @return array
      */
-    public static function preClone(Ticket $srce, array $input)
+    public static function preClone(\Ticket $srce, array $input)
     {
         global $DB;
 
@@ -1318,7 +1332,6 @@ class PluginBehaviorsTicket
         foreach ($user_assign as $users) {
             $input['_users_id_assign'][] = $users['users_id'];
         }
-
         $group_reques = $srce->getGroups(CommonITILActor::REQUESTER);
         $input['_groups_id_requester'] = [];
         foreach ($group_reques as $groups) {
@@ -1337,8 +1350,8 @@ class PluginBehaviorsTicket
 
         $suppliers = $srce->getSuppliers(CommonITILActor::ASSIGN);
         $input['_suppliers_id_assign'] = [];
-        foreach ($suppliers as $suppliers) {
-            $input['_suppliers_id_assign'][] = $suppliers['groups_id'];
+        foreach ($suppliers as $supplier) {
+            $input['_suppliers_id_assign'][] = $supplier['groups_id'];
         }
 
         return $input;
@@ -1350,7 +1363,7 @@ class PluginBehaviorsTicket
      * @param $oldid
      * @return void
      */
-    public static function postClone(Ticket $clone, $oldid)
+    public static function postClone(\Ticket $clone, $oldid)
     {
         global $DB;
 
@@ -1389,7 +1402,7 @@ class PluginBehaviorsTicket
                 'items_id' => $oldid,
             ]
         )) {
-            $docitem = new Document_Item();
+            $docitem = new \Document_Item();
             $query = [
                 'FROM' => 'glpi_documents_items',
                 'WHERE' => [

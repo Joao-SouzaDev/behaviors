@@ -32,7 +32,12 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsGroup_Ticket
+namespace GlpiPlugin\Behaviors;
+
+use CommonITILActor;
+use Session;
+
+class Group_Ticket
 {
     /**
      * @param Group_Ticket $item
@@ -44,11 +49,11 @@ class PluginBehaviorsGroup_Ticket
 
         // Check is the connected user is a tech
         if (!is_numeric(Session::getLoginUserID(false))
-            || !Session::haveRight('ticket', Ticket::OWN)) {
+            || !Session::haveRight('ticket', \Ticket::OWN)) {
             return false; // No check
         }
 
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
         if (($config->getField('single_tech_mode') != 0)
             && ($item->input['type'] == CommonITILActor::ASSIGN)) {
 
@@ -62,7 +67,7 @@ class PluginBehaviorsGroup_Ticket
 
             foreach ($DB->request($crit) as $data) {
                 if ($data['id'] != $item->getID()) {
-                    $gu = new Group_Ticket();
+                    $gu = new \Group_Ticket();
                     $gu->delete($data);
                 }
             }
@@ -77,7 +82,7 @@ class PluginBehaviorsGroup_Ticket
 
             if ($config->getField('single_tech_mode') == 2) {
                 foreach ($DB->request($crit) as $data) {
-                    $gu = new Ticket_User();
+                    $gu = new \Ticket_User();
                     $gu->delete($data);
                 }
             }

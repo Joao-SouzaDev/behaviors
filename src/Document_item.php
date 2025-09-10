@@ -32,7 +32,13 @@
  * --------------------------------------------------------------------------
  */
 
-class PluginBehaviorsDocument_Item
+namespace GlpiPlugin\Behaviors;
+
+use NotificationEvent;
+use NotificationTargetTicket;
+use Plugin;
+
+class Document_Item
 {
     /**
      * @param NotificationTargetTicket $target
@@ -40,7 +46,7 @@ class PluginBehaviorsDocument_Item
      */
     public static function addEvents(NotificationTargetTicket $target)
     {
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
 
         if ($config->getField('add_notif')) {
             Plugin::loadLang('behaviors');
@@ -66,15 +72,15 @@ class PluginBehaviorsDocument_Item
      * @param Document_Item $document_item
      * @return void
      */
-    public static function afterAdd(Document_Item $document_item)
+    public static function afterAdd(\Document_Item $document_item)
     {
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
         if ($config->getField('add_notif')
             && (isset($_POST['itemtype']))
             && (isset($document_item->input['itemtype']))
             && ($document_item->input['itemtype'] == 'Ticket')
             && ($_POST['itemtype'] == 'Ticket')) {// prevent not in case of create ticket
-            $ticket = new Ticket();
+            $ticket = new \Ticket();
             $ticket->getFromDB($document_item->input['items_id']);
 
             NotificationEvent::raiseEvent('plugin_behaviors_document_itemnew', $ticket);
@@ -86,14 +92,14 @@ class PluginBehaviorsDocument_Item
      * @param Document_Item $document_item
      * @return void
      */
-    public static function afterPurge(Document_Item $document_item)
+    public static function afterPurge(\Document_Item $document_item)
     {
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
         if ($config->getField('add_notif')
             && (isset($document_item->input['itemtype']))
             && ($document_item->fields['itemtype'] == 'Ticket')
             && isset($_POST['item'])) { // prevent not use in case of purge ticket
-            $ticket = new Ticket();
+            $ticket = new \Ticket();
             $ticket->getFromDB($document_item->fields['items_id']);
 
             NotificationEvent::raiseEvent('plugin_behaviors_document_itemdel', $ticket);
