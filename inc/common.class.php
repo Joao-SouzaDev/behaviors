@@ -86,7 +86,9 @@ class PluginBehaviorsCommon extends CommonGLPI
         PluginBehaviorsTicket::onNewTicket();
     }
 
-
+    static function getIcon() {
+        return "ti ti-settings";
+    }
     /**
      * @param CommonGLPI $item
      * @param $withtemplate
@@ -101,10 +103,10 @@ class PluginBehaviorsCommon extends CommonGLPI
             && ($config->getField('clone') > 0)
             && (isset($_SESSION['glpiactiveprofile']['interface'])
                 && ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'))) {
-            return sprintf(
+            return self::createTabEntry(sprintf(
                 __('%1$s (%2$s)'),
                 __('Clone', 'behaviors'),
-                __('Behaviours', 'behaviors')
+                __('Behaviours', 'behaviors'))
             );
         }
         return '';

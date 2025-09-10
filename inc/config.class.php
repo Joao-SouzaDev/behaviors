@@ -277,7 +277,7 @@ class PluginBehaviorsConfig extends CommonDBTM
 
     /**
      * @param $item
-     * @return false
+     * @return true
      */
     static function showConfigForm($item)
     {
