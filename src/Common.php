@@ -362,8 +362,7 @@ class Common extends CommonGLPI
                         'tickets_id' => $obj->getField('id'),
                     ],
                 ];
-                foreach (
-                    $DB->request($crit) as $task
+                foreach ($DB->request($crit) as $task
                 ) {
                     if ($task['state'] == 1) {
                         $warnings[] = __("You cannot solve/close a ticket with task do to", 'behaviors');
@@ -381,8 +380,7 @@ class Common extends CommonGLPI
                         'problems_id' => $obj->getField('id'),
                     ],
                 ];
-                foreach (
-                    $DB->request($crit) as $task
+                foreach ($DB->request($crit) as $task
                 ) {
                     if ($task['state'] == 1) {
                         $warnings[] = __("You cannot solve/close a problem with task do to", 'behaviors');
@@ -394,7 +392,6 @@ class Common extends CommonGLPI
 
         if ($obj->getType() == 'Change') {
             if ($config->getField('is_changetasktodo')) {
-
                 $crit = [
                     'FROM' => 'glpi_changetasks',
                     'WHERE' => [
@@ -402,10 +399,9 @@ class Common extends CommonGLPI
                     ],
                 ];
 
-                foreach (
-                    $DB->request(
-                        $crit
-                    ) as $task
+                foreach ($DB->request(
+                    $crit
+                ) as $task
                 ) {
                     if ($task['state'] == 1) {
                         $warnings[] = __("You cannot solve/close a change with task do to", 'behaviors');
@@ -430,6 +426,7 @@ class Common extends CommonGLPI
             if ($item->getType() == 'ITILSolution') {
                 $warnings = self::checkWarnings($params);
                 $config = Config::getInstance();
+                $parentitem = $params['options']['item'];
                 if ((is_array($warnings) && count($warnings))
                     || $config->getField('is_ticketsolution_mandatory')
                     || $config->getField('is_ticketsolutiontype_mandatory')) {
@@ -442,7 +439,10 @@ class Common extends CommonGLPI
                     echo "</div>";
 
                     echo "<div>";
-                    if ($config->getField('is_ticketsolution_mandatory') && is_array($warnings) && count($warnings) == 0) {
+                    if ($config->getField('is_ticketsolution_mandatory')
+                        && is_array($warnings)
+                        && count($warnings) == 0
+                    && $parentitem->getType() == 'Ticket') {
                         echo "<h4 class='alert-title'>" . __(
                             "You must add a description. it's mandatory",
                             'behaviors'
@@ -455,7 +455,14 @@ class Common extends CommonGLPI
                         ) . "</h4>";
                     }
                     if (is_array($warnings) && count($warnings)) {
-                        echo "<h4 class='alert-title'>" . __('You cannot resolve the ticket', 'behaviors') . " :</h4>";
+                        if ($parentitem->getType() == 'Ticket') {
+                            echo "<h4 class='alert-title'>" . __('You cannot resolve the ticket', 'behaviors') . " :</h4>";
+                        } elseif ($parentitem->getType() == 'Problem') {
+                            echo "<h4 class='alert-title'>" . __('You cannot resolve the problem', 'behaviors') . " :</h4>";
+                        } elseif ($parentitem->getType() == 'Change') {
+                            echo "<h4 class='alert-title'>" . __('You cannot resolve the change', 'behaviors') . " :</h4>";
+                        }
+
                         echo "<div class='text-muted'>" . implode('</div><div>', $warnings) . "</div>";
                     }
                     echo "</div>";
@@ -464,7 +471,6 @@ class Common extends CommonGLPI
 
                     echo "</div>";
                 }
-
             } elseif ($item->getType() == 'TicketTask') {
                 $config = Config::getInstance();
                 if ($config->getField('is_tickettaskcategory_mandatory')) {

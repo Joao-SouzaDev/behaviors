@@ -619,10 +619,10 @@ class Config extends CommonDBTM
 
 //
 //        return false;
-
     }
 
-    static function getIcon() {
+    static function getIcon()
+    {
         return "ti ti-settings";
     }
 
@@ -694,8 +694,11 @@ class Config extends CommonDBTM
                 $newvalue = $this->fields[$update];
 
                 $configGLPI = new \Config();
-                Log::constructHistory($configGLPI, ['value' => $update.' '.$oldvalue],
-                    ['value' => $update.' '.$newvalue]);
+                Log::constructHistory(
+                    $configGLPI,
+                    ['value' => $update.' '.$oldvalue],
+                    ['value' => $update.' '.$newvalue]
+                );
             }
         }
     }
