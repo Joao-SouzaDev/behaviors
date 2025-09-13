@@ -109,7 +109,7 @@ class ITILSolution
             //
             //                if (isset($soluce->input['duration_solution'])
             //                    && $soluce->input['duration_solution'] > 0) {
-            //                    $ticket = new Ticket();
+            //                    $ticket = new \Ticket();
             //                    $tickets_id = $soluce->input['items_id'];
             //                    if ($ticket->getFromDB($tickets_id)) {
             //                        if ($ticket->getField('actiontime') == 0) {
@@ -144,7 +144,7 @@ class ITILSolution
             //                        && $configglpi['system_user'] == $soluce->input['users_id']) {
             //                        return true;
             //                    }
-            //                    $ticket = new Ticket();
+            //                    $ticket = new \Ticket();
             //                    $tickets_id = $soluce->input['items_id'];
             //                    $ticket->getFromDB($tickets_id);
             //                    $dur = (isset($ticket->fields['actiontime']) ? $ticket->fields['actiontime'] : 0);
