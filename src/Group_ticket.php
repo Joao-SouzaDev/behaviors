@@ -43,7 +43,7 @@ class Group_Ticket
      * @param Group_Ticket $item
      * @return false|void
      */
-    public static function afterAdd(Group_Ticket $item)
+    public static function afterAdd(\Group_Ticket $item)
     {
         global $DB;
 

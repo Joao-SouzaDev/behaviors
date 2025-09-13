@@ -33,6 +33,8 @@
  */
 
 namespace GlpiPlugin\Behaviors;
+use DbUtils;
+
 class User
 {
     /**
@@ -46,7 +48,7 @@ class User
     {
         global $DB;
 
-        $config = PluginBehaviorsConfig::getInstance();
+        $config = Config::getInstance();
         $dbu = new DbUtils();
 
         $where = '';

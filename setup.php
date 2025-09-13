@@ -118,11 +118,11 @@ function plugin_init_behaviors()
 
     //TO Disable in v11
     //    foreach ($CFG_GLPI["asset_types"] as $type) {
-    //        $PLUGIN_HOOKS['item_can']['behaviors'][$type] = [$type => ['PluginBehaviorsConfig', 'item_can']];
+    //        $PLUGIN_HOOKS['item_can']['behaviors'][$type] = [$type => ['Config', 'item_can']];
     //    }
 
     //TO Disable in v11
-    //    $PLUGIN_HOOKS['add_default_where']['behaviors'] = ['PluginBehaviorsConfig', 'add_default_where'];
+    //    $PLUGIN_HOOKS['add_default_where']['behaviors'] = ['Config', 'add_default_where'];
 }
 
 

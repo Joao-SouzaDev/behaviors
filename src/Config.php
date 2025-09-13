@@ -658,7 +658,7 @@ class Config extends CommonDBTM
 //        $itemtype = $item->getType();
 //        if (in_array($item->getType(), $CFG_GLPI["asset_types"])
 //            && !Session::haveRight($itemtype::$rightname, UPDATE)) {
-//            $config = PluginBehaviorsConfig::getInstance();
+//            $config = Config::getInstance();
 //            if ($config->getField('myasset')
 //                && ($item->fields['users_id'] > 0)
 //                && ($item->fields['users_id'] <> Session::getLoginUserID())) {
@@ -724,7 +724,7 @@ class Config extends CommonDBTM
 //
 //        $dbu = new DbUtils();
 //
-//        $config = PluginBehaviorsConfig::getInstance();
+//        $config = Config::getInstance();
 //        if (in_array($itemtype, $CFG_GLPI["asset_types"])
 //            && !Session::haveRight($itemtype::$rightname, UPDATE)) {
 //            $dbu = new DbUtils();

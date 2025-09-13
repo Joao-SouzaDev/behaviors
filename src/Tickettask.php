@@ -49,7 +49,7 @@ class TicketTask
             return false;
         }
 
-        //Toolbox::logDebug("PluginBehaviorsTicket::beforeAdd(), Ticket=", $ticket);
+        //Toolbox::logDebug("Ticket::beforeAdd(), Ticket=", $ticket);
         $config = Config::getInstance();
 
         // Check is the connected user is a tech
@@ -88,7 +88,7 @@ class TicketTask
             return false;
         }
 
-        //Toolbox::logDebug("PluginBehaviorsTicket::beforeAdd(), Ticket=", $ticket);
+        //Toolbox::logDebug("Ticket::beforeAdd(), Ticket=", $ticket);
         $config = Config::getInstance();
 
         // Check is the connected user is a tech

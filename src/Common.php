@@ -47,16 +47,16 @@ use Session;
 class Common extends CommonGLPI
 {
     public static $clone_types = [
-        'NotificationTemplate' => 'PluginBehaviorsNotificationTemplate',
-        'Profile' => 'PluginBehaviorsProfile',
-        'RuleImportComputer' => 'PluginBehaviorsRule',
-        'RuleImportEntity' => 'PluginBehaviorsRule',
-        'RuleMailCollector' => 'PluginBehaviorsRule',
-        'RuleRight' => 'PluginBehaviorsRule',
-        'RuleSoftwareCategory' => 'PluginBehaviorsRule',
-        'RuleTicket' => 'PluginBehaviorsRule',
-        'Transfer' => 'PluginBehaviorsCommon',
-        'Ticket' => 'PluginBehaviorsTicket',
+        'NotificationTemplate' => NotificationTemplate::class,
+        'Profile' => Profile::class,
+        'RuleImportComputer' => Rule::class,
+        'RuleImportEntity' => Rule::class,
+        'RuleMailCollector' => Rule::class,
+        'RuleRight' => Rule::class,
+        'RuleSoftwareCategory' => Rule::class,
+        'RuleTicket' => Rule::class,
+        'Transfer' => Common::class,
+        'Ticket' => Ticket::class,
     ];
 
 
@@ -91,7 +91,7 @@ class Common extends CommonGLPI
     public static function postInit()
     {
         Plugin::registerClass(
-            'PluginBehaviorsCommon',
+            Common::class,
             ['addtabon' => array_keys(Common::getCloneTypes())]
         );
 
@@ -512,7 +512,7 @@ class Common extends CommonGLPI
             $item = $params['item'];
             if ($item->getType() == 'ITILSolution') {
                 //                $options = $params['options'];
-                //                $config = PluginBehaviorsConfig::getInstance();
+                //                $config = Config::getInstance();
                 //                if ($config->getField('is_ticketrealtime_mandatory')) {
                 //                    $ticket = $options['item'];
                 //                    echo "<div class='row mx-n3 mx-xxl-auto'>";
