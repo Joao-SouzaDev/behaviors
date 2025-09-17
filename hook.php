@@ -38,8 +38,6 @@ function plugin_behaviors_install()
 
     $migration = new Migration(300);
 
-   // No autoload when plugin is not activated
-    require_once('inc/config.class.php');
     Config::install($migration);
 
     $migration->executeMigration();
@@ -50,9 +48,6 @@ function plugin_behaviors_install()
 
 function plugin_behaviors_uninstall()
 {
-
-   // No autoload when plugin is not activated
-    require 'inc/config.class.php';
 
     $migration = new Migration(300);
 
