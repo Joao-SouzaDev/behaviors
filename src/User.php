@@ -56,7 +56,7 @@ class User
             $where = $filter;
         }
         $query = [
-            'FIELDS' => ['glpi_groups' => ['id']],
+            'SELECT' => ['glpi_groups' => ['id']],
             'FROM' => 'glpi_groups_users',
             'INNER JOIN' => [
                 'glpi_groups' => [

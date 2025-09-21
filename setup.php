@@ -132,7 +132,7 @@ function plugin_version_behaviors()
         'name' => __('Behaviours', 'behaviors'),
         'version' => PLUGIN_BEHAVIORS_VERSION,
         'license' => 'AGPLv3+',
-        'author' => 'Infotel, Remi Collet, Nelly Mahu-Lasson',
+        'author' => "<a href='https//blogglpi.infotel.com'>Infotel</a>, Xavier CAILLAUD, Remi COLLET, Nelly MAHU-LASSON",
         'homepage' => 'https://github.com/InfotelGLPI/behaviors',
         'minGlpiVersion' => '11.0.0',
         'requirements' => [

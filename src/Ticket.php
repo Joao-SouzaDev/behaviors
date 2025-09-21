@@ -37,6 +37,7 @@ namespace GlpiPlugin\Behaviors;
 use CommonITILActor;
 use CommonITILObject;
 use DbUtils;
+use Glpi\DBAL\QueryExpression;
 use Item_Ticket;
 use NotificationEvent;
 use NotificationMailing;
@@ -364,9 +365,8 @@ class Ticket
             $data = $result->current();
 
             $query = [
-                'SELECT' => 'glpi_suppliers.email AS email',
+                'SELECT' => ['glpi_suppliers.email AS email','glpi_suppliers.name AS name'],
                 'DISTINCT' => true,
-                'FIELDS' => 'glpi_suppliers.name AS name',
                 'FROM' => $supplierlinktable,
                 'LEFT JOIN' => [
                     'glpi_suppliers'

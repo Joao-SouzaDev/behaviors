@@ -43,6 +43,7 @@ use Log;
 use Plugin;
 use PluginMoreticketConfig;
 use Session;
+use Toolbox;
 
 class Common extends CommonGLPI
 {
