@@ -286,7 +286,7 @@ msgstr "Você não pode solucionar/fechar uma mudança com tarefas a fazer"
 
 #: src/Common.php:387 src/Itilsolution.php:276
 msgid "You cannot solve/close a problem with task do to"
-msgstr "Você não pode resolver/encerrar um problema com tarefas a fazer"
+msgstr "Você não pode solucionar/fechar um problema com tarefas a fazer"
 
 #: src/Common.php:369 src/Itilsolution.php:233 src/Ticket.php:1047
 msgid "You cannot solve/close a ticket with task do to"
