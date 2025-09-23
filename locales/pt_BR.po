@@ -166,7 +166,7 @@ msgstr "Nova mudança"
 
 #: templates/config.html.twig:42
 msgid "New ticket"
-msgstr "Novo ticket"
+msgstr "Novo chamado"
 
 #: templates/config.html.twig:268
 msgid "Notification"
