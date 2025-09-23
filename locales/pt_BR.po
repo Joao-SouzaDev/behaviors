@@ -255,7 +255,8 @@ msgstr "Use o grupo do técnico"
 
 #: src/Changetask.php:72
 msgid "You cannot change status of a task in a solved change"
-msgstr "Você não pode alterar o status de uma tarefa em uma mudança resolvida"
+msgstr ""
+"Você não pode alterar o status de uma tarefa em uma mudança solucionada"
 
 #: src/Problemtask.php:72
 msgid "You cannot change status of a task in a solved problem"
