@@ -2,9 +2,29 @@
 
 # Only strings with domain specified are extracted (use Xt args of keyword param to set number of args needed)
 
-xgettext *.php */*.php --copyright-holder='Behaviors Development Team' --package-name='GLPI - Behaviors plugin' -o locales/glpi.pot -L PHP --add-comments=TRANS --from-code=UTF-8 --force-po  \
-	--keyword=_n:1,2,4t --keyword=__s:1,2t --keyword=__:1,2t --keyword=_e:1,2t --keyword=_x:1c,2,3t \
-	--keyword=_ex:1c,2,3t --keyword=_nx:1c,2,3,5t --keyword=_sx:1c,2,3t
+# Recherche tous les fichiers PHP récursivement
+find . -name '*.php' > php_files.list
+
+# Extraction avec xgettext
+xgettext --files-from=php_files.list \
+  --copyright-holder='Behaviors Development Team' \
+  --package-name='Behaviors - Accounts plugin' \
+  -o locales/glpi.pot \
+  -L PHP \
+  --add-comments=TRANS \
+  --from-code=UTF-8 \
+  --force-po \
+  --keyword=_n:1,2,4t \
+  --keyword=__s:1,2t \
+  --keyword=__:1,2t \
+  --keyword=_e:1,2t \
+  --keyword=_x:1c,2,3t \
+  --keyword=_ex:1c,2,3t \
+  --keyword=_nx:1c,2,3,5t \
+  --keyword=_sx:1c,2,3t
+
+# Nettoyage
+rm php_files.list
 
 # Append locales from Twig templates
 SCRIPT_DIR=$(dirname $0)
