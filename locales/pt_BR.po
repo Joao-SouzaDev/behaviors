@@ -278,7 +278,7 @@ msgstr "Você não pode resolver o problema"
 
 #: src/Common.php:460
 msgid "You cannot resolve the ticket"
-msgstr "Não é possível resolver o chamado"
+msgstr "Você não pode resolver o chamado"
 
 #: src/Common.php:408 src/Itilsolution.php:309 src/Change.php:117
 msgid "You cannot solve/close a change with task do to"
