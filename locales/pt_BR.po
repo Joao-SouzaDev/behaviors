@@ -177,7 +177,7 @@ msgstr[2] "Notificações"
 
 #: src/Ticket.php:74
 msgid "Reopen ticket"
-msgstr "Reabrir o chamado"
+msgstr "Reabrir chamado"
 
 #: templates/config.html.twig:315
 msgctxt "button"
