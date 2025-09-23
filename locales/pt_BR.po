@@ -52,7 +52,7 @@ msgstr "Bloqueie a solução/encerramento de um problema se há tarefas a fazer"
 
 #: templates/config.html.twig:192
 msgid "Block the solving/closing of a the ticket if task do to"
-msgstr "Bloquear a solução/fechamento de um chamado se a tarefa for a fazer"
+msgstr "Bloquear a solução/fechamento de um chamado se há tarefas a fazer"
 
 #: src/Common.php:330 src/Itilsolution.php:171 src/Ticket.php:984
 #: templates/config.html.twig:164
