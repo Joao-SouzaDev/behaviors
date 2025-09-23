@@ -274,7 +274,7 @@ msgstr "Você não pode resolver a mudança"
 
 #: src/Common.php:462
 msgid "You cannot resolve the problem"
-msgstr "Não é possível resolver o problema"
+msgstr "Você não pode resolver o problema"
 
 #: src/Common.php:460
 msgid "You cannot resolve the ticket"
