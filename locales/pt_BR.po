@@ -298,7 +298,7 @@ msgstr "Você deve adicionar uma descrição. É obrigatório."
 
 #: src/Common.php:454
 msgid "You must add a solution type. it's mandatory"
-msgstr "Você deve adicionar o tipo de solução. É obrigatório."
+msgstr "Você deve adicionar um tipo de solução. É obrigatório."
 
 #: src/Common.php:488 src/Tickettask.php:68 src/Tickettask.php:107
 msgid "You must define a category. it's mandatory"
