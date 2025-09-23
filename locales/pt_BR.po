@@ -260,7 +260,8 @@ msgstr ""
 
 #: src/Problemtask.php:72
 msgid "You cannot change status of a task in a solved problem"
-msgstr "Você não pode alterar o status de uma tarefa em um problema resolvido"
+msgstr ""
+"Você não pode alterar o status de uma tarefa em um problema solucionado"
 
 #: src/Tickettask.php:128
 msgid "You cannot change status of a task in a solved ticket"
