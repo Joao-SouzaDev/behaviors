@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-08 15:12+0200\n"
+"POT-Creation-Date: 2025-10-10 13:54+0000\n"
 "PO-Revision-Date: 2025-04-26 07:42+0000\n"
 "Last-Translator: Diego Nobre <diego@koruma.com.br>, 2025\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/infotelGLPI/teams/250760/pt_BR/)\n"
@@ -27,7 +27,7 @@ msgstr ""
 msgid "Add document to ticket"
 msgstr "Adicionar documento ao chamado"
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:137
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:137
 msgid "Adding the ticket solution"
 msgstr "Adicionando a solução do chamado"
 
@@ -58,7 +58,7 @@ msgstr "Clonar"
 msgid "Clone of"
 msgstr "Clone de"
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:294
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:294
 msgid "Comment"
 msgid_plural "Comments"
 msgstr[0] "Comentário"
@@ -94,7 +94,7 @@ msgstr ""
 "Grupo de técnicos atribuído é obrigatório antes do chamado ser "
 "solucionado/fechado"
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:240
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:240
 msgid "Inventory"
 msgstr "Inventário"
 
@@ -123,11 +123,11 @@ msgid "Location is mandatory before ticket is solved/closed"
 msgstr ""
 "Localização é obrigatória antes que o chamado seja solucionado/fechado"
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:226
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:226
 msgid "New change"
 msgstr "Nova mudança"
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:42
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:42
 msgid "New ticket"
 msgstr "Novo chamado"
 
@@ -135,7 +135,7 @@ msgstr "Novo chamado"
 msgid "Reopen ticket"
 msgstr "Reabrir chamado"
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:315
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:315
 msgctxt "button"
 msgid "Save"
 msgstr "Salvar"
@@ -163,11 +163,11 @@ msgid "Type of solution is mandatory before ticket is solved/closed"
 msgstr ""
 "Tipo da solução é obrigatório antes do chamado ser solucionado/fechado"
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:207
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:207
 msgid "Update of a problem"
 msgstr "Atualização de um problema"
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:83
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:83
 msgid "Update of a ticket"
 msgstr "Atualização de um chamado"
 
@@ -198,7 +198,7 @@ msgstr "Você não pode resolver o problema"
 msgid "You cannot resolve the ticket"
 msgstr "Você não pode resolver o chamado"
 
-#: src/Change.php:117 src/Common.php:408 src/ITILSolution.php:309
+#: src/Common.php:408 src/ITILSolution.php:309 src/Change.php:117
 msgid "You cannot solve/close a change with task do to"
 msgstr "Você não pode solucionar/fechar uma mudança com tarefas a fazer"
 
