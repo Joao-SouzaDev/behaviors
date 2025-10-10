@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-08 15:12+0200\n"
+"POT-Creation-Date: 2025-10-10 13:54+0000\n"
 "PO-Revision-Date: 2025-04-26 07:42+0000\n"
 "Last-Translator: INOUE Daisuke, 2025\n"
 "Language-Team: Japanese (Japan) (https://app.transifex.com/infotelGLPI/teams/250760/ja_JP/)\n"
@@ -25,7 +25,7 @@ msgstr ""
 msgid "Add document to ticket"
 msgstr "チケットにドキュメントを追加"
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:137
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:137
 msgid "Adding the ticket solution"
 msgstr "チケットに解決を追加しています"
 
@@ -56,7 +56,7 @@ msgstr "クローン"
 msgid "Clone of"
 msgstr "クローン元 : "
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:294
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:294
 msgid "Comment"
 msgid_plural "Comments"
 msgstr[0] "コメント"
@@ -86,7 +86,7 @@ msgid ""
 "Group of technicians assigned is mandatory before ticket is solved/closed"
 msgstr "チケットを解決・終了するには技術者グループの割り当てを必須に"
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:240
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:240
 msgid "Inventory"
 msgstr "インベントリー"
 
@@ -114,11 +114,11 @@ msgstr "最終割り当て監視者"
 msgid "Location is mandatory before ticket is solved/closed"
 msgstr "チケットを解決・終了するには場所を必須に"
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:226
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:226
 msgid "New change"
 msgstr "新しい変更"
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:42
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:42
 msgid "New ticket"
 msgstr "新しいチケット"
 
@@ -126,7 +126,7 @@ msgstr "新しいチケット"
 msgid "Reopen ticket"
 msgstr "チケットの再開"
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:315
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:315
 msgctxt "button"
 msgid "Save"
 msgstr "保存"
@@ -151,11 +151,11 @@ msgstr "問題を解決・終了するには解決の型を必須に"
 msgid "Type of solution is mandatory before ticket is solved/closed"
 msgstr "チケットを解決・終了するには解決の型を必須に"
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:207
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:207
 msgid "Update of a problem"
 msgstr "問題の更新"
 
-#: /c/wamp/www/glpi11symfony/marketplace/behaviors/templates/config.html.twig:83
+#: /home/runner/work/behaviors/behaviors/templates/config.html.twig:83
 msgid "Update of a ticket"
 msgstr "チケットの更新"
 
@@ -183,7 +183,7 @@ msgstr "問題を解決する権限がありません"
 msgid "You cannot resolve the ticket"
 msgstr "チケットを解決する権限がありません"
 
-#: src/Change.php:117 src/Common.php:408 src/ITILSolution.php:309
+#: src/Common.php:408 src/ITILSolution.php:309 src/Change.php:117
 msgid "You cannot solve/close a change with task do to"
 msgstr "タスクのやり残しがある変更を解決・終了することはできません"
 
