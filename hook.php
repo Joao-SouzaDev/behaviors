@@ -36,7 +36,7 @@ use GlpiPlugin\Behaviors\Config;
 function plugin_behaviors_install()
 {
 
-    $migration = new Migration(300);
+    $migration = new Migration(PLUGIN_BEHAVIORS_VERSION);
 
     Config::install($migration);
 
@@ -49,11 +49,7 @@ function plugin_behaviors_install()
 function plugin_behaviors_uninstall()
 {
 
-    $migration = new Migration(300);
-
-    Config::uninstall($migration);
-
-    $migration->executeMigration();
+    Config::uninstall();
 
     return true;
 }

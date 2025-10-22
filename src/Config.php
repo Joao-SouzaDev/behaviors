@@ -278,9 +278,11 @@ class Config extends CommonDBTM
     }
 
 
-    static function uninstall(Migration $mig)
+    static function uninstall()
     {
-        $mig->dropTable('glpi_plugin_behaviors_configs');
+        global $DB;
+
+        $DB->dropTable(self::getTable(), true);
     }
 
 
