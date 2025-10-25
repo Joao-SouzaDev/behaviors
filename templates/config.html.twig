@@ -194,6 +194,13 @@
                     ) }}
 
                     {{ fields.sliderField(
+                        'is_ticketvalidation_mandatory',
+                        config["is_ticketvalidation_mandatory"],
+                        __('Validation is mandatory before ticket is solved/closed', 'behaviors'),
+                        field_options
+                    ) }}
+
+                    {{ fields.sliderField(
                         'is_ticketrealtime_mandatory',
                         config["is_ticketrealtime_mandatory"],
                         __('Duration is mandatory before ticket is solved/closed', 'behaviors'),

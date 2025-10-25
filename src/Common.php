@@ -112,11 +112,13 @@ class Common extends CommonGLPI
     {
         $config = Config::getInstance();
 
-        if (array_key_exists($item->getType(), self::$clone_types)
+        if (
+            array_key_exists($item->getType(), self::$clone_types)
             && $item->canUpdate()
             && ($config->getField('clone') > 0)
             && (isset($_SESSION['glpiactiveprofile']['interface'])
-                && ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'))) {
+                && ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'))
+        ) {
             return self::createTabEntry(
                 sprintf(
                     __('%1$s (%2$s)'),
@@ -192,8 +194,10 @@ class Common extends CommonGLPI
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if (array_key_exists($item->getType(), self::$clone_types)
-            && $item->canUpdate()) {
+        if (
+            array_key_exists($item->getType(), self::$clone_types)
+            && $item->canUpdate()
+        ) {
             self::showCloneForm($item);
         }
         return true;
@@ -208,10 +212,12 @@ class Common extends CommonGLPI
     {
         $dbu = new DbUtils();
         // Sanity check
-        if (!isset($param['itemtype']) || !isset($param['id']) || !isset($param['name'])
+        if (
+            !isset($param['itemtype']) || !isset($param['id']) || !isset($param['name'])
             || !array_key_exists($param['itemtype'], self::$clone_types)
             || empty($param['name'])
-            || !($item = $dbu->getItemForItemtype($param['itemtype']))) {
+            || !($item = $dbu->getItemForItemtype($param['itemtype']))
+        ) {
             return false;
         }
 
@@ -299,10 +305,12 @@ class Common extends CommonGLPI
         $config = Config::getInstance();
 
         // Check is the connected user is a tech
-        if (!is_numeric(Session::getLoginUserID(false))
+        if (
+            !is_numeric(Session::getLoginUserID(false))
             || (!Session::haveRight('ticket', UPDATE)
                 && !Session::haveRight('problem', UPDATE)
-                && !Session::haveRight('change', UPDATE))) {
+                && !Session::haveRight('change', UPDATE))
+        ) {
             return false; // No check
         }
 
@@ -332,8 +340,10 @@ class Common extends CommonGLPI
             }
 
             if ($config->getField('is_tickettech_mandatory')) {
-                if (($obj->countUsers(CommonITILActor::ASSIGN) == 0)
-                    && !$config->getField('ticketsolved_updatetech')) {
+                if (
+                    ($obj->countUsers(CommonITILActor::ASSIGN) == 0)
+                    && !$config->getField('ticketsolved_updatetech')
+                ) {
                     $warnings[] = __(
                         "Technician assigned is mandatory before ticket is solved/closed",
                         'behaviors'
@@ -369,6 +379,11 @@ class Common extends CommonGLPI
                         $warnings[] = __("You cannot solve/close a ticket with task do to", 'behaviors');
                         break;
                     }
+                }
+            }
+            if ($config->getField('is_ticketvalidation_mandatory')) {
+                if ($obj->getField('global_validation') == 2) {
+                    $warnings[] = __("You cannot solve/close a ticket with pending or rejected validations", 'behaviors');
                 }
             }
         }
@@ -428,9 +443,11 @@ class Common extends CommonGLPI
                 $warnings = self::checkWarnings($params);
                 $config = Config::getInstance();
                 $parentitem = $params['options']['item'];
-                if ((is_array($warnings) && count($warnings))
+                if (
+                    (is_array($warnings) && count($warnings))
                     || $config->getField('is_ticketsolution_mandatory')
-                    || $config->getField('is_ticketsolutiontype_mandatory')) {
+                    || $config->getField('is_ticketsolutiontype_mandatory')
+                ) {
                     echo "<div class='alert alert-warning'>";
 
                     echo "<div style='display:flex;align-items: center;'>";
@@ -440,10 +457,12 @@ class Common extends CommonGLPI
                     echo "</div>";
 
                     echo "<div>";
-                    if ($config->getField('is_ticketsolution_mandatory')
+                    if (
+                        $config->getField('is_ticketsolution_mandatory')
                         && is_array($warnings)
                         && count($warnings) == 0
-                    && $parentitem->getType() == 'Ticket') {
+                        && $parentitem->getType() == 'Ticket'
+                    ) {
                         echo "<h4 class='alert-title'>" . __(
                             "You must add a description. it's mandatory",
                             'behaviors'

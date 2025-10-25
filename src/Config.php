@@ -103,6 +103,7 @@ class Config extends CommonDBTM
                      `is_ticketsolutiontype_mandatory` tinyint NOT NULL default '0',
                      `is_ticketsolution_mandatory` tinyint NOT NULL default '0',
                      `is_ticketcategory_mandatory` tinyint NOT NULL default '0',
+                     `is_ticketvalidation_mandatory` tinyint NOT NULL default '0',
                      `is_ticketcategory_mandatory_on_assign` tinyint NOT NULL default '0',
                      `is_tickettaskcategory_mandatory` tinyint NOT NULL default '0',
                      `is_tickettech_mandatory` tinyint NOT NULL default '0',
@@ -274,15 +275,16 @@ class Config extends CommonDBTM
             //version 3.0.0
             $mig->dropField($table, 'myasset');
             $mig->dropField($table, 'groupasset');
+            // Version 3.0.1.2
+            $mig->addField($table, 'is_ticketvalidation_mandatory', 'bool', ['after' => 'is_ticketcategory_mandatory']);
+
         }
     }
 
 
-    static function uninstall()
+    static function uninstall(Migration $mig)
     {
-        global $DB;
-
-        $DB->dropTable(self::getTable(), true);
+        $mig->dropTable('glpi_plugin_behaviors_configs');
     }
 
 
@@ -292,7 +294,7 @@ class Config extends CommonDBTM
      */
     static function showConfigForm($item)
     {
-//        $yesnoall = [
+        //        $yesnoall = [
 //            0 => __('No'),
 //            1 => __('First'),
 //            2 => __('All')
@@ -300,7 +302,7 @@ class Config extends CommonDBTM
 //
         $config = self::getInstance();
 
-//        $this->initForm($ID, $options);
+        //        $this->initForm($ID, $options);
 //        $this->check($ID, READ);
 
         //
@@ -571,7 +573,13 @@ class Config extends CommonDBTM
 //        echo "<tr class='tab_bg_1'>";
 //        echo "<td>" . __('Block the solving/closing of a the ticket if task do to', 'behaviors');
 //        echo "</td><td>";
-////        Dropdown::showYesNo("is_tickettasktodo", $config->fields['is_tickettasktodo']);
+///        Dropdown::showYesNo("is_tickettasktodo", $config->fields['is_tickettasktodo']);
+//        echo "</td>";
+//        echo "<td colspan='2'></td></tr>";
+//        echo "<tr class='tab_bg_1'>";
+//        echo "<td>" . __('Validation is mandatory before ticket is solved/closed', 'behaviors');
+//        echo "</td><td>";
+///        Dropdown::showYesNo("is_ticketvalidation_mandatory", $config->fields['is_ticketvalidation_mandatory']);
 //        echo "</td>";
 //        echo "<td colspan='2'></td></tr>";
 //
@@ -600,7 +608,7 @@ class Config extends CommonDBTM
             $dateformat[$fmt] = date($fmt) . '  (' . $fmt . ')';
         }
 
-//        if (!$plugin->isActivated('uninstall')) {
+        //        if (!$plugin->isActivated('uninstall')) {
 //            echo __("Plugin \"Item's uninstallation\" not installed", "behaviors") . "\n";
 //        }
 //        if (!$plugin->isActivated('ocsinventoryng')) {
@@ -610,16 +618,16 @@ class Config extends CommonDBTM
         TemplateRenderer::getInstance()->display(
             '@behaviors/config.html.twig',
             [
-                'id'                => 1,
-                'item'              => $config,
-                'config'            => $config->fields,
-                'action'            => plugin_behaviors_geturl() . 'front/config.form.php',
-                'dateformat'    => $dateformat,
+                'id' => 1,
+                'item' => $config,
+                'config' => $config->fields,
+                'action' => plugin_behaviors_geturl() . 'front/config.form.php',
+                'dateformat' => $dateformat,
             ],
         );
         return true;
 
-//
+        //
 //        return false;
     }
 
@@ -653,7 +661,7 @@ class Config extends CommonDBTM
      **@since 1.5.0
      *
      */
-//    static function item_can($item)
+    //    static function item_can($item)
 //    {
 //        global $DB, $CFG_GLPI;
 //
@@ -698,8 +706,8 @@ class Config extends CommonDBTM
                 $configGLPI = new \Config();
                 Log::constructHistory(
                     $configGLPI,
-                    ['value' => $update.' '.$oldvalue],
-                    ['value' => $update.' '.$newvalue]
+                    ['value' => $update . ' ' . $oldvalue],
+                    ['value' => $update . ' ' . $newvalue]
                 );
             }
         }
@@ -712,7 +720,7 @@ class Config extends CommonDBTM
      **@since 1.5.0
      *
      */
-//    static function add_default_where($item)
+    //    static function add_default_where($item)
 //    {
 //        global $CFG_GLPI;
 //        ;
