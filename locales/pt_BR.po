@@ -156,6 +156,14 @@ msgstr "Técnico atribuído é obrigatório antes do chamado ser solucionado/fec
 msgid "Validation is mandatory before ticket is solved/closed"
 msgstr "Validação é obrigatória antes do chamado ser solucionado/fechado"
 
+#: inc/config.class.php:421
+msgid "Validation is mandatory before problem is solved/closed"
+msgstr "Validação é obrigatória antes da mudança ser solucionado/fechado"
+
+#: inc/config.class.php:492
+msgid "Linked item solved is mandatory before ticket is solved/closed"
+msgstr "Solução de item vinculado obrigatório antes do Ticket ser solucionado/fechado"
+
 msgid "You cannot solve/close a ticket with pending validation"
 msgstr "Você não pode solucionar/fechar um chamado pendente de validação"
 

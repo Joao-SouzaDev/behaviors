@@ -97,6 +97,25 @@ class PluginBehaviorsITILSolution
                     return;
                 }
             }
+            foreach (
+                $DB->request(
+                    'glpi_tickets_tickets',
+                    ['tickets_id_2' => $ticket->getField('id')]
+                ) as $linkedticket
+            ) {
+                if ($linkedticket['status'] == 2 && $config->getfield('is_ticketlinked_mandatory')) {
+                    $soluce->input = false;
+                    Session::addMessageAfterRedirect(
+                        __(
+                            "You cannot solve/close a ticket with linked ticket pending",
+                            'behaviors'
+                        ),
+                        true,
+                        ERROR
+                    );
+                    return;
+                }
+            }
             if (
                 $config->getField('is_ticketsolution_mandatory')
                 && empty($soluce->input['content'])
@@ -339,6 +358,25 @@ class PluginBehaviorsITILSolution
                         );
                         return;
                     }
+                }
+            }
+            foreach (
+                $DB->request(
+                    'glpi_changevalidations',
+                    ['tickets_id' => $ticket->getField('id')]
+                ) as $validation
+            ) {
+                if ($validation['status'] == 2 && $config->getField('is_changevalidation_mandatory')) {
+                    $soluce->input = false;
+                    Session::addMessageAfterRedirect(
+                        __(
+                            "You cannot solve/close a change with validation pending",
+                            'behaviors'
+                        ),
+                        true,
+                        ERROR
+                    );
+                    return;
                 }
             }
         }

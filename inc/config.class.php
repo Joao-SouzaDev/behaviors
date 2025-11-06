@@ -93,6 +93,7 @@ class PluginBehaviorsConfig extends CommonDBTM
                      `is_ticketsolution_mandatory` tinyint NOT NULL default '0',
                      `is_ticketcategory_mandatory` tinyint NOT NULL default '0',
                      `is_ticketvalidation_mandatory` tinyint NOT NULL default '0',
+                     `is_ticketlinked_mandatory` tinyint NOT NULL default '0',
                      `is_ticketcategory_mandatory_on_assign` tinyint NOT NULL default '0',
                      `is_tickettaskcategory_mandatory` tinyint NOT NULL default '0',
                      `is_tickettech_mandatory` tinyint NOT NULL default '0',
@@ -106,6 +107,7 @@ class PluginBehaviorsConfig extends CommonDBTM
                      `tickets_id_format` VARCHAR(15) NULL,
                      `changes_id_format` VARCHAR(15) NULL,
                      `is_problemsolutiontype_mandatory` tinyint NOT NULL default '0',
+                     `is_changevalidation_mandatory` tinyint NOT NULL default '0',
                      `remove_from_ocs` tinyint NOT NULL default '0',
                      `add_notif` tinyint NOT NULL default '0',
                      `single_tech_mode` int $default_key_sign NOT NULL default '0',
@@ -264,6 +266,8 @@ class PluginBehaviorsConfig extends CommonDBTM
             $mig->dropField($table, 'use_lock');
             // version 2.7.8
             $mig->addField($table, 'is_ticketvalidation_mandatory', 'bool', ['after' => 'is_ticketcategory_mandatory']);
+            $mig->addField($table, 'is_ticketlinked_mandatory', 'bool', ['after' => 'is_ticketvalidation_mandatory']);
+            $mig->addField($table, 'is_changevalidation_mandatory', 'bool', ['after' => 'is_ticketlinked_mandatory']);
         }
     }
 
@@ -414,6 +418,7 @@ class PluginBehaviorsConfig extends CommonDBTM
         Dropdown::showYesNo("is_problemtasktodo", $config->fields['is_problemtasktodo']);
         echo "</td></tr>";
 
+
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Single technician and group', 'behaviors') . "</td><td>";
         $tab = [
@@ -476,12 +481,27 @@ class PluginBehaviorsConfig extends CommonDBTM
             $config->fields['is_ticketvalidation_mandatory']
         );
         echo "</td>";
-
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Linked item solved is mandatory before ticket is solved/closed', 'behaviors');
+        echo '</td>';
+        echo '<td>';
+        Dropdown::showYesNo(
+            'is_ticketlinked_mandatory',
+            $config->fields['is_ticketlinked_mandatory']
+        );
+        echo '</td>';
         echo "<td>" . __('Block the solving/closing of a change if task do to', 'behaviors');
         echo "</td><td>";
         Dropdown::showYesNo("is_changetasktodo", $config->fields['is_changetasktodo']);
         echo "</td></tr>";
-
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __('Validation is mandatory before change is solved/closed', 'behaviors') . "</td>";
+        echo "<td>";
+        Dropdown::showYesNo(
+            "is_changevalidation_mandatory",
+            $config->fields['is_changevalidation_mandatory']
+        );
+        echo "</td></tr>";
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Set the solution writer as the technician of the ticket', 'behaviors');
         echo "</td><td>";

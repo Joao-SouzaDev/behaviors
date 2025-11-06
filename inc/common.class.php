@@ -373,6 +373,30 @@ class PluginBehaviorsCommon extends CommonGLPI
                     break;
                 }
             }
+            foreach (
+                $DB->request(
+                    'glpi_tickets_tickets',
+                    ['tickets_id_2' => $obj->getField('id')]
+                ) as $linkedticket
+            ) {
+                //verifica se retornou algo
+                if ($linkedticket) {
+                    //busca ticket vinculad
+                    foreach (
+                        $DB->request(
+                            'glpi_tickets',
+                            ['id' => $linkedticket['tickets_id_1']]
+                        ) as $ticketson
+                    ) {
+                        if ($ticketson) {
+                            if ($ticketson['status'] == "2" && $config->getField('is_ticketlinked_mandatory')) {
+                                $warnings[] = __("Linked item solved is mandatory before ticket is solved/closed", 'behaviors');
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         if ($obj->getType() == 'Problem') {
@@ -403,6 +427,17 @@ class PluginBehaviorsCommon extends CommonGLPI
                         $warnings[] = __("You cannot solve/close a change with task do to", 'behaviors');
                         break;
                     }
+                }
+            }
+            foreach (
+                $DB->request(
+                    'glpi_changevalidations',
+                    ['changes_id' => $obj->getField('id')]
+                ) as $validation
+            ) {
+                if ($validation['status'] == 2 && $config->getField('is_changevalidation_mandatory')) {
+                    $warnings[] = __("You cannot solve/close a change with pending validation", 'behaviors');
+                    break;
                 }
             }
         }

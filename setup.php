@@ -32,7 +32,7 @@
  * --------------------------------------------------------------------------
  */
 
-define('PLUGIN_BEHAVIORS_VERSION', '2.7.8.2');
+define('PLUGIN_BEHAVIORS_VERSION', '2.7.8.3');
 // Init the hooks of the plugins -Needed
 function plugin_init_behaviors()
 {
