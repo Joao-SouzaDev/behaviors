@@ -397,6 +397,44 @@ class PluginBehaviorsCommon extends CommonGLPI
                     }
                 }
             }
+            // Verificar se existem problemas vinculados em aberto
+            if ($config->getField('is_ticketlinked_mandatory')) {
+                foreach (
+                    $DB->request(
+                        'glpi_problems_tickets',
+                        ['tickets_id' => $obj->getField('id')]
+                    ) as $linkedproblem
+                ) {
+                    $problem = new Problem();
+                    if ($problem->getFromDB($linkedproblem['problems_id'])) {
+                        if ($problem->fields['status'] != 5) {
+                            if ($problem->fields['status'] != 6) {
+                                $warnings[] = __("You cannot solve/close a ticket with open linked problems", 'behaviors');
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            // Verificar se existem mudanças vinculadas em aberto
+            if ($config->getField('is_ticketlinked_mandatory')) {
+                foreach (
+                    $DB->request(
+                        'glpi_changes_tickets',
+                        ['tickets_id' => $obj->getField('id')]
+                    ) as $linkedchange
+                ) {
+                    $change = new Change();
+                    if ($change->getFromDB($linkedchange['changes_id'])) {
+                        if ($change->fields['status'] != 5) {
+                            if ($change->fields['status'] != 6) {
+                                $warnings[] = __("You cannot solve/close a ticket with open linked changes", 'behaviors');
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         if ($obj->getType() == 'Problem') {

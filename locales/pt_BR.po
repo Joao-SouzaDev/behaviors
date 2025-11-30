@@ -240,6 +240,14 @@ msgstr "Você não pode resolver/encerrar um problema com tarefas a fazer"
 msgid "You cannot solve/close a change with task do to"
 msgstr "Você não pode resolver/encerrar uma mudança com tarefas a fazer"
 
+#: inc/itilsolution.class.php:XXX inc/common.class.php:XXX
+msgid "You cannot solve/close a ticket with open linked problems"
+msgstr "Você não pode solucionar/fechar um chamado com problemas vinculados em aberto"
+
+#: inc/itilsolution.class.php:XXX inc/common.class.php:XXX
+msgid "You cannot solve/close a ticket with open linked changes"
+msgstr "Você não pode solucionar/fechar um chamado com mudanças vinculadas em aberto"
+
 #: inc/ticket.class.php:54
 msgid "Reopen ticket"
 msgstr "Reabrir o chamado"

@@ -116,6 +116,58 @@ class PluginBehaviorsITILSolution
                     return;
                 }
             }
+            // Verificar se existem problemas vinculados em aberto
+            if ($config->getField('is_ticketlinked_mandatory')) {
+                foreach (
+                    $DB->request(
+                        'glpi_problems_tickets',
+                        ['tickets_id' => $ticket->getField('id')]
+                    ) as $linkedproblem
+                ) {
+                    $problem = new Problem();
+                    if ($problem->getFromDB($linkedproblem['problems_id'])) {
+                        // Verifica se o problema está em aberto (status 2 = em atendimento)
+                        if ($problem->fields['status'] != 5 || $problem->fields['status'] != 6) {
+                            $soluce->input = false;
+                            Session::addMessageAfterRedirect(
+                                __(
+                                    "You cannot solve/close a ticket with open linked problems",
+                                    'behaviors'
+                                ),
+                                true,
+                                ERROR
+                            );
+                            return;
+                        }
+                    }
+                }
+            }
+            // Verificar se existem mudanças vinculadas em aberto
+            if ($config->getField('is_ticketlinked_mandatory')) {
+                foreach (
+                    $DB->request(
+                        'glpi_changes_tickets',
+                        ['tickets_id' => $ticket->getField('id')]
+                    ) as $linkedchange
+                ) {
+                    $change = new Change();
+                    if ($change->getFromDB($linkedchange['changes_id'])) {
+                        // Verifica se a mudança está em aberto (status 2 = em atendimento)
+                        if ($change->fields['status'] != 5 || $change->fields['status'] != 6) {
+                            $soluce->input = false;
+                            Session::addMessageAfterRedirect(
+                                __(
+                                    "You cannot solve/close a ticket with open linked changes",
+                                    'behaviors'
+                                ),
+                                true,
+                                ERROR
+                            );
+                            return;
+                        }
+                    }
+                }
+            }
             if (
                 $config->getField('is_ticketsolution_mandatory')
                 && empty($soluce->input['content'])

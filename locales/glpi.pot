@@ -31,6 +31,14 @@ msgstr ""
 msgid "You cannot solve/close a change with task do to"
 msgstr ""
 
+#: inc/common.class.php:XXX inc/itilsolution.class.php:XXX
+msgid "You cannot solve/close a ticket with open linked problems"
+msgstr ""
+
+#: inc/common.class.php:XXX inc/itilsolution.class.php:XXX
+msgid "You cannot solve/close a ticket with open linked changes"
+msgstr ""
+
 #: inc/changetask.class.php:68
 msgid "You cannot change status of a task in a solved change"
 msgstr ""
