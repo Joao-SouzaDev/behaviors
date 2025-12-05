@@ -373,30 +373,35 @@ class PluginBehaviorsCommon extends CommonGLPI
                     break;
                 }
             }
-            foreach (
-                $DB->request(
-                    'glpi_tickets_tickets',
-                    ['tickets_id_2' => $obj->getField('id')]
-                ) as $linkedticket
-            ) {
-                //verifica se retornou algo
-                if ($linkedticket) {
-                    //busca ticket vinculad
-                    foreach (
-                        $DB->request(
-                            'glpi_tickets',
-                            ['id' => $linkedticket['tickets_id_1']]
-                        ) as $ticketson
-                    ) {
-                        if ($ticketson) {
-                            if ($ticketson['status'] == "2" && $config->getField('is_ticketlinked_mandatory')) {
-                                $warnings[] = __("Linked item solved is mandatory before ticket is solved/closed", 'behaviors');
-                                break;
+            if ($config->getField('is_ticketlinked_mandatory')) {
+                foreach (
+                    $DB->request(
+                        'glpi_tickets_tickets',
+                        ['tickets_id_2' => $obj->getField('id'), 'link' => '3']
+                    ) as $linkedticket
+                ) {
+                    //verifica se retornou algo
+                    if ($linkedticket) {
+                        //busca ticket vinculad
+                        foreach (
+                            $DB->request(
+                                'glpi_tickets',
+                                ['id' => $linkedticket['tickets_id_1']]
+                            ) as $ticketson
+                        ) {
+                            if ($ticketson) {
+                                if ($ticketson['status'] != "5") {
+                                    if ($ticketson['status'] != "6") {
+                                        $warnings[] = __("Linked item solved is mandatory before ticket is solved/closed", 'behaviors');
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
+
             // Verificar se existem problemas vinculados em aberto
             if ($config->getField('is_ticketlinked_mandatory')) {
                 foreach (
